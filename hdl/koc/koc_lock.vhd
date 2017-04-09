@@ -7,7 +7,8 @@ entity koc_lock is
     generic (
         axi_address_width : integer := 16;            --! Defines the AXI4-Lite Address Width.
         axi_data_width : integer := 32;               --! Defines the AXI4-Lite Data Width.   
-        axi_control_offset : integer := 0             --! Defines the offset for the Control register.
+        axi_control_offset : integer := 0;            --! Defines the offset for the Control register.
+        control_default : integer := 1
     );
     port (
         aclk : in std_logic;                                                --! Clock. Tested with 50 MHz.
@@ -41,7 +42,8 @@ architecture Behavioral of koc_lock is
         generic (
             axi_address_width : integer := 16;
             axi_data_width : integer := 32;
-            reg_control_offset : std_logic_vector := X"0000"
+            reg_control_offset : std_logic_vector := X"0000";
+            reg_control_default : std_logic_vector := X"00000001"
         );
         port (
             aclk : in std_logic;                                                
@@ -81,6 +83,7 @@ architecture Behavioral of koc_lock is
         );
     end component;
     constant axi_control_offset_slv : std_logic_vector := std_logic_vector(to_unsigned(axi_control_offset,axi_address_width));
+    constant control_default_slv : std_logic_vector := std_logic_vector(to_unsigned(control_default,axi_address_width));
     signal reg_control : std_logic_vector(axi_data_width-1 downto 0);
 begin
 
@@ -88,7 +91,8 @@ begin
         generic map (
             axi_address_width => axi_address_width,
             axi_data_width => axi_data_width,
-            reg_control_offset => axi_control_offset_slv)
+            reg_control_offset => axi_control_offset_slv,
+            reg_control_default => control_default_slv)
         port map (
             aclk => aclk,
             aresetn => aresetn,

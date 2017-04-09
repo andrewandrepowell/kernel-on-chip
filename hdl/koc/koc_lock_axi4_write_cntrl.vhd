@@ -7,7 +7,8 @@ entity koc_lock_axi4_write_cntrl is
     generic (
         axi_address_width : integer := 16;
         axi_data_width : integer := 32;
-        reg_control_offset : std_logic_vector := X"0000"
+        reg_control_offset : std_logic_vector := X"0000";
+        reg_control_default : std_logic_vector := X"00000001"
     );
     port (
         aclk : in std_logic;                                                --! Clock. Tested with 50 MHz.
@@ -34,7 +35,7 @@ architecture Behavioral of koc_lock_axi4_write_cntrl is
     signal axi_awaddr_buff : std_logic_vector(axi_address_width-1 downto 0);
     signal axi_wready_buff : std_logic := '0';
     signal axi_bvalid_buff : std_logic := '0';
-    signal reg_control_buff : std_logic_vector(axi_data_width-1 downto 0) := (others=>'0');
+    signal reg_control_buff : std_logic_vector(axi_data_width-1 downto 0) := reg_control_default;
 begin
     axi_awready <= axi_awready_buff;
     axi_wready <= axi_wready_buff;
@@ -53,7 +54,7 @@ begin
                 axi_awready_buff <= '0';
                 axi_wready_buff <= '0';
                 axi_bvalid_buff <= '0';
-                reg_control_buff <= (others=>'0');
+                reg_control_buff <= reg_control_default;
                 state <= state_wait;
             else
                 case state is
