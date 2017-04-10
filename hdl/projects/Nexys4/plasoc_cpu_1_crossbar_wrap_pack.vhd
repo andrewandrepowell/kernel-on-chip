@@ -8,7 +8,6 @@ package plasoc_cpu_1_crossbar_wrap_pack is
 function clogb2(bit_depth : in integer ) return integer;
 
 component plasoc_cpu_1_crossbar_wrap is
-
 	generic
 	(
 		axi_address_width : integer := 32;

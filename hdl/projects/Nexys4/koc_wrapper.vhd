@@ -45,6 +45,11 @@ entity koc_wrapper is
 end koc_wrapper;
 
 architecture Behavioral of koc_wrapper is
+
+    ----------------------------
+    -- Component Declarations --
+    ----------------------------
+
     component bd_wrapper is
         port (
             DDR2_addr : out STD_LOGIC_VECTOR ( 12 downto 0 );
@@ -203,6 +208,11 @@ architecture Behavioral of koc_wrapper is
     signal ram_bram_addr_a : std_logic_vector(15 downto 0);
     signal ram_bram_wrdata_a : std_logic_vector(31 downto 0);
     signal ram_bram_rddata_a : std_logic_vector(31 downto 0);
+    
+    -------------------------------
+    -- Main Interconnect Signals --
+    -------------------------------
+    
     signal cpu_0_axi_full_awid : std_logic_vector(axi_slave_id_width-1 downto 0);
     signal cpu_0_axi_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
     signal cpu_0_axi_full_awlen : std_logic_vector(7 downto 0);
@@ -556,11 +566,373 @@ architecture Behavioral of koc_wrapper is
     signal lock_axi_full_rlast : std_logic;
     signal lock_axi_full_rvalid : std_logic;
     signal lock_axi_full_rready : std_logic;
+    
+    ---------------------
+    -- CPU Bus Signals --
+    ---------------------
+    
+    signal cpu_bus_0_full_awid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_0_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal cpu_bus_0_full_awlen : std_logic_vector(7 downto 0);
+    signal cpu_bus_0_full_awsize : std_logic_vector(2 downto 0);
+    signal cpu_bus_0_full_awburst : std_logic_vector(1 downto 0);
+    signal cpu_bus_0_full_awlock : std_logic;
+    signal cpu_bus_0_full_awcache : std_logic_vector(3 downto 0);
+    signal cpu_bus_0_full_awprot : std_logic_vector(2 downto 0);
+    signal cpu_bus_0_full_awqos : std_logic_vector(3 downto 0);
+    signal cpu_bus_0_full_awregion : std_logic_vector(3 downto 0);
+    signal cpu_bus_0_full_awvalid : std_logic;
+    signal cpu_bus_0_full_awready : std_logic;
+    signal cpu_bus_0_full_wdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal cpu_bus_0_full_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);
+    signal cpu_bus_0_full_wlast : std_logic;
+    signal cpu_bus_0_full_wvalid : std_logic;
+    signal cpu_bus_0_full_wready : std_logic;
+    signal cpu_bus_0_full_bid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_0_full_bresp : std_logic_vector(1 downto 0);
+    signal cpu_bus_0_full_bvalid : std_logic;
+    signal cpu_bus_0_full_bready : std_logic;
+    signal cpu_bus_0_full_arid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_0_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal cpu_bus_0_full_arlen : std_logic_vector(7 downto 0);
+    signal cpu_bus_0_full_arsize : std_logic_vector(2 downto 0);
+    signal cpu_bus_0_full_arburst : std_logic_vector(1 downto 0);
+    signal cpu_bus_0_full_arlock : std_logic;
+    signal cpu_bus_0_full_arcache : std_logic_vector(3 downto 0);
+    signal cpu_bus_0_full_arprot : std_logic_vector(2 downto 0);
+    signal cpu_bus_0_full_arqos : std_logic_vector(3 downto 0);
+    signal cpu_bus_0_full_arregion : std_logic_vector(3 downto 0);
+    signal cpu_bus_0_full_arvalid : std_logic;
+    signal cpu_bus_0_full_arready : std_logic;
+    signal cpu_bus_0_full_rid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_0_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal cpu_bus_0_full_rresp : std_logic_vector(1 downto 0);
+    signal cpu_bus_0_full_rlast : std_logic;
+    signal cpu_bus_0_full_rvalid : std_logic;
+    signal cpu_bus_0_full_rready : std_logic;
+    signal boot_bram_bus_0_full_awid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_0_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal boot_bram_bus_0_full_awlen : std_logic_vector(7 downto 0);
+    signal boot_bram_bus_0_full_awsize : std_logic_vector(2 downto 0);
+    signal boot_bram_bus_0_full_awburst : std_logic_vector(1 downto 0);
+    signal boot_bram_bus_0_full_awlock : std_logic;
+    signal boot_bram_bus_0_full_awcache : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_0_full_awprot : std_logic_vector(2 downto 0);
+    signal boot_bram_bus_0_full_awqos : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_0_full_awregion : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_0_full_awvalid : std_logic;
+    signal boot_bram_bus_0_full_awready : std_logic;
+    signal boot_bram_bus_0_full_wdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal boot_bram_bus_0_full_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);
+    signal boot_bram_bus_0_full_wlast : std_logic;
+    signal boot_bram_bus_0_full_wvalid : std_logic;
+    signal boot_bram_bus_0_full_wready : std_logic;
+    signal boot_bram_bus_0_full_bid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_0_full_bresp : std_logic_vector(1 downto 0);
+    signal boot_bram_bus_0_full_bvalid : std_logic;
+    signal boot_bram_bus_0_full_bready : std_logic;
+    signal boot_bram_bus_0_full_arid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_0_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal boot_bram_bus_0_full_arlen : std_logic_vector(7 downto 0);
+    signal boot_bram_bus_0_full_arsize : std_logic_vector(2 downto 0);
+    signal boot_bram_bus_0_full_arburst : std_logic_vector(1 downto 0);
+    signal boot_bram_bus_0_full_arlock : std_logic;
+    signal boot_bram_bus_0_full_arcache : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_0_full_arprot : std_logic_vector(2 downto 0);
+    signal boot_bram_bus_0_full_arqos : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_0_full_arregion : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_0_full_arvalid : std_logic;
+    signal boot_bram_bus_0_full_arready : std_logic;
+    signal boot_bram_bus_0_full_rid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_0_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal boot_bram_bus_0_full_rresp : std_logic_vector(1 downto 0);
+    signal boot_bram_bus_0_full_rlast : std_logic;
+    signal boot_bram_bus_0_full_rvalid : std_logic;
+    signal boot_bram_bus_0_full_rready : std_logic;
+    signal cpuid_gpio_bus_0_full_awid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_0_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal cpuid_gpio_bus_0_full_awlen : std_logic_vector(7 downto 0);
+    signal cpuid_gpio_bus_0_full_awsize : std_logic_vector(2 downto 0);
+    signal cpuid_gpio_bus_0_full_awburst : std_logic_vector(1 downto 0);
+    signal cpuid_gpio_bus_0_full_awlock : std_logic;
+    signal cpuid_gpio_bus_0_full_awcache : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_0_full_awprot : std_logic_vector(2 downto 0);
+    signal cpuid_gpio_bus_0_full_awqos : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_0_full_awregion : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_0_full_awvalid : std_logic;
+    signal cpuid_gpio_bus_0_full_awready : std_logic;
+    signal cpuid_gpio_bus_0_full_wdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal cpuid_gpio_bus_0_full_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);
+    signal cpuid_gpio_bus_0_full_wlast : std_logic;
+    signal cpuid_gpio_bus_0_full_wvalid : std_logic;
+    signal cpuid_gpio_bus_0_full_wready : std_logic;
+    signal cpuid_gpio_bus_0_full_bid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_0_full_bresp : std_logic_vector(1 downto 0);
+    signal cpuid_gpio_bus_0_full_bvalid : std_logic;
+    signal cpuid_gpio_bus_0_full_bready : std_logic;
+    signal cpuid_gpio_bus_0_full_arid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_0_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal cpuid_gpio_bus_0_full_arlen : std_logic_vector(7 downto 0);
+    signal cpuid_gpio_bus_0_full_arsize : std_logic_vector(2 downto 0);
+    signal cpuid_gpio_bus_0_full_arburst : std_logic_vector(1 downto 0);
+    signal cpuid_gpio_bus_0_full_arlock : std_logic;
+    signal cpuid_gpio_bus_0_full_arcache : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_0_full_arprot : std_logic_vector(2 downto 0);
+    signal cpuid_gpio_bus_0_full_arqos : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_0_full_arregion : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_0_full_arvalid : std_logic;
+    signal cpuid_gpio_bus_0_full_arready : std_logic;
+    signal cpuid_gpio_bus_0_full_rid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_0_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal cpuid_gpio_bus_0_full_rresp : std_logic_vector(1 downto 0);
+    signal cpuid_gpio_bus_0_full_rlast : std_logic;
+    signal cpuid_gpio_bus_0_full_rvalid : std_logic;
+    signal cpuid_gpio_bus_0_full_rready : std_logic;
+    
+    signal cpu_bus_1_full_awid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_1_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal cpu_bus_1_full_awlen : std_logic_vector(7 downto 0);
+    signal cpu_bus_1_full_awsize : std_logic_vector(2 downto 0);
+    signal cpu_bus_1_full_awburst : std_logic_vector(1 downto 0);
+    signal cpu_bus_1_full_awlock : std_logic;
+    signal cpu_bus_1_full_awcache : std_logic_vector(3 downto 0);
+    signal cpu_bus_1_full_awprot : std_logic_vector(2 downto 0);
+    signal cpu_bus_1_full_awqos : std_logic_vector(3 downto 0);
+    signal cpu_bus_1_full_awregion : std_logic_vector(3 downto 0);
+    signal cpu_bus_1_full_awvalid : std_logic;
+    signal cpu_bus_1_full_awready : std_logic;
+    signal cpu_bus_1_full_wdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal cpu_bus_1_full_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);
+    signal cpu_bus_1_full_wlast : std_logic;
+    signal cpu_bus_1_full_wvalid : std_logic;
+    signal cpu_bus_1_full_wready : std_logic;
+    signal cpu_bus_1_full_bid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_1_full_bresp : std_logic_vector(1 downto 0);
+    signal cpu_bus_1_full_bvalid : std_logic;
+    signal cpu_bus_1_full_bready : std_logic;
+    signal cpu_bus_1_full_arid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_1_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal cpu_bus_1_full_arlen : std_logic_vector(7 downto 0);
+    signal cpu_bus_1_full_arsize : std_logic_vector(2 downto 0);
+    signal cpu_bus_1_full_arburst : std_logic_vector(1 downto 0);
+    signal cpu_bus_1_full_arlock : std_logic;
+    signal cpu_bus_1_full_arcache : std_logic_vector(3 downto 0);
+    signal cpu_bus_1_full_arprot : std_logic_vector(2 downto 0);
+    signal cpu_bus_1_full_arqos : std_logic_vector(3 downto 0);
+    signal cpu_bus_1_full_arregion : std_logic_vector(3 downto 0);
+    signal cpu_bus_1_full_arvalid : std_logic;
+    signal cpu_bus_1_full_arready : std_logic;
+    signal cpu_bus_1_full_rid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_1_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal cpu_bus_1_full_rresp : std_logic_vector(1 downto 0);
+    signal cpu_bus_1_full_rlast : std_logic;
+    signal cpu_bus_1_full_rvalid : std_logic;
+    signal cpu_bus_1_full_rready : std_logic;
+    signal boot_bram_bus_1_full_awid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_1_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal boot_bram_bus_1_full_awlen : std_logic_vector(7 downto 0);
+    signal boot_bram_bus_1_full_awsize : std_logic_vector(2 downto 0);
+    signal boot_bram_bus_1_full_awburst : std_logic_vector(1 downto 0);
+    signal boot_bram_bus_1_full_awlock : std_logic;
+    signal boot_bram_bus_1_full_awcache : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_1_full_awprot : std_logic_vector(2 downto 0);
+    signal boot_bram_bus_1_full_awqos : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_1_full_awregion : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_1_full_awvalid : std_logic;
+    signal boot_bram_bus_1_full_awready : std_logic;
+    signal boot_bram_bus_1_full_wdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal boot_bram_bus_1_full_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);
+    signal boot_bram_bus_1_full_wlast : std_logic;
+    signal boot_bram_bus_1_full_wvalid : std_logic;
+    signal boot_bram_bus_1_full_wready : std_logic;
+    signal boot_bram_bus_1_full_bid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_1_full_bresp : std_logic_vector(1 downto 0);
+    signal boot_bram_bus_1_full_bvalid : std_logic;
+    signal boot_bram_bus_1_full_bready : std_logic;
+    signal boot_bram_bus_1_full_arid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_1_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal boot_bram_bus_1_full_arlen : std_logic_vector(7 downto 0);
+    signal boot_bram_bus_1_full_arsize : std_logic_vector(2 downto 0);
+    signal boot_bram_bus_1_full_arburst : std_logic_vector(1 downto 0);
+    signal boot_bram_bus_1_full_arlock : std_logic;
+    signal boot_bram_bus_1_full_arcache : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_1_full_arprot : std_logic_vector(2 downto 0);
+    signal boot_bram_bus_1_full_arqos : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_1_full_arregion : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_1_full_arvalid : std_logic;
+    signal boot_bram_bus_1_full_arready : std_logic;
+    signal boot_bram_bus_1_full_rid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_1_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal boot_bram_bus_1_full_rresp : std_logic_vector(1 downto 0);
+    signal boot_bram_bus_1_full_rlast : std_logic;
+    signal boot_bram_bus_1_full_rvalid : std_logic;
+    signal boot_bram_bus_1_full_rready : std_logic;
+    signal cpuid_gpio_bus_1_full_awid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_1_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal cpuid_gpio_bus_1_full_awlen : std_logic_vector(7 downto 0);
+    signal cpuid_gpio_bus_1_full_awsize : std_logic_vector(2 downto 0);
+    signal cpuid_gpio_bus_1_full_awburst : std_logic_vector(1 downto 0);
+    signal cpuid_gpio_bus_1_full_awlock : std_logic;
+    signal cpuid_gpio_bus_1_full_awcache : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_1_full_awprot : std_logic_vector(2 downto 0);
+    signal cpuid_gpio_bus_1_full_awqos : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_1_full_awregion : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_1_full_awvalid : std_logic;
+    signal cpuid_gpio_bus_1_full_awready : std_logic;
+    signal cpuid_gpio_bus_1_full_wdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal cpuid_gpio_bus_1_full_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);
+    signal cpuid_gpio_bus_1_full_wlast : std_logic;
+    signal cpuid_gpio_bus_1_full_wvalid : std_logic;
+    signal cpuid_gpio_bus_1_full_wready : std_logic;
+    signal cpuid_gpio_bus_1_full_bid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_1_full_bresp : std_logic_vector(1 downto 0);
+    signal cpuid_gpio_bus_1_full_bvalid : std_logic;
+    signal cpuid_gpio_bus_1_full_bready : std_logic;
+    signal cpuid_gpio_bus_1_full_arid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_1_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal cpuid_gpio_bus_1_full_arlen : std_logic_vector(7 downto 0);
+    signal cpuid_gpio_bus_1_full_arsize : std_logic_vector(2 downto 0);
+    signal cpuid_gpio_bus_1_full_arburst : std_logic_vector(1 downto 0);
+    signal cpuid_gpio_bus_1_full_arlock : std_logic;
+    signal cpuid_gpio_bus_1_full_arcache : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_1_full_arprot : std_logic_vector(2 downto 0);
+    signal cpuid_gpio_bus_1_full_arqos : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_1_full_arregion : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_1_full_arvalid : std_logic;
+    signal cpuid_gpio_bus_1_full_arready : std_logic;
+    signal cpuid_gpio_bus_1_full_rid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_1_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal cpuid_gpio_bus_1_full_rresp : std_logic_vector(1 downto 0);
+    signal cpuid_gpio_bus_1_full_rlast : std_logic;
+    signal cpuid_gpio_bus_1_full_rvalid : std_logic;
+    signal cpuid_gpio_bus_1_full_rready : std_logic;
+    
+    signal cpu_bus_2_full_awid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_2_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal cpu_bus_2_full_awlen : std_logic_vector(7 downto 0);
+    signal cpu_bus_2_full_awsize : std_logic_vector(2 downto 0);
+    signal cpu_bus_2_full_awburst : std_logic_vector(1 downto 0);
+    signal cpu_bus_2_full_awlock : std_logic;
+    signal cpu_bus_2_full_awcache : std_logic_vector(3 downto 0);
+    signal cpu_bus_2_full_awprot : std_logic_vector(2 downto 0);
+    signal cpu_bus_2_full_awqos : std_logic_vector(3 downto 0);
+    signal cpu_bus_2_full_awregion : std_logic_vector(3 downto 0);
+    signal cpu_bus_2_full_awvalid : std_logic;
+    signal cpu_bus_2_full_awready : std_logic;
+    signal cpu_bus_2_full_wdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal cpu_bus_2_full_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);
+    signal cpu_bus_2_full_wlast : std_logic;
+    signal cpu_bus_2_full_wvalid : std_logic;
+    signal cpu_bus_2_full_wready : std_logic;
+    signal cpu_bus_2_full_bid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_2_full_bresp : std_logic_vector(1 downto 0);
+    signal cpu_bus_2_full_bvalid : std_logic;
+    signal cpu_bus_2_full_bready : std_logic;
+    signal cpu_bus_2_full_arid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_2_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal cpu_bus_2_full_arlen : std_logic_vector(7 downto 0);
+    signal cpu_bus_2_full_arsize : std_logic_vector(2 downto 0);
+    signal cpu_bus_2_full_arburst : std_logic_vector(1 downto 0);
+    signal cpu_bus_2_full_arlock : std_logic;
+    signal cpu_bus_2_full_arcache : std_logic_vector(3 downto 0);
+    signal cpu_bus_2_full_arprot : std_logic_vector(2 downto 0);
+    signal cpu_bus_2_full_arqos : std_logic_vector(3 downto 0);
+    signal cpu_bus_2_full_arregion : std_logic_vector(3 downto 0);
+    signal cpu_bus_2_full_arvalid : std_logic;
+    signal cpu_bus_2_full_arready : std_logic;
+    signal cpu_bus_2_full_rid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_2_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal cpu_bus_2_full_rresp : std_logic_vector(1 downto 0);
+    signal cpu_bus_2_full_rlast : std_logic;
+    signal cpu_bus_2_full_rvalid : std_logic;
+    signal cpu_bus_2_full_rready : std_logic;
+    signal boot_bram_bus_2_full_awid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_2_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal boot_bram_bus_2_full_awlen : std_logic_vector(7 downto 0);
+    signal boot_bram_bus_2_full_awsize : std_logic_vector(2 downto 0);
+    signal boot_bram_bus_2_full_awburst : std_logic_vector(1 downto 0);
+    signal boot_bram_bus_2_full_awlock : std_logic;
+    signal boot_bram_bus_2_full_awcache : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_2_full_awprot : std_logic_vector(2 downto 0);
+    signal boot_bram_bus_2_full_awqos : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_2_full_awregion : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_2_full_awvalid : std_logic;
+    signal boot_bram_bus_2_full_awready : std_logic;
+    signal boot_bram_bus_2_full_wdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal boot_bram_bus_2_full_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);
+    signal boot_bram_bus_2_full_wlast : std_logic;
+    signal boot_bram_bus_2_full_wvalid : std_logic;
+    signal boot_bram_bus_2_full_wready : std_logic;
+    signal boot_bram_bus_2_full_bid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_2_full_bresp : std_logic_vector(1 downto 0);
+    signal boot_bram_bus_2_full_bvalid : std_logic;
+    signal boot_bram_bus_2_full_bready : std_logic;
+    signal boot_bram_bus_2_full_arid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_2_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal boot_bram_bus_2_full_arlen : std_logic_vector(7 downto 0);
+    signal boot_bram_bus_2_full_arsize : std_logic_vector(2 downto 0);
+    signal boot_bram_bus_2_full_arburst : std_logic_vector(1 downto 0);
+    signal boot_bram_bus_2_full_arlock : std_logic;
+    signal boot_bram_bus_2_full_arcache : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_2_full_arprot : std_logic_vector(2 downto 0);
+    signal boot_bram_bus_2_full_arqos : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_2_full_arregion : std_logic_vector(3 downto 0);
+    signal boot_bram_bus_2_full_arvalid : std_logic;
+    signal boot_bram_bus_2_full_arready : std_logic;
+    signal boot_bram_bus_2_full_rid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_2_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal boot_bram_bus_2_full_rresp : std_logic_vector(1 downto 0);
+    signal boot_bram_bus_2_full_rlast : std_logic;
+    signal boot_bram_bus_2_full_rvalid : std_logic;
+    signal boot_bram_bus_2_full_rready : std_logic;
+    signal cpuid_gpio_bus_2_full_awid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_2_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal cpuid_gpio_bus_2_full_awlen : std_logic_vector(7 downto 0);
+    signal cpuid_gpio_bus_2_full_awsize : std_logic_vector(2 downto 0);
+    signal cpuid_gpio_bus_2_full_awburst : std_logic_vector(1 downto 0);
+    signal cpuid_gpio_bus_2_full_awlock : std_logic;
+    signal cpuid_gpio_bus_2_full_awcache : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_2_full_awprot : std_logic_vector(2 downto 0);
+    signal cpuid_gpio_bus_2_full_awqos : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_2_full_awregion : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_2_full_awvalid : std_logic;
+    signal cpuid_gpio_bus_2_full_awready : std_logic;
+    signal cpuid_gpio_bus_2_full_wdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal cpuid_gpio_bus_2_full_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);
+    signal cpuid_gpio_bus_2_full_wlast : std_logic;
+    signal cpuid_gpio_bus_2_full_wvalid : std_logic;
+    signal cpuid_gpio_bus_2_full_wready : std_logic;
+    signal cpuid_gpio_bus_2_full_bid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_2_full_bresp : std_logic_vector(1 downto 0);
+    signal cpuid_gpio_bus_2_full_bvalid : std_logic;
+    signal cpuid_gpio_bus_2_full_bready : std_logic;
+    signal cpuid_gpio_bus_2_full_arid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_2_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal cpuid_gpio_bus_2_full_arlen : std_logic_vector(7 downto 0);
+    signal cpuid_gpio_bus_2_full_arsize : std_logic_vector(2 downto 0);
+    signal cpuid_gpio_bus_2_full_arburst : std_logic_vector(1 downto 0);
+    signal cpuid_gpio_bus_2_full_arlock : std_logic;
+    signal cpuid_gpio_bus_2_full_arcache : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_2_full_arprot : std_logic_vector(2 downto 0);
+    signal cpuid_gpio_bus_2_full_arqos : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_2_full_arregion : std_logic_vector(3 downto 0);
+    signal cpuid_gpio_bus_2_full_arvalid : std_logic;
+    signal cpuid_gpio_bus_2_full_arready : std_logic;
+    signal cpuid_gpio_bus_2_full_rid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_2_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal cpuid_gpio_bus_2_full_rresp : std_logic_vector(1 downto 0);
+    signal cpuid_gpio_bus_2_full_rlast : std_logic;
+    signal cpuid_gpio_bus_2_full_rvalid : std_logic;
+    signal cpuid_gpio_bus_2_full_rready : std_logic;
 begin
 
     ram_axi_full_arlock_slv(0) <= ram_axi_full_arlock;
     ram_axi_full_awlock_slv(0) <= ram_axi_full_awlock;
 
+    -------------------------------------
+    -- Main Memory and Synchronization --
+    -------------------------------------
+    
     gen_ext_mm :
     if upper_ext=true generate
         bd_wrapper_inst : bd_wrapper 
@@ -702,6 +1074,10 @@ begin
                 interconnect_aresetn => interconnect_aresetn,
                 peripheral_aresetn => peripheral_aresetn);
     end generate;
+    
+    -----------------------
+    -- Main Interconnect --
+    -----------------------
     
     plasoc_interconnect_crossbar_wrap_inst : plasoc_interconnect_crossbar_wrap
         port map (
@@ -1057,5 +1433,488 @@ begin
             lock_m_axi_rvalid => lock_axi_full_rvalid,
             lock_m_axi_rready => lock_axi_full_rready,
             aclk => aclk, aresetn => interconnect_aresetn(0));
-        
+            
+    ---------------
+    -- CPU Buses --
+    ---------------
+            
+    cpu_0_bus_inst : plasoc_cpu_0_crossbar_wrap
+        port map (
+            cpu_s_axi_awid => cpu_bus_0_full_awid,
+            cpu_s_axi_awaddr => cpu_bus_0_full_awaddr,
+            cpu_s_axi_awlen => cpu_bus_0_full_awlen,
+            cpu_s_axi_awsize => cpu_bus_0_full_awsize,
+            cpu_s_axi_awburst => cpu_bus_0_full_awburst,
+            cpu_s_axi_awlock => cpu_bus_0_full_awlock,
+            cpu_s_axi_awcache => cpu_bus_0_full_awcache,
+            cpu_s_axi_awprot => cpu_bus_0_full_awprot,
+            cpu_s_axi_awqos => cpu_bus_0_full_awqos,
+            cpu_s_axi_awregion => cpu_bus_0_full_awregion,
+            cpu_s_axi_awvalid => cpu_bus_0_full_awvalid,
+            cpu_s_axi_awready => cpu_bus_0_full_awready,
+            cpu_s_axi_wdata => cpu_bus_0_full_wdata,
+            cpu_s_axi_wstrb => cpu_bus_0_full_wstrb,
+            cpu_s_axi_wlast => cpu_bus_0_full_wlast,
+            cpu_s_axi_wvalid => cpu_bus_0_full_wvalid,
+            cpu_s_axi_wready => cpu_bus_0_full_wready,
+            cpu_s_axi_bid => cpu_bus_0_full_bid,
+            cpu_s_axi_bresp => cpu_bus_0_full_bresp,
+            cpu_s_axi_bvalid => cpu_bus_0_full_bvalid,
+            cpu_s_axi_bready => cpu_bus_0_full_bready,
+            cpu_s_axi_arid => cpu_bus_0_full_arid,
+            cpu_s_axi_araddr => cpu_bus_0_full_araddr,
+            cpu_s_axi_arlen => cpu_bus_0_full_arlen,
+            cpu_s_axi_arsize => cpu_bus_0_full_arsize,
+            cpu_s_axi_arburst => cpu_bus_0_full_arburst,
+            cpu_s_axi_arlock => cpu_bus_0_full_arlock,
+            cpu_s_axi_arcache => cpu_bus_0_full_arcache,
+            cpu_s_axi_arprot => cpu_bus_0_full_arprot,
+            cpu_s_axi_arqos => cpu_bus_0_full_arqos,
+            cpu_s_axi_arregion => cpu_bus_0_full_arregion,
+            cpu_s_axi_arvalid => cpu_bus_0_full_arvalid,
+            cpu_s_axi_arready => cpu_bus_0_full_arready,
+            cpu_s_axi_rid => cpu_bus_0_full_rid,
+            cpu_s_axi_rdata => cpu_bus_0_full_rdata,
+            cpu_s_axi_rresp => cpu_bus_0_full_rresp,
+            cpu_s_axi_rlast => cpu_bus_0_full_rlast,
+            cpu_s_axi_rvalid => cpu_bus_0_full_rvalid,
+            cpu_s_axi_rready => cpu_bus_0_full_rready,
+            boot_bram_m_axi_awid => boot_bram_bus_0_full_awid,
+            boot_bram_m_axi_awaddr => boot_bram_bus_0_full_awaddr,
+            boot_bram_m_axi_awlen => boot_bram_bus_0_full_awlen,
+            boot_bram_m_axi_awsize => boot_bram_bus_0_full_awsize,
+            boot_bram_m_axi_awburst => boot_bram_bus_0_full_awburst,
+            boot_bram_m_axi_awlock => boot_bram_bus_0_full_awlock,
+            boot_bram_m_axi_awcache => boot_bram_bus_0_full_awcache,
+            boot_bram_m_axi_awprot => boot_bram_bus_0_full_awprot,
+            boot_bram_m_axi_awqos => boot_bram_bus_0_full_awqos,
+            boot_bram_m_axi_awregion => boot_bram_bus_0_full_awregion,
+            boot_bram_m_axi_awvalid => boot_bram_bus_0_full_awvalid,
+            boot_bram_m_axi_awready => boot_bram_bus_0_full_awready,
+            boot_bram_m_axi_wdata => boot_bram_bus_0_full_wdata,
+            boot_bram_m_axi_wstrb => boot_bram_bus_0_full_wstrb,
+            boot_bram_m_axi_wlast => boot_bram_bus_0_full_wlast,
+            boot_bram_m_axi_wvalid => boot_bram_bus_0_full_wvalid,
+            boot_bram_m_axi_wready => boot_bram_bus_0_full_wready,
+            boot_bram_m_axi_bid => boot_bram_bus_0_full_bid,
+            boot_bram_m_axi_bresp => boot_bram_bus_0_full_bresp,
+            boot_bram_m_axi_bvalid => boot_bram_bus_0_full_bvalid,
+            boot_bram_m_axi_bready => boot_bram_bus_0_full_bready,
+            boot_bram_m_axi_arid => boot_bram_bus_0_full_arid,
+            boot_bram_m_axi_araddr => boot_bram_bus_0_full_araddr,
+            boot_bram_m_axi_arlen => boot_bram_bus_0_full_arlen,
+            boot_bram_m_axi_arsize => boot_bram_bus_0_full_arsize,
+            boot_bram_m_axi_arburst => boot_bram_bus_0_full_arburst,
+            boot_bram_m_axi_arlock => boot_bram_bus_0_full_arlock,
+            boot_bram_m_axi_arcache => boot_bram_bus_0_full_arcache,
+            boot_bram_m_axi_arprot => boot_bram_bus_0_full_arprot,
+            boot_bram_m_axi_arqos => boot_bram_bus_0_full_arqos,
+            boot_bram_m_axi_arregion => boot_bram_bus_0_full_arregion,
+            boot_bram_m_axi_arvalid => boot_bram_bus_0_full_arvalid,
+            boot_bram_m_axi_arready => boot_bram_bus_0_full_arready,
+            boot_bram_m_axi_rid => boot_bram_bus_0_full_rid,
+            boot_bram_m_axi_rdata => boot_bram_bus_0_full_rdata,
+            boot_bram_m_axi_rresp => boot_bram_bus_0_full_rresp,
+            boot_bram_m_axi_rlast => boot_bram_bus_0_full_rlast,
+            boot_bram_m_axi_rvalid => boot_bram_bus_0_full_rvalid,
+            boot_bram_m_axi_rready => boot_bram_bus_0_full_rready,
+            ip_m_axi_awid => cpu_0_axi_full_awid,
+            ip_m_axi_awaddr => cpu_0_axi_full_awaddr,
+            ip_m_axi_awlen => cpu_0_axi_full_awlen,
+            ip_m_axi_awsize => cpu_0_axi_full_awsize,
+            ip_m_axi_awburst => cpu_0_axi_full_awburst,
+            ip_m_axi_awlock => cpu_0_axi_full_awlock,
+            ip_m_axi_awcache => cpu_0_axi_full_awcache,
+            ip_m_axi_awprot => cpu_0_axi_full_awprot,
+            ip_m_axi_awqos => cpu_0_axi_full_awqos,
+            ip_m_axi_awregion => cpu_0_axi_full_awregion,
+            ip_m_axi_awvalid => cpu_0_axi_full_awvalid,
+            ip_m_axi_awready => cpu_0_axi_full_awready,
+            ip_m_axi_wdata => cpu_0_axi_full_wdata,
+            ip_m_axi_wstrb => cpu_0_axi_full_wstrb,
+            ip_m_axi_wlast => cpu_0_axi_full_wlast,
+            ip_m_axi_wvalid => cpu_0_axi_full_wvalid,
+            ip_m_axi_wready => cpu_0_axi_full_wready,
+            ip_m_axi_bid => cpu_0_axi_full_bid,
+            ip_m_axi_bresp => cpu_0_axi_full_bresp,
+            ip_m_axi_bvalid => cpu_0_axi_full_bvalid,
+            ip_m_axi_bready => cpu_0_axi_full_bready,
+            ip_m_axi_arid => cpu_0_axi_full_arid,
+            ip_m_axi_araddr => cpu_0_axi_full_araddr,
+            ip_m_axi_arlen => cpu_0_axi_full_arlen,
+            ip_m_axi_arsize => cpu_0_axi_full_arsize,
+            ip_m_axi_arburst => cpu_0_axi_full_arburst,
+            ip_m_axi_arlock => cpu_0_axi_full_arlock,
+            ip_m_axi_arcache => cpu_0_axi_full_arcache,
+            ip_m_axi_arprot => cpu_0_axi_full_arprot,
+            ip_m_axi_arqos => cpu_0_axi_full_arqos,
+            ip_m_axi_arregion => cpu_0_axi_full_arregion,
+            ip_m_axi_arvalid => cpu_0_axi_full_arvalid,
+            ip_m_axi_arready => cpu_0_axi_full_arready,
+            ip_m_axi_rid => cpu_0_axi_full_rid,
+            ip_m_axi_rdata => cpu_0_axi_full_rdata,
+            ip_m_axi_rresp => cpu_0_axi_full_rresp,
+            ip_m_axi_rlast => cpu_0_axi_full_rlast,
+            ip_m_axi_rvalid => cpu_0_axi_full_rvalid,
+            ip_m_axi_rready => cpu_0_axi_full_rready,
+            cpuid_gpio_m_axi_awid => cpuid_gpio_bus_0_full_awid,
+            cpuid_gpio_m_axi_awaddr => cpuid_gpio_bus_0_full_awaddr,
+            cpuid_gpio_m_axi_awlen => cpuid_gpio_bus_0_full_awlen,
+            cpuid_gpio_m_axi_awsize => cpuid_gpio_bus_0_full_awsize,
+            cpuid_gpio_m_axi_awburst => cpuid_gpio_bus_0_full_awburst,
+            cpuid_gpio_m_axi_awlock => cpuid_gpio_bus_0_full_awlock,
+            cpuid_gpio_m_axi_awcache => cpuid_gpio_bus_0_full_awcache,
+            cpuid_gpio_m_axi_awprot => cpuid_gpio_bus_0_full_awprot,
+            cpuid_gpio_m_axi_awqos => cpuid_gpio_bus_0_full_awqos,
+            cpuid_gpio_m_axi_awregion => cpuid_gpio_bus_0_full_awregion,
+            cpuid_gpio_m_axi_awvalid => cpuid_gpio_bus_0_full_awvalid,
+            cpuid_gpio_m_axi_awready => cpuid_gpio_bus_0_full_awready,
+            cpuid_gpio_m_axi_wdata => cpuid_gpio_bus_0_full_wdata,
+            cpuid_gpio_m_axi_wstrb => cpuid_gpio_bus_0_full_wstrb,
+            cpuid_gpio_m_axi_wlast => cpuid_gpio_bus_0_full_wlast,
+            cpuid_gpio_m_axi_wvalid => cpuid_gpio_bus_0_full_wvalid,
+            cpuid_gpio_m_axi_wready => cpuid_gpio_bus_0_full_wready,
+            cpuid_gpio_m_axi_bid => cpuid_gpio_bus_0_full_bid,
+            cpuid_gpio_m_axi_bresp => cpuid_gpio_bus_0_full_bresp,
+            cpuid_gpio_m_axi_bvalid => cpuid_gpio_bus_0_full_bvalid,
+            cpuid_gpio_m_axi_bready => cpuid_gpio_bus_0_full_bready,
+            cpuid_gpio_m_axi_arid => cpuid_gpio_bus_0_full_arid,
+            cpuid_gpio_m_axi_araddr => cpuid_gpio_bus_0_full_araddr,
+            cpuid_gpio_m_axi_arlen => cpuid_gpio_bus_0_full_arlen,
+            cpuid_gpio_m_axi_arsize => cpuid_gpio_bus_0_full_arsize,
+            cpuid_gpio_m_axi_arburst => cpuid_gpio_bus_0_full_arburst,
+            cpuid_gpio_m_axi_arlock => cpuid_gpio_bus_0_full_arlock,
+            cpuid_gpio_m_axi_arcache => cpuid_gpio_bus_0_full_arcache,
+            cpuid_gpio_m_axi_arprot => cpuid_gpio_bus_0_full_arprot,
+            cpuid_gpio_m_axi_arqos => cpuid_gpio_bus_0_full_arqos,
+            cpuid_gpio_m_axi_arregion => cpuid_gpio_bus_0_full_arregion,
+            cpuid_gpio_m_axi_arvalid => cpuid_gpio_bus_0_full_arvalid,
+            cpuid_gpio_m_axi_arready => cpuid_gpio_bus_0_full_arready,
+            cpuid_gpio_m_axi_rid => cpuid_gpio_bus_0_full_rid,
+            cpuid_gpio_m_axi_rdata => cpuid_gpio_bus_0_full_rdata,
+            cpuid_gpio_m_axi_rresp => cpuid_gpio_bus_0_full_rresp,
+            cpuid_gpio_m_axi_rlast => cpuid_gpio_bus_0_full_rlast,
+            cpuid_gpio_m_axi_rvalid => cpuid_gpio_bus_0_full_rvalid,
+            cpuid_gpio_m_axi_rready => cpuid_gpio_bus_0_full_rready,
+            aclk => aclk, aresetn => peripheral_aresetn(0));
+            
+    cpu_1_bus_inst : plasoc_cpu_1_crossbar_wrap
+        port map (
+            cpu_s_axi_awid => cpu_bus_1_full_awid,
+            cpu_s_axi_awaddr => cpu_bus_1_full_awaddr,
+            cpu_s_axi_awlen => cpu_bus_1_full_awlen,
+            cpu_s_axi_awsize => cpu_bus_1_full_awsize,
+            cpu_s_axi_awburst => cpu_bus_1_full_awburst,
+            cpu_s_axi_awlock => cpu_bus_1_full_awlock,
+            cpu_s_axi_awcache => cpu_bus_1_full_awcache,
+            cpu_s_axi_awprot => cpu_bus_1_full_awprot,
+            cpu_s_axi_awqos => cpu_bus_1_full_awqos,
+            cpu_s_axi_awregion => cpu_bus_1_full_awregion,
+            cpu_s_axi_awvalid => cpu_bus_1_full_awvalid,
+            cpu_s_axi_awready => cpu_bus_1_full_awready,
+            cpu_s_axi_wdata => cpu_bus_1_full_wdata,
+            cpu_s_axi_wstrb => cpu_bus_1_full_wstrb,
+            cpu_s_axi_wlast => cpu_bus_1_full_wlast,
+            cpu_s_axi_wvalid => cpu_bus_1_full_wvalid,
+            cpu_s_axi_wready => cpu_bus_1_full_wready,
+            cpu_s_axi_bid => cpu_bus_1_full_bid,
+            cpu_s_axi_bresp => cpu_bus_1_full_bresp,
+            cpu_s_axi_bvalid => cpu_bus_1_full_bvalid,
+            cpu_s_axi_bready => cpu_bus_1_full_bready,
+            cpu_s_axi_arid => cpu_bus_1_full_arid,
+            cpu_s_axi_araddr => cpu_bus_1_full_araddr,
+            cpu_s_axi_arlen => cpu_bus_1_full_arlen,
+            cpu_s_axi_arsize => cpu_bus_1_full_arsize,
+            cpu_s_axi_arburst => cpu_bus_1_full_arburst,
+            cpu_s_axi_arlock => cpu_bus_1_full_arlock,
+            cpu_s_axi_arcache => cpu_bus_1_full_arcache,
+            cpu_s_axi_arprot => cpu_bus_1_full_arprot,
+            cpu_s_axi_arqos => cpu_bus_1_full_arqos,
+            cpu_s_axi_arregion => cpu_bus_1_full_arregion,
+            cpu_s_axi_arvalid => cpu_bus_1_full_arvalid,
+            cpu_s_axi_arready => cpu_bus_1_full_arready,
+            cpu_s_axi_rid => cpu_bus_1_full_rid,
+            cpu_s_axi_rdata => cpu_bus_1_full_rdata,
+            cpu_s_axi_rresp => cpu_bus_1_full_rresp,
+            cpu_s_axi_rlast => cpu_bus_1_full_rlast,
+            cpu_s_axi_rvalid => cpu_bus_1_full_rvalid,
+            cpu_s_axi_rready => cpu_bus_1_full_rready,
+            boot_bram_m_axi_awid => boot_bram_bus_1_full_awid,
+            boot_bram_m_axi_awaddr => boot_bram_bus_1_full_awaddr,
+            boot_bram_m_axi_awlen => boot_bram_bus_1_full_awlen,
+            boot_bram_m_axi_awsize => boot_bram_bus_1_full_awsize,
+            boot_bram_m_axi_awburst => boot_bram_bus_1_full_awburst,
+            boot_bram_m_axi_awlock => boot_bram_bus_1_full_awlock,
+            boot_bram_m_axi_awcache => boot_bram_bus_1_full_awcache,
+            boot_bram_m_axi_awprot => boot_bram_bus_1_full_awprot,
+            boot_bram_m_axi_awqos => boot_bram_bus_1_full_awqos,
+            boot_bram_m_axi_awregion => boot_bram_bus_1_full_awregion,
+            boot_bram_m_axi_awvalid => boot_bram_bus_1_full_awvalid,
+            boot_bram_m_axi_awready => boot_bram_bus_1_full_awready,
+            boot_bram_m_axi_wdata => boot_bram_bus_1_full_wdata,
+            boot_bram_m_axi_wstrb => boot_bram_bus_1_full_wstrb,
+            boot_bram_m_axi_wlast => boot_bram_bus_1_full_wlast,
+            boot_bram_m_axi_wvalid => boot_bram_bus_1_full_wvalid,
+            boot_bram_m_axi_wready => boot_bram_bus_1_full_wready,
+            boot_bram_m_axi_bid => boot_bram_bus_1_full_bid,
+            boot_bram_m_axi_bresp => boot_bram_bus_1_full_bresp,
+            boot_bram_m_axi_bvalid => boot_bram_bus_1_full_bvalid,
+            boot_bram_m_axi_bready => boot_bram_bus_1_full_bready,
+            boot_bram_m_axi_arid => boot_bram_bus_1_full_arid,
+            boot_bram_m_axi_araddr => boot_bram_bus_1_full_araddr,
+            boot_bram_m_axi_arlen => boot_bram_bus_1_full_arlen,
+            boot_bram_m_axi_arsize => boot_bram_bus_1_full_arsize,
+            boot_bram_m_axi_arburst => boot_bram_bus_1_full_arburst,
+            boot_bram_m_axi_arlock => boot_bram_bus_1_full_arlock,
+            boot_bram_m_axi_arcache => boot_bram_bus_1_full_arcache,
+            boot_bram_m_axi_arprot => boot_bram_bus_1_full_arprot,
+            boot_bram_m_axi_arqos => boot_bram_bus_1_full_arqos,
+            boot_bram_m_axi_arregion => boot_bram_bus_1_full_arregion,
+            boot_bram_m_axi_arvalid => boot_bram_bus_1_full_arvalid,
+            boot_bram_m_axi_arready => boot_bram_bus_1_full_arready,
+            boot_bram_m_axi_rid => boot_bram_bus_1_full_rid,
+            boot_bram_m_axi_rdata => boot_bram_bus_1_full_rdata,
+            boot_bram_m_axi_rresp => boot_bram_bus_1_full_rresp,
+            boot_bram_m_axi_rlast => boot_bram_bus_1_full_rlast,
+            boot_bram_m_axi_rvalid => boot_bram_bus_1_full_rvalid,
+            boot_bram_m_axi_rready => boot_bram_bus_1_full_rready,
+            ip_m_axi_awid => cpu_1_axi_full_awid,
+            ip_m_axi_awaddr => cpu_1_axi_full_awaddr,
+            ip_m_axi_awlen => cpu_1_axi_full_awlen,
+            ip_m_axi_awsize => cpu_1_axi_full_awsize,
+            ip_m_axi_awburst => cpu_1_axi_full_awburst,
+            ip_m_axi_awlock => cpu_1_axi_full_awlock,
+            ip_m_axi_awcache => cpu_1_axi_full_awcache,
+            ip_m_axi_awprot => cpu_1_axi_full_awprot,
+            ip_m_axi_awqos => cpu_1_axi_full_awqos,
+            ip_m_axi_awregion => cpu_1_axi_full_awregion,
+            ip_m_axi_awvalid => cpu_1_axi_full_awvalid,
+            ip_m_axi_awready => cpu_1_axi_full_awready,
+            ip_m_axi_wdata => cpu_1_axi_full_wdata,
+            ip_m_axi_wstrb => cpu_1_axi_full_wstrb,
+            ip_m_axi_wlast => cpu_1_axi_full_wlast,
+            ip_m_axi_wvalid => cpu_1_axi_full_wvalid,
+            ip_m_axi_wready => cpu_1_axi_full_wready,
+            ip_m_axi_bid => cpu_1_axi_full_bid,
+            ip_m_axi_bresp => cpu_1_axi_full_bresp,
+            ip_m_axi_bvalid => cpu_1_axi_full_bvalid,
+            ip_m_axi_bready => cpu_1_axi_full_bready,
+            ip_m_axi_arid => cpu_1_axi_full_arid,
+            ip_m_axi_araddr => cpu_1_axi_full_araddr,
+            ip_m_axi_arlen => cpu_1_axi_full_arlen,
+            ip_m_axi_arsize => cpu_1_axi_full_arsize,
+            ip_m_axi_arburst => cpu_1_axi_full_arburst,
+            ip_m_axi_arlock => cpu_1_axi_full_arlock,
+            ip_m_axi_arcache => cpu_1_axi_full_arcache,
+            ip_m_axi_arprot => cpu_1_axi_full_arprot,
+            ip_m_axi_arqos => cpu_1_axi_full_arqos,
+            ip_m_axi_arregion => cpu_1_axi_full_arregion,
+            ip_m_axi_arvalid => cpu_1_axi_full_arvalid,
+            ip_m_axi_arready => cpu_1_axi_full_arready,
+            ip_m_axi_rid => cpu_1_axi_full_rid,
+            ip_m_axi_rdata => cpu_1_axi_full_rdata,
+            ip_m_axi_rresp => cpu_1_axi_full_rresp,
+            ip_m_axi_rlast => cpu_1_axi_full_rlast,
+            ip_m_axi_rvalid => cpu_1_axi_full_rvalid,
+            ip_m_axi_rready => cpu_1_axi_full_rready,
+            cpuid_gpio_m_axi_awid => cpuid_gpio_bus_1_full_awid,
+            cpuid_gpio_m_axi_awaddr => cpuid_gpio_bus_1_full_awaddr,
+            cpuid_gpio_m_axi_awlen => cpuid_gpio_bus_1_full_awlen,
+            cpuid_gpio_m_axi_awsize => cpuid_gpio_bus_1_full_awsize,
+            cpuid_gpio_m_axi_awburst => cpuid_gpio_bus_1_full_awburst,
+            cpuid_gpio_m_axi_awlock => cpuid_gpio_bus_1_full_awlock,
+            cpuid_gpio_m_axi_awcache => cpuid_gpio_bus_1_full_awcache,
+            cpuid_gpio_m_axi_awprot => cpuid_gpio_bus_1_full_awprot,
+            cpuid_gpio_m_axi_awqos => cpuid_gpio_bus_1_full_awqos,
+            cpuid_gpio_m_axi_awregion => cpuid_gpio_bus_1_full_awregion,
+            cpuid_gpio_m_axi_awvalid => cpuid_gpio_bus_1_full_awvalid,
+            cpuid_gpio_m_axi_awready => cpuid_gpio_bus_1_full_awready,
+            cpuid_gpio_m_axi_wdata => cpuid_gpio_bus_1_full_wdata,
+            cpuid_gpio_m_axi_wstrb => cpuid_gpio_bus_1_full_wstrb,
+            cpuid_gpio_m_axi_wlast => cpuid_gpio_bus_1_full_wlast,
+            cpuid_gpio_m_axi_wvalid => cpuid_gpio_bus_1_full_wvalid,
+            cpuid_gpio_m_axi_wready => cpuid_gpio_bus_1_full_wready,
+            cpuid_gpio_m_axi_bid => cpuid_gpio_bus_1_full_bid,
+            cpuid_gpio_m_axi_bresp => cpuid_gpio_bus_1_full_bresp,
+            cpuid_gpio_m_axi_bvalid => cpuid_gpio_bus_1_full_bvalid,
+            cpuid_gpio_m_axi_bready => cpuid_gpio_bus_1_full_bready,
+            cpuid_gpio_m_axi_arid => cpuid_gpio_bus_1_full_arid,
+            cpuid_gpio_m_axi_araddr => cpuid_gpio_bus_1_full_araddr,
+            cpuid_gpio_m_axi_arlen => cpuid_gpio_bus_1_full_arlen,
+            cpuid_gpio_m_axi_arsize => cpuid_gpio_bus_1_full_arsize,
+            cpuid_gpio_m_axi_arburst => cpuid_gpio_bus_1_full_arburst,
+            cpuid_gpio_m_axi_arlock => cpuid_gpio_bus_1_full_arlock,
+            cpuid_gpio_m_axi_arcache => cpuid_gpio_bus_1_full_arcache,
+            cpuid_gpio_m_axi_arprot => cpuid_gpio_bus_1_full_arprot,
+            cpuid_gpio_m_axi_arqos => cpuid_gpio_bus_1_full_arqos,
+            cpuid_gpio_m_axi_arregion => cpuid_gpio_bus_1_full_arregion,
+            cpuid_gpio_m_axi_arvalid => cpuid_gpio_bus_1_full_arvalid,
+            cpuid_gpio_m_axi_arready => cpuid_gpio_bus_1_full_arready,
+            cpuid_gpio_m_axi_rid => cpuid_gpio_bus_1_full_rid,
+            cpuid_gpio_m_axi_rdata => cpuid_gpio_bus_1_full_rdata,
+            cpuid_gpio_m_axi_rresp => cpuid_gpio_bus_1_full_rresp,
+            cpuid_gpio_m_axi_rlast => cpuid_gpio_bus_1_full_rlast,
+            cpuid_gpio_m_axi_rvalid => cpuid_gpio_bus_1_full_rvalid,
+            cpuid_gpio_m_axi_rready => cpuid_gpio_bus_1_full_rready,
+            aclk => aclk, aresetn => peripheral_aresetn(0));
+            
+    cpu_2_bus_inst : plasoc_cpu_2_crossbar_wrap
+        port map (
+            cpu_s_axi_awid => cpu_bus_2_full_awid,
+            cpu_s_axi_awaddr => cpu_bus_2_full_awaddr,
+            cpu_s_axi_awlen => cpu_bus_2_full_awlen,
+            cpu_s_axi_awsize => cpu_bus_2_full_awsize,
+            cpu_s_axi_awburst => cpu_bus_2_full_awburst,
+            cpu_s_axi_awlock => cpu_bus_2_full_awlock,
+            cpu_s_axi_awcache => cpu_bus_2_full_awcache,
+            cpu_s_axi_awprot => cpu_bus_2_full_awprot,
+            cpu_s_axi_awqos => cpu_bus_2_full_awqos,
+            cpu_s_axi_awregion => cpu_bus_2_full_awregion,
+            cpu_s_axi_awvalid => cpu_bus_2_full_awvalid,
+            cpu_s_axi_awready => cpu_bus_2_full_awready,
+            cpu_s_axi_wdata => cpu_bus_2_full_wdata,
+            cpu_s_axi_wstrb => cpu_bus_2_full_wstrb,
+            cpu_s_axi_wlast => cpu_bus_2_full_wlast,
+            cpu_s_axi_wvalid => cpu_bus_2_full_wvalid,
+            cpu_s_axi_wready => cpu_bus_2_full_wready,
+            cpu_s_axi_bid => cpu_bus_2_full_bid,
+            cpu_s_axi_bresp => cpu_bus_2_full_bresp,
+            cpu_s_axi_bvalid => cpu_bus_2_full_bvalid,
+            cpu_s_axi_bready => cpu_bus_2_full_bready,
+            cpu_s_axi_arid => cpu_bus_2_full_arid,
+            cpu_s_axi_araddr => cpu_bus_2_full_araddr,
+            cpu_s_axi_arlen => cpu_bus_2_full_arlen,
+            cpu_s_axi_arsize => cpu_bus_2_full_arsize,
+            cpu_s_axi_arburst => cpu_bus_2_full_arburst,
+            cpu_s_axi_arlock => cpu_bus_2_full_arlock,
+            cpu_s_axi_arcache => cpu_bus_2_full_arcache,
+            cpu_s_axi_arprot => cpu_bus_2_full_arprot,
+            cpu_s_axi_arqos => cpu_bus_2_full_arqos,
+            cpu_s_axi_arregion => cpu_bus_2_full_arregion,
+            cpu_s_axi_arvalid => cpu_bus_2_full_arvalid,
+            cpu_s_axi_arready => cpu_bus_2_full_arready,
+            cpu_s_axi_rid => cpu_bus_2_full_rid,
+            cpu_s_axi_rdata => cpu_bus_2_full_rdata,
+            cpu_s_axi_rresp => cpu_bus_2_full_rresp,
+            cpu_s_axi_rlast => cpu_bus_2_full_rlast,
+            cpu_s_axi_rvalid => cpu_bus_2_full_rvalid,
+            cpu_s_axi_rready => cpu_bus_2_full_rready,
+            boot_bram_m_axi_awid => boot_bram_bus_2_full_awid,
+            boot_bram_m_axi_awaddr => boot_bram_bus_2_full_awaddr,
+            boot_bram_m_axi_awlen => boot_bram_bus_2_full_awlen,
+            boot_bram_m_axi_awsize => boot_bram_bus_2_full_awsize,
+            boot_bram_m_axi_awburst => boot_bram_bus_2_full_awburst,
+            boot_bram_m_axi_awlock => boot_bram_bus_2_full_awlock,
+            boot_bram_m_axi_awcache => boot_bram_bus_2_full_awcache,
+            boot_bram_m_axi_awprot => boot_bram_bus_2_full_awprot,
+            boot_bram_m_axi_awqos => boot_bram_bus_2_full_awqos,
+            boot_bram_m_axi_awregion => boot_bram_bus_2_full_awregion,
+            boot_bram_m_axi_awvalid => boot_bram_bus_2_full_awvalid,
+            boot_bram_m_axi_awready => boot_bram_bus_2_full_awready,
+            boot_bram_m_axi_wdata => boot_bram_bus_2_full_wdata,
+            boot_bram_m_axi_wstrb => boot_bram_bus_2_full_wstrb,
+            boot_bram_m_axi_wlast => boot_bram_bus_2_full_wlast,
+            boot_bram_m_axi_wvalid => boot_bram_bus_2_full_wvalid,
+            boot_bram_m_axi_wready => boot_bram_bus_2_full_wready,
+            boot_bram_m_axi_bid => boot_bram_bus_2_full_bid,
+            boot_bram_m_axi_bresp => boot_bram_bus_2_full_bresp,
+            boot_bram_m_axi_bvalid => boot_bram_bus_2_full_bvalid,
+            boot_bram_m_axi_bready => boot_bram_bus_2_full_bready,
+            boot_bram_m_axi_arid => boot_bram_bus_2_full_arid,
+            boot_bram_m_axi_araddr => boot_bram_bus_2_full_araddr,
+            boot_bram_m_axi_arlen => boot_bram_bus_2_full_arlen,
+            boot_bram_m_axi_arsize => boot_bram_bus_2_full_arsize,
+            boot_bram_m_axi_arburst => boot_bram_bus_2_full_arburst,
+            boot_bram_m_axi_arlock => boot_bram_bus_2_full_arlock,
+            boot_bram_m_axi_arcache => boot_bram_bus_2_full_arcache,
+            boot_bram_m_axi_arprot => boot_bram_bus_2_full_arprot,
+            boot_bram_m_axi_arqos => boot_bram_bus_2_full_arqos,
+            boot_bram_m_axi_arregion => boot_bram_bus_2_full_arregion,
+            boot_bram_m_axi_arvalid => boot_bram_bus_2_full_arvalid,
+            boot_bram_m_axi_arready => boot_bram_bus_2_full_arready,
+            boot_bram_m_axi_rid => boot_bram_bus_2_full_rid,
+            boot_bram_m_axi_rdata => boot_bram_bus_2_full_rdata,
+            boot_bram_m_axi_rresp => boot_bram_bus_2_full_rresp,
+            boot_bram_m_axi_rlast => boot_bram_bus_2_full_rlast,
+            boot_bram_m_axi_rvalid => boot_bram_bus_2_full_rvalid,
+            boot_bram_m_axi_rready => boot_bram_bus_2_full_rready,
+            ip_m_axi_awid => cpu_2_axi_full_awid,
+            ip_m_axi_awaddr => cpu_2_axi_full_awaddr,
+            ip_m_axi_awlen => cpu_2_axi_full_awlen,
+            ip_m_axi_awsize => cpu_2_axi_full_awsize,
+            ip_m_axi_awburst => cpu_2_axi_full_awburst,
+            ip_m_axi_awlock => cpu_2_axi_full_awlock,
+            ip_m_axi_awcache => cpu_2_axi_full_awcache,
+            ip_m_axi_awprot => cpu_2_axi_full_awprot,
+            ip_m_axi_awqos => cpu_2_axi_full_awqos,
+            ip_m_axi_awregion => cpu_2_axi_full_awregion,
+            ip_m_axi_awvalid => cpu_2_axi_full_awvalid,
+            ip_m_axi_awready => cpu_2_axi_full_awready,
+            ip_m_axi_wdata => cpu_2_axi_full_wdata,
+            ip_m_axi_wstrb => cpu_2_axi_full_wstrb,
+            ip_m_axi_wlast => cpu_2_axi_full_wlast,
+            ip_m_axi_wvalid => cpu_2_axi_full_wvalid,
+            ip_m_axi_wready => cpu_2_axi_full_wready,
+            ip_m_axi_bid => cpu_2_axi_full_bid,
+            ip_m_axi_bresp => cpu_2_axi_full_bresp,
+            ip_m_axi_bvalid => cpu_2_axi_full_bvalid,
+            ip_m_axi_bready => cpu_2_axi_full_bready,
+            ip_m_axi_arid => cpu_2_axi_full_arid,
+            ip_m_axi_araddr => cpu_2_axi_full_araddr,
+            ip_m_axi_arlen => cpu_2_axi_full_arlen,
+            ip_m_axi_arsize => cpu_2_axi_full_arsize,
+            ip_m_axi_arburst => cpu_2_axi_full_arburst,
+            ip_m_axi_arlock => cpu_2_axi_full_arlock,
+            ip_m_axi_arcache => cpu_2_axi_full_arcache,
+            ip_m_axi_arprot => cpu_2_axi_full_arprot,
+            ip_m_axi_arqos => cpu_2_axi_full_arqos,
+            ip_m_axi_arregion => cpu_2_axi_full_arregion,
+            ip_m_axi_arvalid => cpu_2_axi_full_arvalid,
+            ip_m_axi_arready => cpu_2_axi_full_arready,
+            ip_m_axi_rid => cpu_2_axi_full_rid,
+            ip_m_axi_rdata => cpu_2_axi_full_rdata,
+            ip_m_axi_rresp => cpu_2_axi_full_rresp,
+            ip_m_axi_rlast => cpu_2_axi_full_rlast,
+            ip_m_axi_rvalid => cpu_2_axi_full_rvalid,
+            ip_m_axi_rready => cpu_2_axi_full_rready,
+            cpuid_gpio_m_axi_awid => cpuid_gpio_bus_2_full_awid,
+            cpuid_gpio_m_axi_awaddr => cpuid_gpio_bus_2_full_awaddr,
+            cpuid_gpio_m_axi_awlen => cpuid_gpio_bus_2_full_awlen,
+            cpuid_gpio_m_axi_awsize => cpuid_gpio_bus_2_full_awsize,
+            cpuid_gpio_m_axi_awburst => cpuid_gpio_bus_2_full_awburst,
+            cpuid_gpio_m_axi_awlock => cpuid_gpio_bus_2_full_awlock,
+            cpuid_gpio_m_axi_awcache => cpuid_gpio_bus_2_full_awcache,
+            cpuid_gpio_m_axi_awprot => cpuid_gpio_bus_2_full_awprot,
+            cpuid_gpio_m_axi_awqos => cpuid_gpio_bus_2_full_awqos,
+            cpuid_gpio_m_axi_awregion => cpuid_gpio_bus_2_full_awregion,
+            cpuid_gpio_m_axi_awvalid => cpuid_gpio_bus_2_full_awvalid,
+            cpuid_gpio_m_axi_awready => cpuid_gpio_bus_2_full_awready,
+            cpuid_gpio_m_axi_wdata => cpuid_gpio_bus_2_full_wdata,
+            cpuid_gpio_m_axi_wstrb => cpuid_gpio_bus_2_full_wstrb,
+            cpuid_gpio_m_axi_wlast => cpuid_gpio_bus_2_full_wlast,
+            cpuid_gpio_m_axi_wvalid => cpuid_gpio_bus_2_full_wvalid,
+            cpuid_gpio_m_axi_wready => cpuid_gpio_bus_2_full_wready,
+            cpuid_gpio_m_axi_bid => cpuid_gpio_bus_2_full_bid,
+            cpuid_gpio_m_axi_bresp => cpuid_gpio_bus_2_full_bresp,
+            cpuid_gpio_m_axi_bvalid => cpuid_gpio_bus_2_full_bvalid,
+            cpuid_gpio_m_axi_bready => cpuid_gpio_bus_2_full_bready,
+            cpuid_gpio_m_axi_arid => cpuid_gpio_bus_2_full_arid,
+            cpuid_gpio_m_axi_araddr => cpuid_gpio_bus_2_full_araddr,
+            cpuid_gpio_m_axi_arlen => cpuid_gpio_bus_2_full_arlen,
+            cpuid_gpio_m_axi_arsize => cpuid_gpio_bus_2_full_arsize,
+            cpuid_gpio_m_axi_arburst => cpuid_gpio_bus_2_full_arburst,
+            cpuid_gpio_m_axi_arlock => cpuid_gpio_bus_2_full_arlock,
+            cpuid_gpio_m_axi_arcache => cpuid_gpio_bus_2_full_arcache,
+            cpuid_gpio_m_axi_arprot => cpuid_gpio_bus_2_full_arprot,
+            cpuid_gpio_m_axi_arqos => cpuid_gpio_bus_2_full_arqos,
+            cpuid_gpio_m_axi_arregion => cpuid_gpio_bus_2_full_arregion,
+            cpuid_gpio_m_axi_arvalid => cpuid_gpio_bus_2_full_arvalid,
+            cpuid_gpio_m_axi_arready => cpuid_gpio_bus_2_full_arready,
+            cpuid_gpio_m_axi_rid => cpuid_gpio_bus_2_full_rid,
+            cpuid_gpio_m_axi_rdata => cpuid_gpio_bus_2_full_rdata,
+            cpuid_gpio_m_axi_rresp => cpuid_gpio_bus_2_full_rresp,
+            cpuid_gpio_m_axi_rlast => cpuid_gpio_bus_2_full_rlast,
+            cpuid_gpio_m_axi_rvalid => cpuid_gpio_bus_2_full_rvalid,
+            cpuid_gpio_m_axi_rready => cpuid_gpio_bus_2_full_rready,
+            aclk => aclk, aresetn => peripheral_aresetn(0));
 end Behavioral;
