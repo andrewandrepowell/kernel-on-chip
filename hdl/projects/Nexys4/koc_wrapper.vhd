@@ -188,6 +188,7 @@ architecture Behavioral of koc_wrapper is
             interconnect_aresetn : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
             peripheral_aresetn : OUT STD_LOGIC_VECTOR(0 DOWNTO 0));
     end component;
+    
     constant axi_slave_amount : integer := 3;
     constant axi_slave_id_width : integer := 0;
     constant axi_master_id_width : integer := clogb2(axi_slave_amount)+axi_slave_id_width;
@@ -196,6 +197,11 @@ architecture Behavioral of koc_wrapper is
     constant bd_address_width : integer := 15;
     constant bd_data_width : integer := axi_data_width;
     constant bd_bram_depth : integer := 16384;
+    
+    constant axi_cpu_bus_slave_amount : integer := 1;
+    constant axi_cpu_bus_slave_id_width : integer := 0;
+    constant axi_cpu_bus_master_id_width : integer := clogb2(axi_cpu_bus_slave_amount)+axi_slave_id_width;
+    
     signal aclk : std_logic;
     signal interconnect_aresetn : std_logic_vector(0 downto 0);
     signal peripheral_aresetn : std_logic_vector(0 downto 0);
@@ -570,7 +576,7 @@ architecture Behavioral of koc_wrapper is
     -- CPU Bus Signals --
     ---------------------
     
-    signal cpu_bus_0_full_awid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_0_full_awid : std_logic_vector(axi_cpu_bus_slave_id_width-1 downto 0);
     signal cpu_bus_0_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
     signal cpu_bus_0_full_awlen : std_logic_vector(7 downto 0);
     signal cpu_bus_0_full_awsize : std_logic_vector(2 downto 0);
@@ -587,11 +593,11 @@ architecture Behavioral of koc_wrapper is
     signal cpu_bus_0_full_wlast : std_logic;
     signal cpu_bus_0_full_wvalid : std_logic;
     signal cpu_bus_0_full_wready : std_logic;
-    signal cpu_bus_0_full_bid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_0_full_bid : std_logic_vector(axi_cpu_bus_slave_id_width-1 downto 0);
     signal cpu_bus_0_full_bresp : std_logic_vector(1 downto 0);
     signal cpu_bus_0_full_bvalid : std_logic;
     signal cpu_bus_0_full_bready : std_logic;
-    signal cpu_bus_0_full_arid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_0_full_arid : std_logic_vector(axi_cpu_bus_slave_id_width-1 downto 0);
     signal cpu_bus_0_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
     signal cpu_bus_0_full_arlen : std_logic_vector(7 downto 0);
     signal cpu_bus_0_full_arsize : std_logic_vector(2 downto 0);
@@ -603,13 +609,13 @@ architecture Behavioral of koc_wrapper is
     signal cpu_bus_0_full_arregion : std_logic_vector(3 downto 0);
     signal cpu_bus_0_full_arvalid : std_logic;
     signal cpu_bus_0_full_arready : std_logic;
-    signal cpu_bus_0_full_rid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_0_full_rid : std_logic_vector(axi_cpu_bus_slave_id_width-1 downto 0);
     signal cpu_bus_0_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
     signal cpu_bus_0_full_rresp : std_logic_vector(1 downto 0);
     signal cpu_bus_0_full_rlast : std_logic;
     signal cpu_bus_0_full_rvalid : std_logic;
     signal cpu_bus_0_full_rready : std_logic;
-    signal boot_bram_bus_0_full_awid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_0_full_awid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal boot_bram_bus_0_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
     signal boot_bram_bus_0_full_awlen : std_logic_vector(7 downto 0);
     signal boot_bram_bus_0_full_awsize : std_logic_vector(2 downto 0);
@@ -626,11 +632,11 @@ architecture Behavioral of koc_wrapper is
     signal boot_bram_bus_0_full_wlast : std_logic;
     signal boot_bram_bus_0_full_wvalid : std_logic;
     signal boot_bram_bus_0_full_wready : std_logic;
-    signal boot_bram_bus_0_full_bid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_0_full_bid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal boot_bram_bus_0_full_bresp : std_logic_vector(1 downto 0);
     signal boot_bram_bus_0_full_bvalid : std_logic;
     signal boot_bram_bus_0_full_bready : std_logic;
-    signal boot_bram_bus_0_full_arid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_0_full_arid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal boot_bram_bus_0_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
     signal boot_bram_bus_0_full_arlen : std_logic_vector(7 downto 0);
     signal boot_bram_bus_0_full_arsize : std_logic_vector(2 downto 0);
@@ -642,13 +648,13 @@ architecture Behavioral of koc_wrapper is
     signal boot_bram_bus_0_full_arregion : std_logic_vector(3 downto 0);
     signal boot_bram_bus_0_full_arvalid : std_logic;
     signal boot_bram_bus_0_full_arready : std_logic;
-    signal boot_bram_bus_0_full_rid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_0_full_rid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal boot_bram_bus_0_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
     signal boot_bram_bus_0_full_rresp : std_logic_vector(1 downto 0);
     signal boot_bram_bus_0_full_rlast : std_logic;
     signal boot_bram_bus_0_full_rvalid : std_logic;
     signal boot_bram_bus_0_full_rready : std_logic;
-    signal cpuid_gpio_bus_0_full_awid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_0_full_awid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal cpuid_gpio_bus_0_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
     signal cpuid_gpio_bus_0_full_awlen : std_logic_vector(7 downto 0);
     signal cpuid_gpio_bus_0_full_awsize : std_logic_vector(2 downto 0);
@@ -665,11 +671,11 @@ architecture Behavioral of koc_wrapper is
     signal cpuid_gpio_bus_0_full_wlast : std_logic;
     signal cpuid_gpio_bus_0_full_wvalid : std_logic;
     signal cpuid_gpio_bus_0_full_wready : std_logic;
-    signal cpuid_gpio_bus_0_full_bid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_0_full_bid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal cpuid_gpio_bus_0_full_bresp : std_logic_vector(1 downto 0);
     signal cpuid_gpio_bus_0_full_bvalid : std_logic;
     signal cpuid_gpio_bus_0_full_bready : std_logic;
-    signal cpuid_gpio_bus_0_full_arid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_0_full_arid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal cpuid_gpio_bus_0_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
     signal cpuid_gpio_bus_0_full_arlen : std_logic_vector(7 downto 0);
     signal cpuid_gpio_bus_0_full_arsize : std_logic_vector(2 downto 0);
@@ -681,14 +687,14 @@ architecture Behavioral of koc_wrapper is
     signal cpuid_gpio_bus_0_full_arregion : std_logic_vector(3 downto 0);
     signal cpuid_gpio_bus_0_full_arvalid : std_logic;
     signal cpuid_gpio_bus_0_full_arready : std_logic;
-    signal cpuid_gpio_bus_0_full_rid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_0_full_rid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal cpuid_gpio_bus_0_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
     signal cpuid_gpio_bus_0_full_rresp : std_logic_vector(1 downto 0);
     signal cpuid_gpio_bus_0_full_rlast : std_logic;
     signal cpuid_gpio_bus_0_full_rvalid : std_logic;
     signal cpuid_gpio_bus_0_full_rready : std_logic;
     
-    signal cpu_bus_1_full_awid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_1_full_awid : std_logic_vector(axi_cpu_bus_slave_id_width-1 downto 0);
     signal cpu_bus_1_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
     signal cpu_bus_1_full_awlen : std_logic_vector(7 downto 0);
     signal cpu_bus_1_full_awsize : std_logic_vector(2 downto 0);
@@ -705,11 +711,11 @@ architecture Behavioral of koc_wrapper is
     signal cpu_bus_1_full_wlast : std_logic;
     signal cpu_bus_1_full_wvalid : std_logic;
     signal cpu_bus_1_full_wready : std_logic;
-    signal cpu_bus_1_full_bid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_1_full_bid : std_logic_vector(axi_cpu_bus_slave_id_width-1 downto 0);
     signal cpu_bus_1_full_bresp : std_logic_vector(1 downto 0);
     signal cpu_bus_1_full_bvalid : std_logic;
     signal cpu_bus_1_full_bready : std_logic;
-    signal cpu_bus_1_full_arid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_1_full_arid : std_logic_vector(axi_cpu_bus_slave_id_width-1 downto 0);
     signal cpu_bus_1_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
     signal cpu_bus_1_full_arlen : std_logic_vector(7 downto 0);
     signal cpu_bus_1_full_arsize : std_logic_vector(2 downto 0);
@@ -721,13 +727,13 @@ architecture Behavioral of koc_wrapper is
     signal cpu_bus_1_full_arregion : std_logic_vector(3 downto 0);
     signal cpu_bus_1_full_arvalid : std_logic;
     signal cpu_bus_1_full_arready : std_logic;
-    signal cpu_bus_1_full_rid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_1_full_rid : std_logic_vector(axi_cpu_bus_slave_id_width-1 downto 0);
     signal cpu_bus_1_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
     signal cpu_bus_1_full_rresp : std_logic_vector(1 downto 0);
     signal cpu_bus_1_full_rlast : std_logic;
     signal cpu_bus_1_full_rvalid : std_logic;
     signal cpu_bus_1_full_rready : std_logic;
-    signal boot_bram_bus_1_full_awid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_1_full_awid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal boot_bram_bus_1_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
     signal boot_bram_bus_1_full_awlen : std_logic_vector(7 downto 0);
     signal boot_bram_bus_1_full_awsize : std_logic_vector(2 downto 0);
@@ -744,11 +750,11 @@ architecture Behavioral of koc_wrapper is
     signal boot_bram_bus_1_full_wlast : std_logic;
     signal boot_bram_bus_1_full_wvalid : std_logic;
     signal boot_bram_bus_1_full_wready : std_logic;
-    signal boot_bram_bus_1_full_bid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_1_full_bid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal boot_bram_bus_1_full_bresp : std_logic_vector(1 downto 0);
     signal boot_bram_bus_1_full_bvalid : std_logic;
     signal boot_bram_bus_1_full_bready : std_logic;
-    signal boot_bram_bus_1_full_arid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_1_full_arid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal boot_bram_bus_1_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
     signal boot_bram_bus_1_full_arlen : std_logic_vector(7 downto 0);
     signal boot_bram_bus_1_full_arsize : std_logic_vector(2 downto 0);
@@ -760,13 +766,13 @@ architecture Behavioral of koc_wrapper is
     signal boot_bram_bus_1_full_arregion : std_logic_vector(3 downto 0);
     signal boot_bram_bus_1_full_arvalid : std_logic;
     signal boot_bram_bus_1_full_arready : std_logic;
-    signal boot_bram_bus_1_full_rid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_1_full_rid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal boot_bram_bus_1_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
     signal boot_bram_bus_1_full_rresp : std_logic_vector(1 downto 0);
     signal boot_bram_bus_1_full_rlast : std_logic;
     signal boot_bram_bus_1_full_rvalid : std_logic;
     signal boot_bram_bus_1_full_rready : std_logic;
-    signal cpuid_gpio_bus_1_full_awid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_1_full_awid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal cpuid_gpio_bus_1_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
     signal cpuid_gpio_bus_1_full_awlen : std_logic_vector(7 downto 0);
     signal cpuid_gpio_bus_1_full_awsize : std_logic_vector(2 downto 0);
@@ -783,11 +789,11 @@ architecture Behavioral of koc_wrapper is
     signal cpuid_gpio_bus_1_full_wlast : std_logic;
     signal cpuid_gpio_bus_1_full_wvalid : std_logic;
     signal cpuid_gpio_bus_1_full_wready : std_logic;
-    signal cpuid_gpio_bus_1_full_bid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_1_full_bid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal cpuid_gpio_bus_1_full_bresp : std_logic_vector(1 downto 0);
     signal cpuid_gpio_bus_1_full_bvalid : std_logic;
     signal cpuid_gpio_bus_1_full_bready : std_logic;
-    signal cpuid_gpio_bus_1_full_arid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_1_full_arid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal cpuid_gpio_bus_1_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
     signal cpuid_gpio_bus_1_full_arlen : std_logic_vector(7 downto 0);
     signal cpuid_gpio_bus_1_full_arsize : std_logic_vector(2 downto 0);
@@ -799,14 +805,14 @@ architecture Behavioral of koc_wrapper is
     signal cpuid_gpio_bus_1_full_arregion : std_logic_vector(3 downto 0);
     signal cpuid_gpio_bus_1_full_arvalid : std_logic;
     signal cpuid_gpio_bus_1_full_arready : std_logic;
-    signal cpuid_gpio_bus_1_full_rid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_1_full_rid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal cpuid_gpio_bus_1_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
     signal cpuid_gpio_bus_1_full_rresp : std_logic_vector(1 downto 0);
     signal cpuid_gpio_bus_1_full_rlast : std_logic;
     signal cpuid_gpio_bus_1_full_rvalid : std_logic;
     signal cpuid_gpio_bus_1_full_rready : std_logic;
     
-    signal cpu_bus_2_full_awid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_2_full_awid : std_logic_vector(axi_cpu_bus_slave_id_width-1 downto 0);
     signal cpu_bus_2_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
     signal cpu_bus_2_full_awlen : std_logic_vector(7 downto 0);
     signal cpu_bus_2_full_awsize : std_logic_vector(2 downto 0);
@@ -823,11 +829,11 @@ architecture Behavioral of koc_wrapper is
     signal cpu_bus_2_full_wlast : std_logic;
     signal cpu_bus_2_full_wvalid : std_logic;
     signal cpu_bus_2_full_wready : std_logic;
-    signal cpu_bus_2_full_bid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_2_full_bid : std_logic_vector(axi_cpu_bus_slave_id_width-1 downto 0);
     signal cpu_bus_2_full_bresp : std_logic_vector(1 downto 0);
     signal cpu_bus_2_full_bvalid : std_logic;
     signal cpu_bus_2_full_bready : std_logic;
-    signal cpu_bus_2_full_arid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_2_full_arid : std_logic_vector(axi_cpu_bus_slave_id_width-1 downto 0);
     signal cpu_bus_2_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
     signal cpu_bus_2_full_arlen : std_logic_vector(7 downto 0);
     signal cpu_bus_2_full_arsize : std_logic_vector(2 downto 0);
@@ -839,13 +845,13 @@ architecture Behavioral of koc_wrapper is
     signal cpu_bus_2_full_arregion : std_logic_vector(3 downto 0);
     signal cpu_bus_2_full_arvalid : std_logic;
     signal cpu_bus_2_full_arready : std_logic;
-    signal cpu_bus_2_full_rid : std_logic_vector(axi_slave_id_width-1 downto 0);
+    signal cpu_bus_2_full_rid : std_logic_vector(axi_cpu_bus_slave_id_width-1 downto 0);
     signal cpu_bus_2_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
     signal cpu_bus_2_full_rresp : std_logic_vector(1 downto 0);
     signal cpu_bus_2_full_rlast : std_logic;
     signal cpu_bus_2_full_rvalid : std_logic;
     signal cpu_bus_2_full_rready : std_logic;
-    signal boot_bram_bus_2_full_awid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_2_full_awid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal boot_bram_bus_2_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
     signal boot_bram_bus_2_full_awlen : std_logic_vector(7 downto 0);
     signal boot_bram_bus_2_full_awsize : std_logic_vector(2 downto 0);
@@ -862,11 +868,11 @@ architecture Behavioral of koc_wrapper is
     signal boot_bram_bus_2_full_wlast : std_logic;
     signal boot_bram_bus_2_full_wvalid : std_logic;
     signal boot_bram_bus_2_full_wready : std_logic;
-    signal boot_bram_bus_2_full_bid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_2_full_bid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal boot_bram_bus_2_full_bresp : std_logic_vector(1 downto 0);
     signal boot_bram_bus_2_full_bvalid : std_logic;
     signal boot_bram_bus_2_full_bready : std_logic;
-    signal boot_bram_bus_2_full_arid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_2_full_arid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal boot_bram_bus_2_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
     signal boot_bram_bus_2_full_arlen : std_logic_vector(7 downto 0);
     signal boot_bram_bus_2_full_arsize : std_logic_vector(2 downto 0);
@@ -878,13 +884,13 @@ architecture Behavioral of koc_wrapper is
     signal boot_bram_bus_2_full_arregion : std_logic_vector(3 downto 0);
     signal boot_bram_bus_2_full_arvalid : std_logic;
     signal boot_bram_bus_2_full_arready : std_logic;
-    signal boot_bram_bus_2_full_rid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal boot_bram_bus_2_full_rid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal boot_bram_bus_2_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
     signal boot_bram_bus_2_full_rresp : std_logic_vector(1 downto 0);
     signal boot_bram_bus_2_full_rlast : std_logic;
     signal boot_bram_bus_2_full_rvalid : std_logic;
     signal boot_bram_bus_2_full_rready : std_logic;
-    signal cpuid_gpio_bus_2_full_awid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_2_full_awid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal cpuid_gpio_bus_2_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
     signal cpuid_gpio_bus_2_full_awlen : std_logic_vector(7 downto 0);
     signal cpuid_gpio_bus_2_full_awsize : std_logic_vector(2 downto 0);
@@ -901,11 +907,11 @@ architecture Behavioral of koc_wrapper is
     signal cpuid_gpio_bus_2_full_wlast : std_logic;
     signal cpuid_gpio_bus_2_full_wvalid : std_logic;
     signal cpuid_gpio_bus_2_full_wready : std_logic;
-    signal cpuid_gpio_bus_2_full_bid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_2_full_bid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal cpuid_gpio_bus_2_full_bresp : std_logic_vector(1 downto 0);
     signal cpuid_gpio_bus_2_full_bvalid : std_logic;
     signal cpuid_gpio_bus_2_full_bready : std_logic;
-    signal cpuid_gpio_bus_2_full_arid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_2_full_arid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal cpuid_gpio_bus_2_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
     signal cpuid_gpio_bus_2_full_arlen : std_logic_vector(7 downto 0);
     signal cpuid_gpio_bus_2_full_arsize : std_logic_vector(2 downto 0);
@@ -917,12 +923,36 @@ architecture Behavioral of koc_wrapper is
     signal cpuid_gpio_bus_2_full_arregion : std_logic_vector(3 downto 0);
     signal cpuid_gpio_bus_2_full_arvalid : std_logic;
     signal cpuid_gpio_bus_2_full_arready : std_logic;
-    signal cpuid_gpio_bus_2_full_rid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal cpuid_gpio_bus_2_full_rid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
     signal cpuid_gpio_bus_2_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
     signal cpuid_gpio_bus_2_full_rresp : std_logic_vector(1 downto 0);
     signal cpuid_gpio_bus_2_full_rlast : std_logic;
     signal cpuid_gpio_bus_2_full_rvalid : std_logic;
     signal cpuid_gpio_bus_2_full_rready : std_logic;
+    
+    --------------------------------------
+    -- CPUID GPIO AXI Full2Lite Signals --
+    --------------------------------------
+    
+    signal cpuid_gpio_bus_0_lite_awaddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal cpuid_gpio_bus_0_lite_awprot : std_logic_vector(2 downto 0);                                   
+    signal cpuid_gpio_bus_0_lite_awvalid : std_logic;                                                     
+    signal cpuid_gpio_bus_0_lite_awready : std_logic;                                                    
+    signal cpuid_gpio_bus_0_lite_wvalid : std_logic;                                                      
+    signal cpuid_gpio_bus_0_lite_wready : std_logic;                                                     
+    signal cpuid_gpio_bus_0_lite_wdata : std_logic_vector(axi_data_width-1 downto 0);                     
+    signal cpuid_gpio_bus_0_lite_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);                   
+    signal cpuid_gpio_bus_0_lite_bvalid : std_logic;                                                     
+    signal cpuid_gpio_bus_0_lite_bready : std_logic;                                                      
+    signal cpuid_gpio_bus_0_lite_bresp : std_logic_vector(1 downto 0);                     
+    signal cpuid_gpio_bus_0_lite_araddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal cpuid_gpio_bus_0_lite_arprot : std_logic_vector(2 downto 0);                                   
+    signal cpuid_gpio_bus_0_lite_arvalid : std_logic;                                                     
+    signal cpuid_gpio_bus_0_lite_arready : std_logic;                                                    
+    signal cpuid_gpio_bus_0_lite_rdata : std_logic_vector(axi_data_width-1 downto 0);   
+    signal cpuid_gpio_bus_0_lite_rvalid : std_logic;                                                     
+    signal cpuid_gpio_bus_0_lite_rready : std_logic;                                                      
+    signal cpuid_gpio_bus_0_lite_rresp : std_logic_vector(1 downto 0);  
     
     ------------------------
     -- Peripheral Signals --
@@ -2081,4 +2111,75 @@ begin
             axi_rvalid => cpu_2_axi_full_rvalid,
             axi_rready => cpu_2_axi_full_rready,
             intr_in => cpu_2_int);
+            
+    ---------------------------------------------
+    -- CPUID GPIO AXI Full2Lite Instantiations --
+    ---------------------------------------------
+    
+    cpuid_gpio_0_full2lite : plasoc_axi4_full2lite 
+        generic map (
+            axi_slave_id_width => axi_cpu_bus_master_id_width,
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,                                   
+            aresetn => peripheral_aresetn(0),
+            s_axi_awid => cpuid_gpio_bus_0_full_awid,
+            s_axi_awaddr => cpuid_gpio_bus_0_full_awaddr,
+            s_axi_awlen => cpuid_gpio_bus_0_full_awlen,
+            s_axi_awsize => cpuid_gpio_bus_0_full_awsize,
+            s_axi_awburst => cpuid_gpio_bus_0_full_awburst,
+            s_axi_awlock => cpuid_gpio_bus_0_full_awlock,
+            s_axi_awcache => cpuid_gpio_bus_0_full_awcache,
+            s_axi_awprot => cpuid_gpio_bus_0_full_awprot,
+            s_axi_awqos => cpuid_gpio_bus_0_full_awqos,
+            s_axi_awregion => cpuid_gpio_bus_0_full_awregion,
+            s_axi_awvalid => cpuid_gpio_bus_0_full_awvalid,
+            s_axi_awready => cpuid_gpio_bus_0_full_awready,
+            s_axi_wdata => cpuid_gpio_bus_0_full_wdata,
+            s_axi_wstrb => cpuid_gpio_bus_0_full_wstrb,
+            s_axi_wlast => cpuid_gpio_bus_0_full_wlast,
+            s_axi_wvalid => cpuid_gpio_bus_0_full_wvalid,
+            s_axi_wready => cpuid_gpio_bus_0_full_wready,
+            s_axi_bid => cpuid_gpio_bus_0_full_bid,
+            s_axi_bresp => cpuid_gpio_bus_0_full_bresp,
+            s_axi_bvalid => cpuid_gpio_bus_0_full_bvalid,
+            s_axi_bready => cpuid_gpio_bus_0_full_bready,
+            s_axi_arid => cpuid_gpio_bus_0_full_arid,
+            s_axi_araddr => cpuid_gpio_bus_0_full_araddr,
+            s_axi_arlen => cpuid_gpio_bus_0_full_arlen,
+            s_axi_arsize => cpuid_gpio_bus_0_full_arsize,
+            s_axi_arburst => cpuid_gpio_bus_0_full_arburst,
+            s_axi_arlock => cpuid_gpio_bus_0_full_arlock,
+            s_axi_arcache => cpuid_gpio_bus_0_full_arcache,
+            s_axi_arprot => cpuid_gpio_bus_0_full_arprot,
+            s_axi_arqos => cpuid_gpio_bus_0_full_arqos,
+            s_axi_arregion => cpuid_gpio_bus_0_full_arregion,
+            s_axi_arvalid => cpuid_gpio_bus_0_full_arvalid,
+            s_axi_arready => cpuid_gpio_bus_0_full_arready,
+            s_axi_rid => cpuid_gpio_bus_0_full_rid,
+            s_axi_rdata => cpuid_gpio_bus_0_full_rdata,
+            s_axi_rresp => cpuid_gpio_bus_0_full_rresp,
+            s_axi_rlast => cpuid_gpio_bus_0_full_rlast,
+            s_axi_rvalid => cpuid_gpio_bus_0_full_rvalid,
+            s_axi_rready => cpuid_gpio_bus_0_full_rready,
+            m_axi_awaddr => cpuid_gpio_bus_0_lite_awaddr,
+            m_axi_awprot => cpuid_gpio_bus_0_lite_awprot,
+            m_axi_awvalid => cpuid_gpio_bus_0_lite_awvalid,
+            m_axi_awready => cpuid_gpio_bus_0_lite_awready,
+            m_axi_wvalid => cpuid_gpio_bus_0_lite_wvalid,
+            m_axi_wready => cpuid_gpio_bus_0_lite_wready,
+            m_axi_wdata => cpuid_gpio_bus_0_lite_wdata,
+            m_axi_wstrb => cpuid_gpio_bus_0_lite_wstrb,
+            m_axi_bvalid => cpuid_gpio_bus_0_lite_bvalid,
+            m_axi_bready => cpuid_gpio_bus_0_lite_bready,
+            m_axi_bresp => cpuid_gpio_bus_0_lite_bresp,
+            m_axi_araddr => cpuid_gpio_bus_0_lite_araddr,
+            m_axi_arprot => cpuid_gpio_bus_0_lite_arprot,
+            m_axi_arvalid => cpuid_gpio_bus_0_lite_arvalid,
+            m_axi_arready => cpuid_gpio_bus_0_lite_arready,
+            m_axi_rdata => cpuid_gpio_bus_0_lite_rdata,
+            m_axi_rvalid => cpuid_gpio_bus_0_lite_rvalid,
+            m_axi_rready => cpuid_gpio_bus_0_lite_rready,
+            m_axi_rresp => cpuid_gpio_bus_0_lite_rresp);
 end Behavioral;
