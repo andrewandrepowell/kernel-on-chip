@@ -13,7 +13,7 @@ entity plasoc_cpu_0_crossbar_wrap is
 		axi_slave_id_width : integer := 0;
 		axi_master_amount : integer := 3;
 		axi_slave_amount : integer := 1;
-		axi_master_base_address : std_logic_vector := X"f00000000100000000000000";
+		axi_master_base_address : std_logic_vector := X"f00000001000000000000000";
 		axi_master_high_address : std_logic_vector := X"f000ffffefffffff0000ffff"
 	);
 	port

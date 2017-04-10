@@ -2,8 +2,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
-use work.nexys4_pack.data_out_width;
-use work.nexys4_pack.data_in_width;
+use work.nexys4_pack.all;
 use work.plasoc_interconnect_crossbar_wrap_pack.plasoc_interconnect_crossbar_wrap;
 use work.plasoc_interconnect_crossbar_wrap_pack.clogb2;
 use work.plasoc_cpu_0_crossbar_wrap_pack.plasoc_cpu_0_crossbar_wrap;
@@ -924,6 +923,14 @@ architecture Behavioral of koc_wrapper is
     signal cpuid_gpio_bus_2_full_rlast : std_logic;
     signal cpuid_gpio_bus_2_full_rvalid : std_logic;
     signal cpuid_gpio_bus_2_full_rready : std_logic;
+    
+    ------------------------
+    -- Peripheral Signals --
+    ------------------------
+    
+    signal cpu_0_int : std_logic;
+    signal cpu_1_int : std_logic;
+    signal cpu_2_int : std_logic;
 begin
 
     ram_axi_full_arlock_slv(0) <= ram_axi_full_arlock;
@@ -1917,4 +1924,161 @@ begin
             cpuid_gpio_m_axi_rvalid => cpuid_gpio_bus_2_full_rvalid,
             cpuid_gpio_m_axi_rready => cpuid_gpio_bus_2_full_rready,
             aclk => aclk, aresetn => peripheral_aresetn(0));
+            
+    ------------------------
+    -- CPU Instantiations --
+    ------------------------
+    
+    plasoc_cpu_0_inst : plasoc_cpu 
+            generic map (
+                cache_address_width => cache_address_width,
+                cache_way_width => cache_way_width,
+                cache_index_width => cache_index_width,
+                cache_offset_width => cache_offset_width,
+                cache_replace_strat => cache_replace_strat)
+            port map (
+                aclk => aclk,
+                aresetn => peripheral_aresetn(0),
+                axi_awid => cpu_0_axi_full_awid,
+                axi_awaddr => cpu_0_axi_full_awaddr,
+                axi_awlen => cpu_0_axi_full_awlen,
+                axi_awsize => cpu_0_axi_full_awsize,
+                axi_awburst => cpu_0_axi_full_awburst,
+                axi_awlock => cpu_0_axi_full_awlock,
+                axi_awcache => cpu_0_axi_full_awcache,
+                axi_awprot => cpu_0_axi_full_awprot,
+                axi_awqos => cpu_0_axi_full_awqos,
+                axi_awregion => cpu_0_axi_full_awregion,
+                axi_awvalid => cpu_0_axi_full_awvalid,
+                axi_awready => cpu_0_axi_full_awready,
+                axi_wdata => cpu_0_axi_full_wdata,
+                axi_wstrb => cpu_0_axi_full_wstrb,
+                axi_wlast => cpu_0_axi_full_wlast,
+                axi_wvalid => cpu_0_axi_full_wvalid,
+                axi_wready => cpu_0_axi_full_wready,
+                axi_bid => cpu_0_axi_full_bid,
+                axi_bresp => cpu_0_axi_full_bresp,
+                axi_bvalid => cpu_0_axi_full_bvalid,
+                axi_bready => cpu_0_axi_full_bready,
+                axi_arid => cpu_0_axi_full_arid,
+                axi_araddr => cpu_0_axi_full_araddr,
+                axi_arlen => cpu_0_axi_full_arlen,
+                axi_arsize => cpu_0_axi_full_arsize,
+                axi_arburst => cpu_0_axi_full_arburst,
+                axi_arlock => cpu_0_axi_full_arlock,
+                axi_arcache => cpu_0_axi_full_arcache,
+                axi_arprot => cpu_0_axi_full_arprot,
+                axi_arqos => cpu_0_axi_full_arqos,
+                axi_arregion => cpu_0_axi_full_arregion,
+                axi_arvalid => cpu_0_axi_full_arvalid,
+                axi_arready => cpu_0_axi_full_arready,
+                axi_rid => cpu_0_axi_full_rid,
+                axi_rdata => cpu_0_axi_full_rdata,
+                axi_rresp => cpu_0_axi_full_rresp,
+                axi_rlast => cpu_0_axi_full_rlast,
+                axi_rvalid => cpu_0_axi_full_rvalid,
+                axi_rready => cpu_0_axi_full_rready,
+                intr_in => cpu_0_int);
+    
+    plasoc_cpu_1_inst : plasoc_cpu 
+        generic map (
+            cache_address_width => cache_address_width,
+            cache_way_width => cache_way_width,
+            cache_index_width => cache_index_width,
+            cache_offset_width => cache_offset_width,
+            cache_replace_strat => cache_replace_strat)
+        port map (
+            aclk => aclk,
+            aresetn => peripheral_aresetn(0),
+            axi_awid => cpu_1_axi_full_awid,
+            axi_awaddr => cpu_1_axi_full_awaddr,
+            axi_awlen => cpu_1_axi_full_awlen,
+            axi_awsize => cpu_1_axi_full_awsize,
+            axi_awburst => cpu_1_axi_full_awburst,
+            axi_awlock => cpu_1_axi_full_awlock,
+            axi_awcache => cpu_1_axi_full_awcache,
+            axi_awprot => cpu_1_axi_full_awprot,
+            axi_awqos => cpu_1_axi_full_awqos,
+            axi_awregion => cpu_1_axi_full_awregion,
+            axi_awvalid => cpu_1_axi_full_awvalid,
+            axi_awready => cpu_1_axi_full_awready,
+            axi_wdata => cpu_1_axi_full_wdata,
+            axi_wstrb => cpu_1_axi_full_wstrb,
+            axi_wlast => cpu_1_axi_full_wlast,
+            axi_wvalid => cpu_1_axi_full_wvalid,
+            axi_wready => cpu_1_axi_full_wready,
+            axi_bid => cpu_1_axi_full_bid,
+            axi_bresp => cpu_1_axi_full_bresp,
+            axi_bvalid => cpu_1_axi_full_bvalid,
+            axi_bready => cpu_1_axi_full_bready,
+            axi_arid => cpu_1_axi_full_arid,
+            axi_araddr => cpu_1_axi_full_araddr,
+            axi_arlen => cpu_1_axi_full_arlen,
+            axi_arsize => cpu_1_axi_full_arsize,
+            axi_arburst => cpu_1_axi_full_arburst,
+            axi_arlock => cpu_1_axi_full_arlock,
+            axi_arcache => cpu_1_axi_full_arcache,
+            axi_arprot => cpu_1_axi_full_arprot,
+            axi_arqos => cpu_1_axi_full_arqos,
+            axi_arregion => cpu_1_axi_full_arregion,
+            axi_arvalid => cpu_1_axi_full_arvalid,
+            axi_arready => cpu_1_axi_full_arready,
+            axi_rid => cpu_1_axi_full_rid,
+            axi_rdata => cpu_1_axi_full_rdata,
+            axi_rresp => cpu_1_axi_full_rresp,
+            axi_rlast => cpu_1_axi_full_rlast,
+            axi_rvalid => cpu_1_axi_full_rvalid,
+            axi_rready => cpu_1_axi_full_rready,
+            intr_in => cpu_1_int);
+            
+    plasoc_cpu_2_inst : plasoc_cpu 
+        generic map (
+            cache_address_width => cache_address_width,
+            cache_way_width => cache_way_width,
+            cache_index_width => cache_index_width,
+            cache_offset_width => cache_offset_width,
+            cache_replace_strat => cache_replace_strat)
+        port map (
+            aclk => aclk,
+            aresetn => peripheral_aresetn(0),
+            axi_awid => cpu_2_axi_full_awid,
+            axi_awaddr => cpu_2_axi_full_awaddr,
+            axi_awlen => cpu_2_axi_full_awlen,
+            axi_awsize => cpu_2_axi_full_awsize,
+            axi_awburst => cpu_2_axi_full_awburst,
+            axi_awlock => cpu_2_axi_full_awlock,
+            axi_awcache => cpu_2_axi_full_awcache,
+            axi_awprot => cpu_2_axi_full_awprot,
+            axi_awqos => cpu_2_axi_full_awqos,
+            axi_awregion => cpu_2_axi_full_awregion,
+            axi_awvalid => cpu_2_axi_full_awvalid,
+            axi_awready => cpu_2_axi_full_awready,
+            axi_wdata => cpu_2_axi_full_wdata,
+            axi_wstrb => cpu_2_axi_full_wstrb,
+            axi_wlast => cpu_2_axi_full_wlast,
+            axi_wvalid => cpu_2_axi_full_wvalid,
+            axi_wready => cpu_2_axi_full_wready,
+            axi_bid => cpu_2_axi_full_bid,
+            axi_bresp => cpu_2_axi_full_bresp,
+            axi_bvalid => cpu_2_axi_full_bvalid,
+            axi_bready => cpu_2_axi_full_bready,
+            axi_arid => cpu_2_axi_full_arid,
+            axi_araddr => cpu_2_axi_full_araddr,
+            axi_arlen => cpu_2_axi_full_arlen,
+            axi_arsize => cpu_2_axi_full_arsize,
+            axi_arburst => cpu_2_axi_full_arburst,
+            axi_arlock => cpu_2_axi_full_arlock,
+            axi_arcache => cpu_2_axi_full_arcache,
+            axi_arprot => cpu_2_axi_full_arprot,
+            axi_arqos => cpu_2_axi_full_arqos,
+            axi_arregion => cpu_2_axi_full_arregion,
+            axi_arvalid => cpu_2_axi_full_arvalid,
+            axi_arready => cpu_2_axi_full_arready,
+            axi_rid => cpu_2_axi_full_rid,
+            axi_rdata => cpu_2_axi_full_rdata,
+            axi_rresp => cpu_2_axi_full_rresp,
+            axi_rlast => cpu_2_axi_full_rlast,
+            axi_rvalid => cpu_2_axi_full_rvalid,
+            axi_rready => cpu_2_axi_full_rready,
+            intr_in => cpu_2_int);
 end Behavioral;
