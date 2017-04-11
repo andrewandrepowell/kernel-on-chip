@@ -1,8 +1,8 @@
 --Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
---Tool Version: Vivado v.2016.4 (win64) Build 1756540 Mon Jan 23 19:11:23 MST 2017
---Date        : Fri Apr 07 14:46:47 2017
---Host        : LAPTOP-IQ9G3D1I running 64-bit major release  (build 9200)
+--Tool Version: Vivado v.2016.4 (lin64) Build 1756540 Mon Jan 23 19:11:19 MST 2017
+--Date        : Tue Apr 11 11:55:51 2017
+--Host        : andrewandrepowell2-desktop running 64-bit Ubuntu 16.04 LTS
 --Command     : generate_target bd.bd
 --Design      : bd
 --Purpose     : IP block netlist

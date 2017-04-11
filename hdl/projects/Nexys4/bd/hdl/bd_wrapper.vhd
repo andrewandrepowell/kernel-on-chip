@@ -1,8 +1,8 @@
 --Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
---Tool Version: Vivado v.2016.4 (win64) Build 1756540 Mon Jan 23 19:11:23 MST 2017
---Date        : Fri Apr 07 14:46:47 2017
---Host        : LAPTOP-IQ9G3D1I running 64-bit major release  (build 9200)
+--Tool Version: Vivado v.2016.4 (lin64) Build 1756540 Mon Jan 23 19:11:19 MST 2017
+--Date        : Tue Apr 11 11:55:51 2017
+--Host        : andrewandrepowell2-desktop running 64-bit Ubuntu 16.04 LTS
 --Command     : generate_target bd_wrapper.bd
 --Design      : bd_wrapper
 --Purpose     : IP block netlist
@@ -92,6 +92,11 @@ architecture STRUCTURE of bd_wrapper is
     DDR2_dm : out STD_LOGIC_VECTOR ( 1 downto 0 );
     DDR2_odt : out STD_LOGIC_VECTOR ( 0 to 0 );
     aclk : out STD_LOGIC;
+    sys_rst : in STD_LOGIC;
+    sys_clk_i : in STD_LOGIC;
+    peripheral_aresetn : out STD_LOGIC_VECTOR ( 0 to 0 );
+    interconnect_aresetn : out STD_LOGIC_VECTOR ( 0 to 0 );
+    S00_AXI_awid : in STD_LOGIC_VECTOR ( 3 downto 0 );
     S00_AXI_awaddr : in STD_LOGIC_VECTOR ( 31 downto 0 );
     S00_AXI_awlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
     S00_AXI_awsize : in STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -99,6 +104,7 @@ architecture STRUCTURE of bd_wrapper is
     S00_AXI_awlock : in STD_LOGIC_VECTOR ( 0 to 0 );
     S00_AXI_awcache : in STD_LOGIC_VECTOR ( 3 downto 0 );
     S00_AXI_awprot : in STD_LOGIC_VECTOR ( 2 downto 0 );
+    S00_AXI_awregion : in STD_LOGIC_VECTOR ( 3 downto 0 );
     S00_AXI_awqos : in STD_LOGIC_VECTOR ( 3 downto 0 );
     S00_AXI_awvalid : in STD_LOGIC;
     S00_AXI_awready : out STD_LOGIC;
@@ -107,9 +113,11 @@ architecture STRUCTURE of bd_wrapper is
     S00_AXI_wlast : in STD_LOGIC;
     S00_AXI_wvalid : in STD_LOGIC;
     S00_AXI_wready : out STD_LOGIC;
+    S00_AXI_bid : out STD_LOGIC_VECTOR ( 3 downto 0 );
     S00_AXI_bresp : out STD_LOGIC_VECTOR ( 1 downto 0 );
     S00_AXI_bvalid : out STD_LOGIC;
     S00_AXI_bready : in STD_LOGIC;
+    S00_AXI_arid : in STD_LOGIC_VECTOR ( 3 downto 0 );
     S00_AXI_araddr : in STD_LOGIC_VECTOR ( 31 downto 0 );
     S00_AXI_arlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
     S00_AXI_arsize : in STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -117,24 +125,16 @@ architecture STRUCTURE of bd_wrapper is
     S00_AXI_arlock : in STD_LOGIC_VECTOR ( 0 to 0 );
     S00_AXI_arcache : in STD_LOGIC_VECTOR ( 3 downto 0 );
     S00_AXI_arprot : in STD_LOGIC_VECTOR ( 2 downto 0 );
+    S00_AXI_arregion : in STD_LOGIC_VECTOR ( 3 downto 0 );
     S00_AXI_arqos : in STD_LOGIC_VECTOR ( 3 downto 0 );
     S00_AXI_arvalid : in STD_LOGIC;
     S00_AXI_arready : out STD_LOGIC;
+    S00_AXI_rid : out STD_LOGIC_VECTOR ( 3 downto 0 );
     S00_AXI_rdata : out STD_LOGIC_VECTOR ( 31 downto 0 );
     S00_AXI_rresp : out STD_LOGIC_VECTOR ( 1 downto 0 );
     S00_AXI_rlast : out STD_LOGIC;
     S00_AXI_rvalid : out STD_LOGIC;
-    S00_AXI_rready : in STD_LOGIC;
-    sys_rst : in STD_LOGIC;
-    sys_clk_i : in STD_LOGIC;
-    interconnect_aresetn : out STD_LOGIC_VECTOR ( 0 to 0 );
-    peripheral_aresetn : out STD_LOGIC_VECTOR ( 0 to 0 );
-    S00_AXI_arid : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    S00_AXI_arregion : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    S00_AXI_awid : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    S00_AXI_awregion : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    S00_AXI_bid : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    S00_AXI_rid : out STD_LOGIC_VECTOR ( 3 downto 0 )
+    S00_AXI_rready : in STD_LOGIC
   );
   end component bd;
 begin
