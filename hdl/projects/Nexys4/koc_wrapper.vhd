@@ -954,6 +954,46 @@ architecture Behavioral of koc_wrapper is
     signal cpuid_gpio_bus_0_lite_rready : std_logic;                                                      
     signal cpuid_gpio_bus_0_lite_rresp : std_logic_vector(1 downto 0);  
     
+    signal cpuid_gpio_bus_1_lite_awaddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal cpuid_gpio_bus_1_lite_awprot : std_logic_vector(2 downto 0);                                   
+    signal cpuid_gpio_bus_1_lite_awvalid : std_logic;                                                     
+    signal cpuid_gpio_bus_1_lite_awready : std_logic;                                                    
+    signal cpuid_gpio_bus_1_lite_wvalid : std_logic;                                                      
+    signal cpuid_gpio_bus_1_lite_wready : std_logic;                                                     
+    signal cpuid_gpio_bus_1_lite_wdata : std_logic_vector(axi_data_width-1 downto 0);                     
+    signal cpuid_gpio_bus_1_lite_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);                   
+    signal cpuid_gpio_bus_1_lite_bvalid : std_logic;                                                     
+    signal cpuid_gpio_bus_1_lite_bready : std_logic;                                                      
+    signal cpuid_gpio_bus_1_lite_bresp : std_logic_vector(1 downto 0);                     
+    signal cpuid_gpio_bus_1_lite_araddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal cpuid_gpio_bus_1_lite_arprot : std_logic_vector(2 downto 0);                                   
+    signal cpuid_gpio_bus_1_lite_arvalid : std_logic;                                                     
+    signal cpuid_gpio_bus_1_lite_arready : std_logic;                                                    
+    signal cpuid_gpio_bus_1_lite_rdata : std_logic_vector(axi_data_width-1 downto 0);   
+    signal cpuid_gpio_bus_1_lite_rvalid : std_logic;                                                     
+    signal cpuid_gpio_bus_1_lite_rready : std_logic;                                                      
+    signal cpuid_gpio_bus_1_lite_rresp : std_logic_vector(1 downto 0); 
+    
+    signal cpuid_gpio_bus_2_lite_awaddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal cpuid_gpio_bus_2_lite_awprot : std_logic_vector(2 downto 0);                                   
+    signal cpuid_gpio_bus_2_lite_awvalid : std_logic;                                                     
+    signal cpuid_gpio_bus_2_lite_awready : std_logic;                                                    
+    signal cpuid_gpio_bus_2_lite_wvalid : std_logic;                                                      
+    signal cpuid_gpio_bus_2_lite_wready : std_logic;                                                     
+    signal cpuid_gpio_bus_2_lite_wdata : std_logic_vector(axi_data_width-1 downto 0);                     
+    signal cpuid_gpio_bus_2_lite_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);                   
+    signal cpuid_gpio_bus_2_lite_bvalid : std_logic;                                                     
+    signal cpuid_gpio_bus_2_lite_bready : std_logic;                                                      
+    signal cpuid_gpio_bus_2_lite_bresp : std_logic_vector(1 downto 0);                     
+    signal cpuid_gpio_bus_2_lite_araddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal cpuid_gpio_bus_2_lite_arprot : std_logic_vector(2 downto 0);                                   
+    signal cpuid_gpio_bus_2_lite_arvalid : std_logic;                                                     
+    signal cpuid_gpio_bus_2_lite_arready : std_logic;                                                    
+    signal cpuid_gpio_bus_2_lite_rdata : std_logic_vector(axi_data_width-1 downto 0);   
+    signal cpuid_gpio_bus_2_lite_rvalid : std_logic;                                                     
+    signal cpuid_gpio_bus_2_lite_rready : std_logic;                                                      
+    signal cpuid_gpio_bus_2_lite_rresp : std_logic_vector(1 downto 0); 
+    
     ------------------------
     -- Peripheral Signals --
     ------------------------
@@ -2182,4 +2222,138 @@ begin
             m_axi_rvalid => cpuid_gpio_bus_0_lite_rvalid,
             m_axi_rready => cpuid_gpio_bus_0_lite_rready,
             m_axi_rresp => cpuid_gpio_bus_0_lite_rresp);
+            
+    cpuid_gpio_1_full2lite : plasoc_axi4_full2lite 
+        generic map (
+            axi_slave_id_width => axi_cpu_bus_master_id_width,
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,                                   
+            aresetn => peripheral_aresetn(0),
+            s_axi_awid => cpuid_gpio_bus_1_full_awid,
+            s_axi_awaddr => cpuid_gpio_bus_1_full_awaddr,
+            s_axi_awlen => cpuid_gpio_bus_1_full_awlen,
+            s_axi_awsize => cpuid_gpio_bus_1_full_awsize,
+            s_axi_awburst => cpuid_gpio_bus_1_full_awburst,
+            s_axi_awlock => cpuid_gpio_bus_1_full_awlock,
+            s_axi_awcache => cpuid_gpio_bus_1_full_awcache,
+            s_axi_awprot => cpuid_gpio_bus_1_full_awprot,
+            s_axi_awqos => cpuid_gpio_bus_1_full_awqos,
+            s_axi_awregion => cpuid_gpio_bus_1_full_awregion,
+            s_axi_awvalid => cpuid_gpio_bus_1_full_awvalid,
+            s_axi_awready => cpuid_gpio_bus_1_full_awready,
+            s_axi_wdata => cpuid_gpio_bus_1_full_wdata,
+            s_axi_wstrb => cpuid_gpio_bus_1_full_wstrb,
+            s_axi_wlast => cpuid_gpio_bus_1_full_wlast,
+            s_axi_wvalid => cpuid_gpio_bus_1_full_wvalid,
+            s_axi_wready => cpuid_gpio_bus_1_full_wready,
+            s_axi_bid => cpuid_gpio_bus_1_full_bid,
+            s_axi_bresp => cpuid_gpio_bus_1_full_bresp,
+            s_axi_bvalid => cpuid_gpio_bus_1_full_bvalid,
+            s_axi_bready => cpuid_gpio_bus_1_full_bready,
+            s_axi_arid => cpuid_gpio_bus_1_full_arid,
+            s_axi_araddr => cpuid_gpio_bus_1_full_araddr,
+            s_axi_arlen => cpuid_gpio_bus_1_full_arlen,
+            s_axi_arsize => cpuid_gpio_bus_1_full_arsize,
+            s_axi_arburst => cpuid_gpio_bus_1_full_arburst,
+            s_axi_arlock => cpuid_gpio_bus_1_full_arlock,
+            s_axi_arcache => cpuid_gpio_bus_1_full_arcache,
+            s_axi_arprot => cpuid_gpio_bus_1_full_arprot,
+            s_axi_arqos => cpuid_gpio_bus_1_full_arqos,
+            s_axi_arregion => cpuid_gpio_bus_1_full_arregion,
+            s_axi_arvalid => cpuid_gpio_bus_1_full_arvalid,
+            s_axi_arready => cpuid_gpio_bus_1_full_arready,
+            s_axi_rid => cpuid_gpio_bus_1_full_rid,
+            s_axi_rdata => cpuid_gpio_bus_1_full_rdata,
+            s_axi_rresp => cpuid_gpio_bus_1_full_rresp,
+            s_axi_rlast => cpuid_gpio_bus_1_full_rlast,
+            s_axi_rvalid => cpuid_gpio_bus_1_full_rvalid,
+            s_axi_rready => cpuid_gpio_bus_1_full_rready,
+            m_axi_awaddr => cpuid_gpio_bus_1_lite_awaddr,
+            m_axi_awprot => cpuid_gpio_bus_1_lite_awprot,
+            m_axi_awvalid => cpuid_gpio_bus_1_lite_awvalid,
+            m_axi_awready => cpuid_gpio_bus_1_lite_awready,
+            m_axi_wvalid => cpuid_gpio_bus_1_lite_wvalid,
+            m_axi_wready => cpuid_gpio_bus_1_lite_wready,
+            m_axi_wdata => cpuid_gpio_bus_1_lite_wdata,
+            m_axi_wstrb => cpuid_gpio_bus_1_lite_wstrb,
+            m_axi_bvalid => cpuid_gpio_bus_1_lite_bvalid,
+            m_axi_bready => cpuid_gpio_bus_1_lite_bready,
+            m_axi_bresp => cpuid_gpio_bus_1_lite_bresp,
+            m_axi_araddr => cpuid_gpio_bus_1_lite_araddr,
+            m_axi_arprot => cpuid_gpio_bus_1_lite_arprot,
+            m_axi_arvalid => cpuid_gpio_bus_1_lite_arvalid,
+            m_axi_arready => cpuid_gpio_bus_1_lite_arready,
+            m_axi_rdata => cpuid_gpio_bus_1_lite_rdata,
+            m_axi_rvalid => cpuid_gpio_bus_1_lite_rvalid,
+            m_axi_rready => cpuid_gpio_bus_1_lite_rready,
+            m_axi_rresp => cpuid_gpio_bus_1_lite_rresp);
+            
+    cpuid_gpio_2_full2lite : plasoc_axi4_full2lite 
+        generic map (
+            axi_slave_id_width => axi_cpu_bus_master_id_width,
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,                                   
+            aresetn => peripheral_aresetn(0),
+            s_axi_awid => cpuid_gpio_bus_2_full_awid,
+            s_axi_awaddr => cpuid_gpio_bus_2_full_awaddr,
+            s_axi_awlen => cpuid_gpio_bus_2_full_awlen,
+            s_axi_awsize => cpuid_gpio_bus_2_full_awsize,
+            s_axi_awburst => cpuid_gpio_bus_2_full_awburst,
+            s_axi_awlock => cpuid_gpio_bus_2_full_awlock,
+            s_axi_awcache => cpuid_gpio_bus_2_full_awcache,
+            s_axi_awprot => cpuid_gpio_bus_2_full_awprot,
+            s_axi_awqos => cpuid_gpio_bus_2_full_awqos,
+            s_axi_awregion => cpuid_gpio_bus_2_full_awregion,
+            s_axi_awvalid => cpuid_gpio_bus_2_full_awvalid,
+            s_axi_awready => cpuid_gpio_bus_2_full_awready,
+            s_axi_wdata => cpuid_gpio_bus_2_full_wdata,
+            s_axi_wstrb => cpuid_gpio_bus_2_full_wstrb,
+            s_axi_wlast => cpuid_gpio_bus_2_full_wlast,
+            s_axi_wvalid => cpuid_gpio_bus_2_full_wvalid,
+            s_axi_wready => cpuid_gpio_bus_2_full_wready,
+            s_axi_bid => cpuid_gpio_bus_2_full_bid,
+            s_axi_bresp => cpuid_gpio_bus_2_full_bresp,
+            s_axi_bvalid => cpuid_gpio_bus_2_full_bvalid,
+            s_axi_bready => cpuid_gpio_bus_2_full_bready,
+            s_axi_arid => cpuid_gpio_bus_2_full_arid,
+            s_axi_araddr => cpuid_gpio_bus_2_full_araddr,
+            s_axi_arlen => cpuid_gpio_bus_2_full_arlen,
+            s_axi_arsize => cpuid_gpio_bus_2_full_arsize,
+            s_axi_arburst => cpuid_gpio_bus_2_full_arburst,
+            s_axi_arlock => cpuid_gpio_bus_2_full_arlock,
+            s_axi_arcache => cpuid_gpio_bus_2_full_arcache,
+            s_axi_arprot => cpuid_gpio_bus_2_full_arprot,
+            s_axi_arqos => cpuid_gpio_bus_2_full_arqos,
+            s_axi_arregion => cpuid_gpio_bus_2_full_arregion,
+            s_axi_arvalid => cpuid_gpio_bus_2_full_arvalid,
+            s_axi_arready => cpuid_gpio_bus_2_full_arready,
+            s_axi_rid => cpuid_gpio_bus_2_full_rid,
+            s_axi_rdata => cpuid_gpio_bus_2_full_rdata,
+            s_axi_rresp => cpuid_gpio_bus_2_full_rresp,
+            s_axi_rlast => cpuid_gpio_bus_2_full_rlast,
+            s_axi_rvalid => cpuid_gpio_bus_2_full_rvalid,
+            s_axi_rready => cpuid_gpio_bus_2_full_rready,
+            m_axi_awaddr => cpuid_gpio_bus_2_lite_awaddr,
+            m_axi_awprot => cpuid_gpio_bus_2_lite_awprot,
+            m_axi_awvalid => cpuid_gpio_bus_2_lite_awvalid,
+            m_axi_awready => cpuid_gpio_bus_2_lite_awready,
+            m_axi_wvalid => cpuid_gpio_bus_2_lite_wvalid,
+            m_axi_wready => cpuid_gpio_bus_2_lite_wready,
+            m_axi_wdata => cpuid_gpio_bus_2_lite_wdata,
+            m_axi_wstrb => cpuid_gpio_bus_2_lite_wstrb,
+            m_axi_bvalid => cpuid_gpio_bus_2_lite_bvalid,
+            m_axi_bready => cpuid_gpio_bus_2_lite_bready,
+            m_axi_bresp => cpuid_gpio_bus_2_lite_bresp,
+            m_axi_araddr => cpuid_gpio_bus_2_lite_araddr,
+            m_axi_arprot => cpuid_gpio_bus_2_lite_arprot,
+            m_axi_arvalid => cpuid_gpio_bus_2_lite_arvalid,
+            m_axi_arready => cpuid_gpio_bus_2_lite_arready,
+            m_axi_rdata => cpuid_gpio_bus_2_lite_rdata,
+            m_axi_rvalid => cpuid_gpio_bus_2_lite_rvalid,
+            m_axi_rready => cpuid_gpio_bus_2_lite_rready,
+            m_axi_rresp => cpuid_gpio_bus_2_lite_rresp);
 end Behavioral;
