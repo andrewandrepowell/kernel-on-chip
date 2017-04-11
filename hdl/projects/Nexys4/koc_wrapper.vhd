@@ -14,10 +14,11 @@ use work.plasoc_timer_pack.plasoc_timer;
 use work.plasoc_gpio_pack.plasoc_gpio;
 use work.plasoc_uart_pack.plasoc_uart;
 use work.plasoc_axi4_full2lite_pack.plasoc_axi4_full2lite;
+use work.koc_lock_pack.koc_lock;
 
 entity koc_wrapper is
     generic (
-        lower_app : string := "boot";
+        lower_app : string := "none";
         upper_app : string := "none";
         upper_ext : boolean := true);
     port (
@@ -1102,9 +1103,8 @@ architecture Behavioral of koc_wrapper is
     -- Peripheral Signals --
     ------------------------
     
-    signal cpu_0_int : std_logic;
-    signal cpu_1_int : std_logic;
-    signal cpu_2_int : std_logic;
+    signal cpu_int : std_logic;
+    signal dev_ints : std_logic_vector(axi_data_width-1 downto 0) := (others=>'0');
 begin
 
     ram_axi_full_arlock_slv(0) <= ram_axi_full_arlock;
@@ -2152,7 +2152,7 @@ begin
                 axi_rlast => cpu_0_axi_full_rlast,
                 axi_rvalid => cpu_0_axi_full_rvalid,
                 axi_rready => cpu_0_axi_full_rready,
-                intr_in => cpu_0_int);
+                intr_in => cpu_int);
     
     plasoc_cpu_1_inst : plasoc_cpu 
         generic map (
@@ -2203,7 +2203,7 @@ begin
             axi_rlast => cpu_1_axi_full_rlast,
             axi_rvalid => cpu_1_axi_full_rvalid,
             axi_rready => cpu_1_axi_full_rready,
-            intr_in => cpu_1_int);
+            intr_in => cpu_int);
             
     plasoc_cpu_2_inst : plasoc_cpu 
         generic map (
@@ -2254,7 +2254,7 @@ begin
             axi_rlast => cpu_2_axi_full_rlast,
             axi_rvalid => cpu_2_axi_full_rvalid,
             axi_rready => cpu_2_axi_full_rready,
-            intr_in => cpu_2_int);
+            intr_in => cpu_int);
             
     ---------------------------------------------
     -- CPUID GPIO AXI Full2Lite Instantiations --
@@ -2899,5 +2899,160 @@ begin
             axi_rready => cpuid_gpio_bus_2_full_rready,
             axi_rresp => cpuid_gpio_bus_2_full_rresp,
             int => open);
+            
+    -----------------------------
+    -- Main Interconnect Cores --
+    -----------------------------
+        
+    int_main_inst : plasoc_int
+        generic map (
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width,
+            interrupt_total => axi_data_width)
+        port map (
+            aclk => aclk,
+            aresetn => peripheral_aresetn(0),
+            axi_awaddr => int_axi_lite_awaddr,
+            axi_awprot => int_axi_lite_awprot,
+            axi_awvalid => int_axi_lite_awvalid,
+            axi_awready => int_axi_lite_awready,
+            axi_wvalid => int_axi_lite_wvalid,
+            axi_wready => int_axi_lite_wready,
+            axi_wdata => int_axi_lite_wdata,
+            axi_wstrb => int_axi_lite_wstrb,
+            axi_bvalid => int_axi_lite_bvalid,
+            axi_bready => int_axi_lite_bready,
+            axi_bresp => int_axi_lite_bresp,
+            axi_araddr => int_axi_lite_araddr,
+            axi_arprot => int_axi_lite_arprot,
+            axi_arvalid => int_axi_lite_arvalid,
+            axi_arready => int_axi_lite_arready,
+            axi_rdata => int_axi_lite_rdata,
+            axi_rvalid => int_axi_lite_rvalid,
+            axi_rready => int_axi_lite_rready,
+            axi_rresp => int_axi_lite_rresp,
+            cpu_int => cpu_int,
+            dev_ints => dev_ints);
+            
+    timer_main_inst : plasoc_timer 
+        generic map (
+            timer_width => axi_data_width,
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,
+            aresetn => peripheral_aresetn(0),
+            axi_awaddr => timer_axi_lite_awaddr,
+            axi_awprot => timer_axi_lite_awprot,
+            axi_awvalid => timer_axi_lite_awvalid,
+            axi_awready => timer_axi_lite_awready,
+            axi_wvalid => timer_axi_lite_wvalid,
+            axi_wready => timer_axi_lite_wready,
+            axi_wdata => timer_axi_lite_wdata,
+            axi_wstrb => timer_axi_lite_wstrb,
+            axi_bvalid => timer_axi_lite_bvalid,
+            axi_bready => timer_axi_lite_bready,
+            axi_bresp => timer_axi_lite_bresp,
+            axi_araddr => timer_axi_lite_araddr,
+            axi_arprot => timer_axi_lite_arprot,
+            axi_arvalid => timer_axi_lite_arvalid,
+            axi_arready => timer_axi_lite_arready,
+            axi_rdata => timer_axi_lite_rdata,
+            axi_rvalid => timer_axi_lite_rvalid,
+            axi_rready => timer_axi_lite_rready,
+            axi_rresp => timer_axi_lite_rresp,
+            done => dev_ints(0));
+            
+    gpio_main_inst : plasoc_gpio
+        generic map (
+            data_in_width => data_in_width,
+            data_out_width => data_out_width,
+            axi_address_width => axi_address_width,                   
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,
+            aresetn => peripheral_aresetn(0),
+            data_in => gpio_input,
+            data_out => gpio_output,
+            axi_awaddr => gpio_axi_lite_awaddr,
+            axi_awprot => gpio_axi_lite_awprot,
+            axi_awvalid => gpio_axi_lite_awvalid,
+            axi_awready => gpio_axi_lite_awready,
+            axi_wvalid => gpio_axi_lite_wvalid,
+            axi_wready => gpio_axi_lite_wready,
+            axi_wdata => gpio_axi_lite_wdata,
+            axi_wstrb => gpio_axi_lite_wstrb,
+            axi_bvalid => gpio_axi_lite_bvalid,
+            axi_bready => gpio_axi_lite_bready,
+            axi_bresp => gpio_axi_lite_bresp,
+            axi_araddr => gpio_axi_lite_araddr,
+            axi_arprot => gpio_axi_lite_arprot,
+            axi_arvalid => gpio_axi_lite_arvalid,
+            axi_arready => gpio_axi_lite_arready,
+            axi_rdata => gpio_axi_lite_rdata,
+            axi_rvalid => gpio_axi_lite_rvalid,
+            axi_rready => gpio_axi_lite_rready,
+            axi_rresp => gpio_axi_lite_rresp,
+            int => dev_ints(1));
+            
+    uart_main_inst : plasoc_uart
+        generic map (
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width,
+            baud => uart_baud,
+            clock_frequency => uart_clock_frequency)
+        port map (
+            aclk => aclk,
+            aresetn => peripheral_aresetn(0),
+            axi_awaddr => uart_axi_lite_awaddr,
+            axi_awprot => uart_axi_lite_awprot,
+            axi_awvalid => uart_axi_lite_awvalid,
+            axi_awready => uart_axi_lite_awready,
+            axi_wvalid => uart_axi_lite_wvalid,
+            axi_wready => uart_axi_lite_wready,
+            axi_wdata => uart_axi_lite_wdata,
+            axi_wstrb => uart_axi_lite_wstrb,
+            axi_bvalid => uart_axi_lite_bvalid,
+            axi_bready => uart_axi_lite_bready,
+            axi_bresp => uart_axi_lite_bresp,
+            axi_araddr => uart_axi_lite_araddr,
+            axi_arprot => uart_axi_lite_arprot,
+            axi_arvalid => uart_axi_lite_arvalid,
+            axi_arready => uart_axi_lite_arready,
+            axi_rdata => uart_axi_lite_rdata,
+            axi_rvalid => uart_axi_lite_rvalid,
+            axi_rready => uart_axi_lite_rready,
+            axi_rresp => uart_axi_lite_rresp,
+            tx => uart_tx,
+            rx => uart_rx,
+            status_in_avail => dev_ints(2));
+            
+    lock_main_inst : koc_lock
+        generic map (
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width,
+            control_default => 1)
+        port map (
+            aclk => aclk,
+            aresetn => peripheral_aresetn(0),
+            axi_awaddr => lock_axi_lite_awaddr,
+            axi_awprot => lock_axi_lite_awprot,
+            axi_awvalid => lock_axi_lite_awvalid,
+            axi_awready => lock_axi_lite_awready,
+            axi_wvalid => lock_axi_lite_wvalid,
+            axi_wready => lock_axi_lite_wready,
+            axi_wdata => lock_axi_lite_wdata,
+            axi_wstrb => lock_axi_lite_wstrb,
+            axi_bvalid => lock_axi_lite_bvalid,
+            axi_bready => lock_axi_lite_bready,
+            axi_bresp => lock_axi_lite_bresp,
+            axi_araddr => lock_axi_lite_araddr,
+            axi_arprot => lock_axi_lite_arprot,
+            axi_arvalid => lock_axi_lite_arvalid,
+            axi_arready => lock_axi_lite_arready,
+            axi_rdata => lock_axi_lite_rdata,
+            axi_rvalid => lock_axi_lite_rvalid,
+            axi_rready => lock_axi_lite_rready,
+            axi_rresp => lock_axi_lite_rresp);
         
 end Behavioral;
