@@ -2799,5 +2799,105 @@ begin
             m_axi_rvalid => lock_axi_lite_rvalid,
             m_axi_rready => lock_axi_lite_rready,
             m_axi_rresp => lock_axi_lite_rresp);
+            
+    ----------------------
+    -- CPUID GPIO Cores --
+    ----------------------
+    
+    cpuid_gpio_0_inst : plasoc_gpio
+        generic map (
+            data_in_width => axi_data_width,
+            data_out_width => 0,
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,                                             
+            aresetn => peripheral_aresetn(0),
+            data_in => std_logic_vector(to_unsigned(0,axi_data_width)),
+            data_out => open,
+            axi_awaddr => cpuid_gpio_bus_0_full_awaddr,
+            axi_awprot => cpuid_gpio_bus_0_full_awprot,
+            axi_awvalid => cpuid_gpio_bus_0_full_awvalid,
+            axi_awready => cpuid_gpio_bus_0_full_awready,
+            axi_wvalid => cpuid_gpio_bus_0_full_wvalid,
+            axi_wready => cpuid_gpio_bus_0_full_wready,
+            axi_wdata => cpuid_gpio_bus_0_full_wdata,
+            axi_wstrb => cpuid_gpio_bus_0_full_wstrb,
+            axi_bvalid => cpuid_gpio_bus_0_full_bvalid,
+            axi_bready => cpuid_gpio_bus_0_full_bready,
+            axi_bresp => cpuid_gpio_bus_0_full_bresp,
+            axi_araddr => cpuid_gpio_bus_0_full_araddr,
+            axi_arprot => cpuid_gpio_bus_0_full_arprot,
+            axi_arvalid => cpuid_gpio_bus_0_full_arvalid,
+            axi_arready => cpuid_gpio_bus_0_full_arready,
+            axi_rdata => cpuid_gpio_bus_0_full_rdata,
+            axi_rvalid => cpuid_gpio_bus_0_full_rvalid,
+            axi_rready => cpuid_gpio_bus_0_full_rready,
+            axi_rresp => cpuid_gpio_bus_0_full_rresp,
+            int => open);
+    
+    cpuid_gpio_1_inst : plasoc_gpio
+        generic map (
+            data_in_width => axi_data_width,
+            data_out_width => 0,
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,                                             
+            aresetn => peripheral_aresetn(0),
+            data_in => std_logic_vector(to_unsigned(1,axi_data_width)),
+            data_out => open,
+            axi_awaddr => cpuid_gpio_bus_1_full_awaddr,
+            axi_awprot => cpuid_gpio_bus_1_full_awprot,
+            axi_awvalid => cpuid_gpio_bus_1_full_awvalid,
+            axi_awready => cpuid_gpio_bus_1_full_awready,
+            axi_wvalid => cpuid_gpio_bus_1_full_wvalid,
+            axi_wready => cpuid_gpio_bus_1_full_wready,
+            axi_wdata => cpuid_gpio_bus_1_full_wdata,
+            axi_wstrb => cpuid_gpio_bus_1_full_wstrb,
+            axi_bvalid => cpuid_gpio_bus_1_full_bvalid,
+            axi_bready => cpuid_gpio_bus_1_full_bready,
+            axi_bresp => cpuid_gpio_bus_1_full_bresp,
+            axi_araddr => cpuid_gpio_bus_1_full_araddr,
+            axi_arprot => cpuid_gpio_bus_1_full_arprot,
+            axi_arvalid => cpuid_gpio_bus_1_full_arvalid,
+            axi_arready => cpuid_gpio_bus_1_full_arready,
+            axi_rdata => cpuid_gpio_bus_1_full_rdata,
+            axi_rvalid => cpuid_gpio_bus_1_full_rvalid,
+            axi_rready => cpuid_gpio_bus_1_full_rready,
+            axi_rresp => cpuid_gpio_bus_1_full_rresp,
+            int => open);
+            
+    cpuid_gpio_2_inst : plasoc_gpio
+        generic map (
+            data_in_width => axi_data_width,
+            data_out_width => 0,
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,                                             
+            aresetn => peripheral_aresetn(0),
+            data_in => std_logic_vector(to_unsigned(2,axi_data_width)),
+            data_out => open,
+            axi_awaddr => cpuid_gpio_bus_2_full_awaddr,
+            axi_awprot => cpuid_gpio_bus_2_full_awprot,
+            axi_awvalid => cpuid_gpio_bus_2_full_awvalid,
+            axi_awready => cpuid_gpio_bus_2_full_awready,
+            axi_wvalid => cpuid_gpio_bus_2_full_wvalid,
+            axi_wready => cpuid_gpio_bus_2_full_wready,
+            axi_wdata => cpuid_gpio_bus_2_full_wdata,
+            axi_wstrb => cpuid_gpio_bus_2_full_wstrb,
+            axi_bvalid => cpuid_gpio_bus_2_full_bvalid,
+            axi_bready => cpuid_gpio_bus_2_full_bready,
+            axi_bresp => cpuid_gpio_bus_2_full_bresp,
+            axi_araddr => cpuid_gpio_bus_2_full_araddr,
+            axi_arprot => cpuid_gpio_bus_2_full_arprot,
+            axi_arvalid => cpuid_gpio_bus_2_full_arvalid,
+            axi_arready => cpuid_gpio_bus_2_full_arready,
+            axi_rdata => cpuid_gpio_bus_2_full_rdata,
+            axi_rvalid => cpuid_gpio_bus_2_full_rvalid,
+            axi_rready => cpuid_gpio_bus_2_full_rready,
+            axi_rresp => cpuid_gpio_bus_2_full_rresp,
+            int => open);
         
 end Behavioral;
