@@ -418,13 +418,13 @@ module bd_mig_7series_0_0_mig #
                                      // It is associated to a set of IODELAYs with
                                      // an IDELAYCTRL that have same IODELAY CONTROLLER
                                      // clock frequency (200MHz).
-   parameter SYSCLK_TYPE           = "SINGLE_ENDED",
+   parameter SYSCLK_TYPE           = "NO_BUFFER",
                                      // System clock type DIFFERENTIAL, SINGLE_ENDED,
                                      // NO_BUFFER
    parameter REFCLK_TYPE           = "NO_BUFFER",
                                      // Reference clock type DIFFERENTIAL, SINGLE_ENDED,
                                      // NO_BUFFER, USE_SYSTEM_CLOCK
-   parameter SYS_RST_PORT          = "TRUE",
+   parameter SYS_RST_PORT          = "FALSE",
                                      // "TRUE" - if pin is selected for sys_rst
                                      //          and IBUF will be instantiated.
                                      // "FALSE" - if pin is not selected for sys_rst

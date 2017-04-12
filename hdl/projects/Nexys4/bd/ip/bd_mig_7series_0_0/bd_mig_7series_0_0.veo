@@ -144,7 +144,7 @@
     .s_axi_rvalid                   (s_axi_rvalid),  // output                                       s_axi_rvalid
     .s_axi_rready                   (s_axi_rready),  // input                                        s_axi_rready
     // System Clock Ports
-    .sys_clk_i                       (sys_clk_i),  // input                                        sys_clk_i
+    .sys_clk_i                       (sys_clk_i),
     // Reference Clock Ports
     .clk_ref_i                      (clk_ref_i),
     .sys_rst                        (sys_rst) // input  sys_rst

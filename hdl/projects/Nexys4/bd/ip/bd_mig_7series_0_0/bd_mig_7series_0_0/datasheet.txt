@@ -9,10 +9,10 @@ Vivado Project Options:
 MIG Output Options:
    Module Name                     : bd_mig_7series_0_0
    No of Controllers               : 1
-   Selected Compatible Device(s)   : xc7a100ti-csg324
+   Selected Compatible Device(s)   : --
 
 FPGA Options:
-   System Clock Type               : Single-Ended
+   System Clock Type               : No Buffer
    Reference Clock Type            : No Buffer
    Debug Port                      : OFF
    Internal Vref                   : enabled
@@ -60,13 +60,9 @@ Memory Options:
 
 Bank Selections:
 
-System_Clock: 
-	SignalName: sys_clk_i
-		PadLocation: E3  Bank: 35
-
 System_Control: 
 	SignalName: sys_rst
-		PadLocation: C12  Bank: 15
+		PadLocation: No connect  Bank: Select Bank
 	SignalName: init_calib_complete
 		PadLocation: No connect  Bank: Select Bank
 	SignalName: tg_compare_error

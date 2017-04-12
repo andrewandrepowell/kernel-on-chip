@@ -18,7 +18,7 @@ use work.koc_lock_pack.koc_lock;
 
 entity koc_wrapper is
     generic (
-        lower_app : string := "none";
+        lower_app : string := "boot";
         upper_app : string := "none";
         upper_ext : boolean := true);
     port (
@@ -190,18 +190,18 @@ architecture Behavioral of koc_wrapper is
             peripheral_aresetn : OUT STD_LOGIC_VECTOR(0 DOWNTO 0));
     end component;
     
+    constant axi_cpu_bus_slave_amount : integer := 1;
+    constant axi_cpu_bus_slave_id_width : integer := 0;
+    constant axi_cpu_bus_master_id_width : integer := clogb2(axi_cpu_bus_slave_amount)+axi_cpu_bus_slave_id_width;
+    
     constant axi_slave_amount : integer := 3;
-    constant axi_slave_id_width : integer := 0;
+    constant axi_slave_id_width : integer := axi_cpu_bus_master_id_width;
     constant axi_master_id_width : integer := clogb2(axi_slave_amount)+axi_slave_id_width;
     constant axi_address_width : integer := 32;
     constant axi_data_width : integer := 32;
     constant bd_address_width : integer := 15;
     constant bd_data_width : integer := axi_data_width;
     constant bd_bram_depth : integer := 16384;
-    
-    constant axi_cpu_bus_slave_amount : integer := 1;
-    constant axi_cpu_bus_slave_id_width : integer := 0;
-    constant axi_cpu_bus_master_id_width : integer := clogb2(axi_cpu_bus_slave_amount)+axi_slave_id_width;
     
     signal aclk : std_logic;
     signal interconnect_aresetn : std_logic_vector(0 downto 0);
@@ -337,6 +337,7 @@ architecture Behavioral of koc_wrapper is
     signal cpu_2_axi_full_rvalid : std_logic;
     signal cpu_2_axi_full_rready : std_logic;
     signal ram_axi_full_awid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal ram_axi_full_awid_ext : std_logic_vector(3 downto 0) := (others=>'0');
     signal ram_axi_full_awaddr : std_logic_vector(axi_address_width-1 downto 0) := (others=>'0');
     signal ram_axi_full_awlen : std_logic_vector(7 downto 0);
     signal ram_axi_full_awsize : std_logic_vector(2 downto 0);
@@ -355,10 +356,12 @@ architecture Behavioral of koc_wrapper is
     signal ram_axi_full_wvalid : std_logic;
     signal ram_axi_full_wready : std_logic;
     signal ram_axi_full_bid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal ram_axi_full_bid_ext : std_logic_vector(3 downto 0) := (others=>'0');
     signal ram_axi_full_bresp : std_logic_vector(1 downto 0);
     signal ram_axi_full_bvalid : std_logic;
     signal ram_axi_full_bready : std_logic;
     signal ram_axi_full_arid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal ram_axi_full_arid_ext : std_logic_vector(3 downto 0) := (others=>'0');
     signal ram_axi_full_araddr : std_logic_vector(axi_address_width-1 downto 0) := (others=>'0');
     signal ram_axi_full_arlen : std_logic_vector(7 downto 0);
     signal ram_axi_full_arsize : std_logic_vector(2 downto 0);
@@ -372,6 +375,7 @@ architecture Behavioral of koc_wrapper is
     signal ram_axi_full_arvalid : std_logic;
     signal ram_axi_full_arready : std_logic;
     signal ram_axi_full_rid : std_logic_vector(axi_master_id_width-1 downto 0);
+    signal ram_axi_full_rid_ext : std_logic_vector(3 downto 0) := (others=>'0');
     signal ram_axi_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
     signal ram_axi_full_rresp : std_logic_vector(1 downto 0);
     signal ram_axi_full_rlast : std_logic;
@@ -1109,6 +1113,11 @@ begin
 
     ram_axi_full_arlock_slv(0) <= ram_axi_full_arlock;
     ram_axi_full_awlock_slv(0) <= ram_axi_full_awlock;
+    
+    ram_axi_full_awid_ext(axi_master_id_width-1 downto 0) <= ram_axi_full_awid;
+    ram_axi_full_bid_ext(axi_master_id_width-1 downto 0) <= ram_axi_full_bid;
+    ram_axi_full_arid_ext(axi_master_id_width-1 downto 0) <= ram_axi_full_arid;
+    ram_axi_full_rid_ext(axi_master_id_width-1 downto 0) <= ram_axi_full_rid;
 
     -------------------------------------
     -- Main Memory and Synchronization --
@@ -1132,10 +1141,10 @@ begin
                 DDR2_odt => DDR2_odt,
                 DDR2_ras_n => DDR2_ras_n,
                 DDR2_we_n => DDR2_we_n,
-                S00_AXI_araddr => ram_axi_full_araddr(bd_address_width-1 downto 0),
+                S00_AXI_araddr => ram_axi_full_araddr,
                 S00_AXI_arburst => ram_axi_full_arburst,
                 S00_AXI_arcache => ram_axi_full_arcache,
-                S00_AXI_arid => ram_axi_full_arid,
+                S00_AXI_arid => ram_axi_full_arid_ext,
                 S00_AXI_arlen => ram_axi_full_arlen,
                 S00_AXI_arlock => ram_axi_full_arlock_slv,
                 S00_AXI_arprot => ram_axi_full_arprot,
@@ -1144,10 +1153,10 @@ begin
                 S00_AXI_arregion => ram_axi_full_arregion,
                 S00_AXI_arsize => ram_axi_full_arsize,
                 S00_AXI_arvalid => ram_axi_full_arvalid,
-                S00_AXI_awaddr => ram_axi_full_awaddr(bd_address_width-1 downto 0),
+                S00_AXI_awaddr => ram_axi_full_awaddr,
                 S00_AXI_awburst => ram_axi_full_awburst,
                 S00_AXI_awcache => ram_axi_full_awcache,
-                S00_AXI_awid => ram_axi_full_awid,
+                S00_AXI_awid => ram_axi_full_awid_ext,
                 S00_AXI_awlen => ram_axi_full_awlen,
                 S00_AXI_awlock => ram_axi_full_awlock_slv,
                 S00_AXI_awprot => ram_axi_full_awprot,
@@ -1156,12 +1165,12 @@ begin
                 S00_AXI_awregion => ram_axi_full_awregion,
                 S00_AXI_awsize => ram_axi_full_awsize,
                 S00_AXI_awvalid => ram_axi_full_awvalid,
-                S00_AXI_bid => ram_axi_full_bid,
+                S00_AXI_bid => ram_axi_full_bid_ext,
                 S00_AXI_bready => ram_axi_full_bready,
                 S00_AXI_bresp => ram_axi_full_bresp,
                 S00_AXI_bvalid => ram_axi_full_bvalid,
                 S00_AXI_rdata => ram_axi_full_rdata,
-                S00_AXI_rid => ram_axi_full_rid,
+                S00_AXI_rid => ram_axi_full_rid_ext,
                 S00_AXI_rlast => ram_axi_full_rlast,
                 S00_AXI_rready => ram_axi_full_rready,
                 S00_AXI_rresp => ram_axi_full_rresp,
@@ -2113,45 +2122,45 @@ begin
             port map (
                 aclk => aclk,
                 aresetn => peripheral_aresetn(0),
-                axi_awid => cpu_0_axi_full_awid,
-                axi_awaddr => cpu_0_axi_full_awaddr,
-                axi_awlen => cpu_0_axi_full_awlen,
-                axi_awsize => cpu_0_axi_full_awsize,
-                axi_awburst => cpu_0_axi_full_awburst,
-                axi_awlock => cpu_0_axi_full_awlock,
-                axi_awcache => cpu_0_axi_full_awcache,
-                axi_awprot => cpu_0_axi_full_awprot,
-                axi_awqos => cpu_0_axi_full_awqos,
-                axi_awregion => cpu_0_axi_full_awregion,
-                axi_awvalid => cpu_0_axi_full_awvalid,
-                axi_awready => cpu_0_axi_full_awready,
-                axi_wdata => cpu_0_axi_full_wdata,
-                axi_wstrb => cpu_0_axi_full_wstrb,
-                axi_wlast => cpu_0_axi_full_wlast,
-                axi_wvalid => cpu_0_axi_full_wvalid,
-                axi_wready => cpu_0_axi_full_wready,
-                axi_bid => cpu_0_axi_full_bid,
-                axi_bresp => cpu_0_axi_full_bresp,
-                axi_bvalid => cpu_0_axi_full_bvalid,
-                axi_bready => cpu_0_axi_full_bready,
-                axi_arid => cpu_0_axi_full_arid,
-                axi_araddr => cpu_0_axi_full_araddr,
-                axi_arlen => cpu_0_axi_full_arlen,
-                axi_arsize => cpu_0_axi_full_arsize,
-                axi_arburst => cpu_0_axi_full_arburst,
-                axi_arlock => cpu_0_axi_full_arlock,
-                axi_arcache => cpu_0_axi_full_arcache,
-                axi_arprot => cpu_0_axi_full_arprot,
-                axi_arqos => cpu_0_axi_full_arqos,
-                axi_arregion => cpu_0_axi_full_arregion,
-                axi_arvalid => cpu_0_axi_full_arvalid,
-                axi_arready => cpu_0_axi_full_arready,
-                axi_rid => cpu_0_axi_full_rid,
-                axi_rdata => cpu_0_axi_full_rdata,
-                axi_rresp => cpu_0_axi_full_rresp,
-                axi_rlast => cpu_0_axi_full_rlast,
-                axi_rvalid => cpu_0_axi_full_rvalid,
-                axi_rready => cpu_0_axi_full_rready,
+                axi_awid => cpu_bus_0_full_awid,
+                axi_awaddr => cpu_bus_0_full_awaddr,
+                axi_awlen => cpu_bus_0_full_awlen,
+                axi_awsize => cpu_bus_0_full_awsize,
+                axi_awburst => cpu_bus_0_full_awburst,
+                axi_awlock => cpu_bus_0_full_awlock,
+                axi_awcache => cpu_bus_0_full_awcache,
+                axi_awprot => cpu_bus_0_full_awprot,
+                axi_awqos => cpu_bus_0_full_awqos,
+                axi_awregion => cpu_bus_0_full_awregion,
+                axi_awvalid => cpu_bus_0_full_awvalid,
+                axi_awready => cpu_bus_0_full_awready,
+                axi_wdata => cpu_bus_0_full_wdata,
+                axi_wstrb => cpu_bus_0_full_wstrb,
+                axi_wlast => cpu_bus_0_full_wlast,
+                axi_wvalid => cpu_bus_0_full_wvalid,
+                axi_wready => cpu_bus_0_full_wready,
+                axi_bid => cpu_bus_0_full_bid,
+                axi_bresp => cpu_bus_0_full_bresp,
+                axi_bvalid => cpu_bus_0_full_bvalid,
+                axi_bready => cpu_bus_0_full_bready,
+                axi_arid => cpu_bus_0_full_arid,
+                axi_araddr => cpu_bus_0_full_araddr,
+                axi_arlen => cpu_bus_0_full_arlen,
+                axi_arsize => cpu_bus_0_full_arsize,
+                axi_arburst => cpu_bus_0_full_arburst,
+                axi_arlock => cpu_bus_0_full_arlock,
+                axi_arcache => cpu_bus_0_full_arcache,
+                axi_arprot => cpu_bus_0_full_arprot,
+                axi_arqos => cpu_bus_0_full_arqos,
+                axi_arregion => cpu_bus_0_full_arregion,
+                axi_arvalid => cpu_bus_0_full_arvalid,
+                axi_arready => cpu_bus_0_full_arready,
+                axi_rid => cpu_bus_0_full_rid,
+                axi_rdata => cpu_bus_0_full_rdata,
+                axi_rresp => cpu_bus_0_full_rresp,
+                axi_rlast => cpu_bus_0_full_rlast,
+                axi_rvalid => cpu_bus_0_full_rvalid,
+                axi_rready => cpu_bus_0_full_rready,
                 intr_in => cpu_int);
     
     plasoc_cpu_1_inst : plasoc_cpu 
@@ -2164,45 +2173,45 @@ begin
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
-            axi_awid => cpu_1_axi_full_awid,
-            axi_awaddr => cpu_1_axi_full_awaddr,
-            axi_awlen => cpu_1_axi_full_awlen,
-            axi_awsize => cpu_1_axi_full_awsize,
-            axi_awburst => cpu_1_axi_full_awburst,
-            axi_awlock => cpu_1_axi_full_awlock,
-            axi_awcache => cpu_1_axi_full_awcache,
-            axi_awprot => cpu_1_axi_full_awprot,
-            axi_awqos => cpu_1_axi_full_awqos,
-            axi_awregion => cpu_1_axi_full_awregion,
-            axi_awvalid => cpu_1_axi_full_awvalid,
-            axi_awready => cpu_1_axi_full_awready,
-            axi_wdata => cpu_1_axi_full_wdata,
-            axi_wstrb => cpu_1_axi_full_wstrb,
-            axi_wlast => cpu_1_axi_full_wlast,
-            axi_wvalid => cpu_1_axi_full_wvalid,
-            axi_wready => cpu_1_axi_full_wready,
-            axi_bid => cpu_1_axi_full_bid,
-            axi_bresp => cpu_1_axi_full_bresp,
-            axi_bvalid => cpu_1_axi_full_bvalid,
-            axi_bready => cpu_1_axi_full_bready,
-            axi_arid => cpu_1_axi_full_arid,
-            axi_araddr => cpu_1_axi_full_araddr,
-            axi_arlen => cpu_1_axi_full_arlen,
-            axi_arsize => cpu_1_axi_full_arsize,
-            axi_arburst => cpu_1_axi_full_arburst,
-            axi_arlock => cpu_1_axi_full_arlock,
-            axi_arcache => cpu_1_axi_full_arcache,
-            axi_arprot => cpu_1_axi_full_arprot,
-            axi_arqos => cpu_1_axi_full_arqos,
-            axi_arregion => cpu_1_axi_full_arregion,
-            axi_arvalid => cpu_1_axi_full_arvalid,
-            axi_arready => cpu_1_axi_full_arready,
-            axi_rid => cpu_1_axi_full_rid,
-            axi_rdata => cpu_1_axi_full_rdata,
-            axi_rresp => cpu_1_axi_full_rresp,
-            axi_rlast => cpu_1_axi_full_rlast,
-            axi_rvalid => cpu_1_axi_full_rvalid,
-            axi_rready => cpu_1_axi_full_rready,
+            axi_awid => cpu_bus_1_full_awid,
+            axi_awaddr => cpu_bus_1_full_awaddr,
+            axi_awlen => cpu_bus_1_full_awlen,
+            axi_awsize => cpu_bus_1_full_awsize,
+            axi_awburst => cpu_bus_1_full_awburst,
+            axi_awlock => cpu_bus_1_full_awlock,
+            axi_awcache => cpu_bus_1_full_awcache,
+            axi_awprot => cpu_bus_1_full_awprot,
+            axi_awqos => cpu_bus_1_full_awqos,
+            axi_awregion => cpu_bus_1_full_awregion,
+            axi_awvalid => cpu_bus_1_full_awvalid,
+            axi_awready => cpu_bus_1_full_awready,
+            axi_wdata => cpu_bus_1_full_wdata,
+            axi_wstrb => cpu_bus_1_full_wstrb,
+            axi_wlast => cpu_bus_1_full_wlast,
+            axi_wvalid => cpu_bus_1_full_wvalid,
+            axi_wready => cpu_bus_1_full_wready,
+            axi_bid => cpu_bus_1_full_bid,
+            axi_bresp => cpu_bus_1_full_bresp,
+            axi_bvalid => cpu_bus_1_full_bvalid,
+            axi_bready => cpu_bus_1_full_bready,
+            axi_arid => cpu_bus_1_full_arid,
+            axi_araddr => cpu_bus_1_full_araddr,
+            axi_arlen => cpu_bus_1_full_arlen,
+            axi_arsize => cpu_bus_1_full_arsize,
+            axi_arburst => cpu_bus_1_full_arburst,
+            axi_arlock => cpu_bus_1_full_arlock,
+            axi_arcache => cpu_bus_1_full_arcache,
+            axi_arprot => cpu_bus_1_full_arprot,
+            axi_arqos => cpu_bus_1_full_arqos,
+            axi_arregion => cpu_bus_1_full_arregion,
+            axi_arvalid => cpu_bus_1_full_arvalid,
+            axi_arready => cpu_bus_1_full_arready,
+            axi_rid => cpu_bus_1_full_rid,
+            axi_rdata => cpu_bus_1_full_rdata,
+            axi_rresp => cpu_bus_1_full_rresp,
+            axi_rlast => cpu_bus_1_full_rlast,
+            axi_rvalid => cpu_bus_1_full_rvalid,
+            axi_rready => cpu_bus_1_full_rready,
             intr_in => cpu_int);
             
     plasoc_cpu_2_inst : plasoc_cpu 
@@ -2215,45 +2224,45 @@ begin
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
-            axi_awid => cpu_2_axi_full_awid,
-            axi_awaddr => cpu_2_axi_full_awaddr,
-            axi_awlen => cpu_2_axi_full_awlen,
-            axi_awsize => cpu_2_axi_full_awsize,
-            axi_awburst => cpu_2_axi_full_awburst,
-            axi_awlock => cpu_2_axi_full_awlock,
-            axi_awcache => cpu_2_axi_full_awcache,
-            axi_awprot => cpu_2_axi_full_awprot,
-            axi_awqos => cpu_2_axi_full_awqos,
-            axi_awregion => cpu_2_axi_full_awregion,
-            axi_awvalid => cpu_2_axi_full_awvalid,
-            axi_awready => cpu_2_axi_full_awready,
-            axi_wdata => cpu_2_axi_full_wdata,
-            axi_wstrb => cpu_2_axi_full_wstrb,
-            axi_wlast => cpu_2_axi_full_wlast,
-            axi_wvalid => cpu_2_axi_full_wvalid,
-            axi_wready => cpu_2_axi_full_wready,
-            axi_bid => cpu_2_axi_full_bid,
-            axi_bresp => cpu_2_axi_full_bresp,
-            axi_bvalid => cpu_2_axi_full_bvalid,
-            axi_bready => cpu_2_axi_full_bready,
-            axi_arid => cpu_2_axi_full_arid,
-            axi_araddr => cpu_2_axi_full_araddr,
-            axi_arlen => cpu_2_axi_full_arlen,
-            axi_arsize => cpu_2_axi_full_arsize,
-            axi_arburst => cpu_2_axi_full_arburst,
-            axi_arlock => cpu_2_axi_full_arlock,
-            axi_arcache => cpu_2_axi_full_arcache,
-            axi_arprot => cpu_2_axi_full_arprot,
-            axi_arqos => cpu_2_axi_full_arqos,
-            axi_arregion => cpu_2_axi_full_arregion,
-            axi_arvalid => cpu_2_axi_full_arvalid,
-            axi_arready => cpu_2_axi_full_arready,
-            axi_rid => cpu_2_axi_full_rid,
-            axi_rdata => cpu_2_axi_full_rdata,
-            axi_rresp => cpu_2_axi_full_rresp,
-            axi_rlast => cpu_2_axi_full_rlast,
-            axi_rvalid => cpu_2_axi_full_rvalid,
-            axi_rready => cpu_2_axi_full_rready,
+            axi_awid => cpu_bus_2_full_awid,
+            axi_awaddr => cpu_bus_2_full_awaddr,
+            axi_awlen => cpu_bus_2_full_awlen,
+            axi_awsize => cpu_bus_2_full_awsize,
+            axi_awburst => cpu_bus_2_full_awburst,
+            axi_awlock => cpu_bus_2_full_awlock,
+            axi_awcache => cpu_bus_2_full_awcache,
+            axi_awprot => cpu_bus_2_full_awprot,
+            axi_awqos => cpu_bus_2_full_awqos,
+            axi_awregion => cpu_bus_2_full_awregion,
+            axi_awvalid => cpu_bus_2_full_awvalid,
+            axi_awready => cpu_bus_2_full_awready,
+            axi_wdata => cpu_bus_2_full_wdata,
+            axi_wstrb => cpu_bus_2_full_wstrb,
+            axi_wlast => cpu_bus_2_full_wlast,
+            axi_wvalid => cpu_bus_2_full_wvalid,
+            axi_wready => cpu_bus_2_full_wready,
+            axi_bid => cpu_bus_2_full_bid,
+            axi_bresp => cpu_bus_2_full_bresp,
+            axi_bvalid => cpu_bus_2_full_bvalid,
+            axi_bready => cpu_bus_2_full_bready,
+            axi_arid => cpu_bus_2_full_arid,
+            axi_araddr => cpu_bus_2_full_araddr,
+            axi_arlen => cpu_bus_2_full_arlen,
+            axi_arsize => cpu_bus_2_full_arsize,
+            axi_arburst => cpu_bus_2_full_arburst,
+            axi_arlock => cpu_bus_2_full_arlock,
+            axi_arcache => cpu_bus_2_full_arcache,
+            axi_arprot => cpu_bus_2_full_arprot,
+            axi_arqos => cpu_bus_2_full_arqos,
+            axi_arregion => cpu_bus_2_full_arregion,
+            axi_arvalid => cpu_bus_2_full_arvalid,
+            axi_arready => cpu_bus_2_full_arready,
+            axi_rid => cpu_bus_2_full_rid,
+            axi_rdata => cpu_bus_2_full_rdata,
+            axi_rresp => cpu_bus_2_full_rresp,
+            axi_rlast => cpu_bus_2_full_rlast,
+            axi_rvalid => cpu_bus_2_full_rvalid,
+            axi_rready => cpu_bus_2_full_rready,
             intr_in => cpu_int);
             
     ---------------------------------------------
@@ -2815,25 +2824,25 @@ begin
             aresetn => peripheral_aresetn(0),
             data_in => std_logic_vector(to_unsigned(0,axi_data_width)),
             data_out => open,
-            axi_awaddr => cpuid_gpio_bus_0_full_awaddr,
-            axi_awprot => cpuid_gpio_bus_0_full_awprot,
-            axi_awvalid => cpuid_gpio_bus_0_full_awvalid,
-            axi_awready => cpuid_gpio_bus_0_full_awready,
-            axi_wvalid => cpuid_gpio_bus_0_full_wvalid,
-            axi_wready => cpuid_gpio_bus_0_full_wready,
-            axi_wdata => cpuid_gpio_bus_0_full_wdata,
-            axi_wstrb => cpuid_gpio_bus_0_full_wstrb,
-            axi_bvalid => cpuid_gpio_bus_0_full_bvalid,
-            axi_bready => cpuid_gpio_bus_0_full_bready,
-            axi_bresp => cpuid_gpio_bus_0_full_bresp,
-            axi_araddr => cpuid_gpio_bus_0_full_araddr,
-            axi_arprot => cpuid_gpio_bus_0_full_arprot,
-            axi_arvalid => cpuid_gpio_bus_0_full_arvalid,
-            axi_arready => cpuid_gpio_bus_0_full_arready,
-            axi_rdata => cpuid_gpio_bus_0_full_rdata,
-            axi_rvalid => cpuid_gpio_bus_0_full_rvalid,
-            axi_rready => cpuid_gpio_bus_0_full_rready,
-            axi_rresp => cpuid_gpio_bus_0_full_rresp,
+            axi_awaddr => cpuid_gpio_bus_0_lite_awaddr,
+            axi_awprot => cpuid_gpio_bus_0_lite_awprot,
+            axi_awvalid => cpuid_gpio_bus_0_lite_awvalid,
+            axi_awready => cpuid_gpio_bus_0_lite_awready,
+            axi_wvalid => cpuid_gpio_bus_0_lite_wvalid,
+            axi_wready => cpuid_gpio_bus_0_lite_wready,
+            axi_wdata => cpuid_gpio_bus_0_lite_wdata,
+            axi_wstrb => cpuid_gpio_bus_0_lite_wstrb,
+            axi_bvalid => cpuid_gpio_bus_0_lite_bvalid,
+            axi_bready => cpuid_gpio_bus_0_lite_bready,
+            axi_bresp => cpuid_gpio_bus_0_lite_bresp,
+            axi_araddr => cpuid_gpio_bus_0_lite_araddr,
+            axi_arprot => cpuid_gpio_bus_0_lite_arprot,
+            axi_arvalid => cpuid_gpio_bus_0_lite_arvalid,
+            axi_arready => cpuid_gpio_bus_0_lite_arready,
+            axi_rdata => cpuid_gpio_bus_0_lite_rdata,
+            axi_rvalid => cpuid_gpio_bus_0_lite_rvalid,
+            axi_rready => cpuid_gpio_bus_0_lite_rready,
+            axi_rresp => cpuid_gpio_bus_0_lite_rresp,
             int => open);
     
     cpuid_gpio_1_inst : plasoc_gpio
@@ -2847,25 +2856,25 @@ begin
             aresetn => peripheral_aresetn(0),
             data_in => std_logic_vector(to_unsigned(1,axi_data_width)),
             data_out => open,
-            axi_awaddr => cpuid_gpio_bus_1_full_awaddr,
-            axi_awprot => cpuid_gpio_bus_1_full_awprot,
-            axi_awvalid => cpuid_gpio_bus_1_full_awvalid,
-            axi_awready => cpuid_gpio_bus_1_full_awready,
-            axi_wvalid => cpuid_gpio_bus_1_full_wvalid,
-            axi_wready => cpuid_gpio_bus_1_full_wready,
-            axi_wdata => cpuid_gpio_bus_1_full_wdata,
-            axi_wstrb => cpuid_gpio_bus_1_full_wstrb,
-            axi_bvalid => cpuid_gpio_bus_1_full_bvalid,
-            axi_bready => cpuid_gpio_bus_1_full_bready,
-            axi_bresp => cpuid_gpio_bus_1_full_bresp,
-            axi_araddr => cpuid_gpio_bus_1_full_araddr,
-            axi_arprot => cpuid_gpio_bus_1_full_arprot,
-            axi_arvalid => cpuid_gpio_bus_1_full_arvalid,
-            axi_arready => cpuid_gpio_bus_1_full_arready,
-            axi_rdata => cpuid_gpio_bus_1_full_rdata,
-            axi_rvalid => cpuid_gpio_bus_1_full_rvalid,
-            axi_rready => cpuid_gpio_bus_1_full_rready,
-            axi_rresp => cpuid_gpio_bus_1_full_rresp,
+            axi_awaddr => cpuid_gpio_bus_1_lite_awaddr,
+            axi_awprot => cpuid_gpio_bus_1_lite_awprot,
+            axi_awvalid => cpuid_gpio_bus_1_lite_awvalid,
+            axi_awready => cpuid_gpio_bus_1_lite_awready,
+            axi_wvalid => cpuid_gpio_bus_1_lite_wvalid,
+            axi_wready => cpuid_gpio_bus_1_lite_wready,
+            axi_wdata => cpuid_gpio_bus_1_lite_wdata,
+            axi_wstrb => cpuid_gpio_bus_1_lite_wstrb,
+            axi_bvalid => cpuid_gpio_bus_1_lite_bvalid,
+            axi_bready => cpuid_gpio_bus_1_lite_bready,
+            axi_bresp => cpuid_gpio_bus_1_lite_bresp,
+            axi_araddr => cpuid_gpio_bus_1_lite_araddr,
+            axi_arprot => cpuid_gpio_bus_1_lite_arprot,
+            axi_arvalid => cpuid_gpio_bus_1_lite_arvalid,
+            axi_arready => cpuid_gpio_bus_1_lite_arready,
+            axi_rdata => cpuid_gpio_bus_1_lite_rdata,
+            axi_rvalid => cpuid_gpio_bus_1_lite_rvalid,
+            axi_rready => cpuid_gpio_bus_1_lite_rready,
+            axi_rresp => cpuid_gpio_bus_1_lite_rresp,
             int => open);
             
     cpuid_gpio_2_inst : plasoc_gpio
@@ -2879,25 +2888,25 @@ begin
             aresetn => peripheral_aresetn(0),
             data_in => std_logic_vector(to_unsigned(2,axi_data_width)),
             data_out => open,
-            axi_awaddr => cpuid_gpio_bus_2_full_awaddr,
-            axi_awprot => cpuid_gpio_bus_2_full_awprot,
-            axi_awvalid => cpuid_gpio_bus_2_full_awvalid,
-            axi_awready => cpuid_gpio_bus_2_full_awready,
-            axi_wvalid => cpuid_gpio_bus_2_full_wvalid,
-            axi_wready => cpuid_gpio_bus_2_full_wready,
-            axi_wdata => cpuid_gpio_bus_2_full_wdata,
-            axi_wstrb => cpuid_gpio_bus_2_full_wstrb,
-            axi_bvalid => cpuid_gpio_bus_2_full_bvalid,
-            axi_bready => cpuid_gpio_bus_2_full_bready,
-            axi_bresp => cpuid_gpio_bus_2_full_bresp,
-            axi_araddr => cpuid_gpio_bus_2_full_araddr,
-            axi_arprot => cpuid_gpio_bus_2_full_arprot,
-            axi_arvalid => cpuid_gpio_bus_2_full_arvalid,
-            axi_arready => cpuid_gpio_bus_2_full_arready,
-            axi_rdata => cpuid_gpio_bus_2_full_rdata,
-            axi_rvalid => cpuid_gpio_bus_2_full_rvalid,
-            axi_rready => cpuid_gpio_bus_2_full_rready,
-            axi_rresp => cpuid_gpio_bus_2_full_rresp,
+            axi_awaddr => cpuid_gpio_bus_2_lite_awaddr,
+            axi_awprot => cpuid_gpio_bus_2_lite_awprot,
+            axi_awvalid => cpuid_gpio_bus_2_lite_awvalid,
+            axi_awready => cpuid_gpio_bus_2_lite_awready,
+            axi_wvalid => cpuid_gpio_bus_2_lite_wvalid,
+            axi_wready => cpuid_gpio_bus_2_lite_wready,
+            axi_wdata => cpuid_gpio_bus_2_lite_wdata,
+            axi_wstrb => cpuid_gpio_bus_2_lite_wstrb,
+            axi_bvalid => cpuid_gpio_bus_2_lite_bvalid,
+            axi_bready => cpuid_gpio_bus_2_lite_bready,
+            axi_bresp => cpuid_gpio_bus_2_lite_bresp,
+            axi_araddr => cpuid_gpio_bus_2_lite_araddr,
+            axi_arprot => cpuid_gpio_bus_2_lite_arprot,
+            axi_arvalid => cpuid_gpio_bus_2_lite_arvalid,
+            axi_arready => cpuid_gpio_bus_2_lite_arready,
+            axi_rdata => cpuid_gpio_bus_2_lite_rdata,
+            axi_rvalid => cpuid_gpio_bus_2_lite_rvalid,
+            axi_rready => cpuid_gpio_bus_2_lite_rready,
+            axi_rresp => cpuid_gpio_bus_2_lite_rresp,
             int => open);
             
     -----------------------------

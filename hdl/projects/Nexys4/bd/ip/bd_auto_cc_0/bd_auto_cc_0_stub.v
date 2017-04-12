@@ -1,10 +1,10 @@
 // Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2016.4 (win64) Build 1756540 Mon Jan 23 19:11:23 MST 2017
-// Date        : Fri Apr 07 14:49:56 2017
+// Date        : Tue Apr 11 16:12:52 2017
 // Host        : LAPTOP-IQ9G3D1I running 64-bit major release  (build 9200)
-// Command     : write_verilog -force -mode synth_stub
-//               c:/Users/andrewandre/Documents/GitHub/kernel-on-chip/hdl/projects/Nexys4/rtl_project/rtl_project.srcs/sources_1/bd/bd/ip/bd_auto_cc_0/bd_auto_cc_0_stub.v
+// Command     : write_verilog -force -mode synth_stub -rename_top bd_auto_cc_0 -prefix
+//               bd_auto_cc_0_ bd_auto_cc_0_stub.v
 // Design      : bd_auto_cc_0
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7a100tcsg324-1

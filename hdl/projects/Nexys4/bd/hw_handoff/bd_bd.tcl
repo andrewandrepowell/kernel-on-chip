@@ -134,16 +134,13 @@ proc write_mig_file_bd_mig_7series_0_0 { str_mig_prj_filepath } {
    puts $mig_prj_file {    <XADC_En>Enabled</XADC_En>}
    puts $mig_prj_file {    <TargetFPGA>xc7a100t-csg324/-1</TargetFPGA>}
    puts $mig_prj_file {    <Version>4.0</Version>}
-   puts $mig_prj_file {    <SystemClock>Single-Ended</SystemClock>}
+   puts $mig_prj_file {    <SystemClock>No Buffer</SystemClock>}
    puts $mig_prj_file {    <ReferenceClock>No Buffer</ReferenceClock>}
    puts $mig_prj_file {    <SysResetPolarity>ACTIVE LOW</SysResetPolarity>}
    puts $mig_prj_file {    <BankSelectionFlag>FALSE</BankSelectionFlag>}
    puts $mig_prj_file {    <InternalVref>1</InternalVref>}
    puts $mig_prj_file {    <dci_hr_inouts_inputs>50 Ohms</dci_hr_inouts_inputs>}
    puts $mig_prj_file {    <dci_cascade>0</dci_cascade>}
-   puts $mig_prj_file {    <FPGADevice>}
-   puts $mig_prj_file {        <selected>7a/xc7a100ti-csg324</selected>}
-   puts $mig_prj_file {    </FPGADevice>}
    puts $mig_prj_file {    <Controller number="0" >}
    puts $mig_prj_file {        <MemoryDevice>DDR2_SDRAM/Components/MT47H64M16HR-25E</MemoryDevice>}
    puts $mig_prj_file {        <TimePeriod>4000</TimePeriod>}
@@ -218,11 +215,8 @@ proc write_mig_file_bd_mig_7series_0_0 { str_mig_prj_filepath } {
    puts $mig_prj_file {            <Pin VCCAUX_IO="" IOSTANDARD="SSTL18_II" PADName="N4" SLEW="" name="ddr2_ras_n" IN_TERM="" />}
    puts $mig_prj_file {            <Pin VCCAUX_IO="" IOSTANDARD="SSTL18_II" PADName="N2" SLEW="" name="ddr2_we_n" IN_TERM="" />}
    puts $mig_prj_file {        </PinSelection>}
-   puts $mig_prj_file {        <System_Clock>}
-   puts $mig_prj_file {            <Pin PADName="E3(MRCC_P)" Bank="35" name="sys_clk_i" />}
-   puts $mig_prj_file {        </System_Clock>}
    puts $mig_prj_file {        <System_Control>}
-   puts $mig_prj_file {            <Pin PADName="C12(DQS)" Bank="15" name="sys_rst" />}
+   puts $mig_prj_file {            <Pin PADName="No connect" Bank="Select Bank" name="sys_rst" />}
    puts $mig_prj_file {            <Pin PADName="No connect" Bank="Select Bank" name="init_calib_complete" />}
    puts $mig_prj_file {            <Pin PADName="No connect" Bank="Select Bank" name="tg_compare_error" />}
    puts $mig_prj_file {        </System_Control>}
@@ -350,12 +344,39 @@ CONFIG.ASSOCIATED_RESET {peripheral_aresetn:interconnect_aresetn} \
 CONFIG.NUM_MI {1} \
  ] $axi_interconnect_0
 
+  # Create instance: clk_wiz_0, and set properties
+  set clk_wiz_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:5.3 clk_wiz_0 ]
+  set_property -dict [ list \
+CONFIG.CLKOUT1_JITTER {114.829} \
+CONFIG.CLKOUT1_PHASE_ERROR {98.575} \
+CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {200.000} \
+CONFIG.CLK_OUT1_PORT {clk_ref_i} \
+CONFIG.MMCM_CLKFBOUT_MULT_F {10.000} \
+CONFIG.MMCM_CLKIN1_PERIOD {10.0} \
+CONFIG.MMCM_CLKIN2_PERIOD {10.0} \
+CONFIG.MMCM_CLKOUT0_DIVIDE_F {5.000} \
+CONFIG.MMCM_COMPENSATION {ZHOLD} \
+CONFIG.MMCM_DIVCLK_DIVIDE {1} \
+CONFIG.RESET_PORT {resetn} \
+CONFIG.RESET_TYPE {ACTIVE_LOW} \
+CONFIG.USE_LOCKED {false} \
+ ] $clk_wiz_0
+
+  # Need to retain value_src of defaults
+  set_property -dict [ list \
+CONFIG.CLKOUT1_PHASE_ERROR.VALUE_SRC {DEFAULT} \
+CONFIG.MMCM_CLKFBOUT_MULT_F.VALUE_SRC {DEFAULT} \
+CONFIG.MMCM_CLKIN1_PERIOD.VALUE_SRC {DEFAULT} \
+CONFIG.MMCM_CLKIN2_PERIOD.VALUE_SRC {DEFAULT} \
+CONFIG.MMCM_COMPENSATION.VALUE_SRC {DEFAULT} \
+ ] $clk_wiz_0
+
   # Create instance: mig_7series_0, and set properties
   set mig_7series_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mig_7series:4.0 mig_7series_0 ]
 
   # Generate the PRJ File for MIG
   set str_mig_folder [get_property IP_DIR [ get_ips [ get_property CONFIG.Component_Name $mig_7series_0 ] ] ]
-  set str_mig_file_name mig_b.prj
+  set str_mig_file_name mig_a.prj
   set str_mig_file_path ${str_mig_folder}/${str_mig_file_name}
 
   write_mig_file_bd_mig_7series_0_0 $str_mig_file_path
@@ -364,7 +385,7 @@ CONFIG.NUM_MI {1} \
 CONFIG.BOARD_MIG_PARAM {Custom} \
 CONFIG.MIG_DONT_TOUCH_PARAM {Custom} \
 CONFIG.RESET_BOARD_INTERFACE {Custom} \
-CONFIG.XML_INPUT_FILE {mig_b.prj} \
+CONFIG.XML_INPUT_FILE {mig_a.prj} \
  ] $mig_7series_0
 
   # Create instance: proc_sys_reset_0, and set properties
@@ -379,6 +400,7 @@ CONFIG.XML_INPUT_FILE {mig_b.prj} \
   connect_bd_intf_net -intf_net mig_7series_0_DDR2 [get_bd_intf_ports DDR2] [get_bd_intf_pins mig_7series_0/DDR2]
 
   # Create port connections
+  connect_bd_net -net clk_wiz_0_clk_ref_i [get_bd_pins clk_wiz_0/clk_ref_i] [get_bd_pins mig_7series_0/clk_ref_i]
   connect_bd_net -net mig_7series_0_mmcm_locked [get_bd_pins mig_7series_0/mmcm_locked] [get_bd_pins proc_sys_reset_0/dcm_locked] [get_bd_pins proc_sys_reset_1/dcm_locked]
   connect_bd_net -net mig_7series_0_ui_addn_clk_0 [get_bd_ports aclk] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins mig_7series_0/ui_addn_clk_0] [get_bd_pins proc_sys_reset_0/slowest_sync_clk]
   connect_bd_net -net mig_7series_0_ui_clk [get_bd_pins axi_interconnect_0/M00_ACLK] [get_bd_pins mig_7series_0/ui_clk] [get_bd_pins proc_sys_reset_1/slowest_sync_clk]
@@ -386,7 +408,7 @@ CONFIG.XML_INPUT_FILE {mig_b.prj} \
   connect_bd_net -net proc_sys_reset_0_interconnect_aresetn [get_bd_ports interconnect_aresetn] [get_bd_pins axi_interconnect_0/ARESETN] [get_bd_pins proc_sys_reset_0/interconnect_aresetn]
   connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_ports peripheral_aresetn] [get_bd_pins axi_interconnect_0/S00_ARESETN] [get_bd_pins proc_sys_reset_0/peripheral_aresetn]
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_0/M00_ARESETN] [get_bd_pins mig_7series_0/aresetn] [get_bd_pins proc_sys_reset_1/peripheral_aresetn]
-  connect_bd_net -net sys_clk_i_1 [get_bd_ports sys_clk_i] [get_bd_pins mig_7series_0/clk_ref_i] [get_bd_pins mig_7series_0/sys_clk_i]
+  connect_bd_net -net sys_clk_i_1 [get_bd_ports sys_clk_i] [get_bd_pins clk_wiz_0/clk_in1] [get_bd_pins mig_7series_0/sys_clk_i]
   connect_bd_net -net sys_rst_1 [get_bd_ports sys_rst] [get_bd_pins mig_7series_0/sys_rst]
 
   # Create address segments
@@ -397,29 +419,31 @@ CONFIG.XML_INPUT_FILE {mig_b.prj} \
    guistr: "# # String gsaved with Nlview 6.6.5b  2016-09-06 bk=1.3687 VDI=39 GEI=35 GUI=JA:1.6
 #  -string -flagsOSRD
 preplace port S00_AXI -pg 1 -y 80 -defaultsOSRD
-preplace port sys_rst -pg 1 -y 300 -defaultsOSRD
+preplace port sys_rst -pg 1 -y 340 -defaultsOSRD
 preplace port DDR2 -pg 1 -y 130 -defaultsOSRD
-preplace port sys_clk_i -pg 1 -y 280 -defaultsOSRD
+preplace port sys_clk_i -pg 1 -y 360 -defaultsOSRD
 preplace port aclk -pg 1 -y 80 -defaultsOSRD
-preplace portBus peripheral_aresetn -pg 1 -y 320 -defaultsOSRD
-preplace portBus interconnect_aresetn -pg 1 -y 290 -defaultsOSRD
+preplace portBus peripheral_aresetn -pg 1 -y 470 -defaultsOSRD
+preplace portBus interconnect_aresetn -pg 1 -y 20 -defaultsOSRD
 preplace inst mig_7series_0 -pg 1 -lvl 3 -y 180 -defaultsOSRD
-preplace inst proc_sys_reset_0 -pg 1 -lvl 3 -y 410 -defaultsOSRD
-preplace inst proc_sys_reset_1 -pg 1 -lvl 1 -y 180 -defaultsOSRD
+preplace inst proc_sys_reset_0 -pg 1 -lvl 3 -y 370 -defaultsOSRD
+preplace inst proc_sys_reset_1 -pg 1 -lvl 1 -y 250 -defaultsOSRD
 preplace inst axi_interconnect_0 -pg 1 -lvl 2 -y 140 -defaultsOSRD
-preplace netloc sys_rst_1 1 0 3 NJ 300 NJ 300 660J
-preplace netloc mig_7series_0_mmcm_locked 1 0 4 30 450 NJ 450 680 280 1010
+preplace inst clk_wiz_0 -pg 1 -lvl 2 -y 350 -defaultsOSRD
+preplace netloc sys_rst_1 1 0 3 20J 160 370 270 680
+preplace netloc mig_7series_0_mmcm_locked 1 0 4 40 410 NJ 410 710 460 1050
 preplace netloc mig_7series_0_DDR2 1 3 1 NJ
-preplace netloc sys_clk_i_1 1 0 3 NJ 280 NJ 280 670
-preplace netloc mig_7series_0_ui_addn_clk_0 1 1 3 370 370 650 80 1030
-preplace netloc proc_sys_reset_1_peripheral_aresetn 1 1 2 360 20 680
-preplace netloc proc_sys_reset_0_interconnect_aresetn 1 1 3 380 290 NJ 290 1030
-preplace netloc mig_7series_0_ui_clk 1 0 4 20 10 350 10 NJ 10 1010
+preplace netloc clk_wiz_0_clk_ref_i 1 2 1 700
+preplace netloc sys_clk_i_1 1 0 3 NJ 360 370 280 710
+preplace netloc mig_7series_0_ui_addn_clk_0 1 1 3 390 20 720 20 1080
+preplace netloc proc_sys_reset_1_peripheral_aresetn 1 1 2 360 260 690
+preplace netloc proc_sys_reset_0_interconnect_aresetn 1 1 3 400 470 NJ 470 1090
+preplace netloc mig_7series_0_ui_clk 1 0 4 40 10 380 10 NJ 10 1070
 preplace netloc S00_AXI_1 1 0 2 NJ 80 NJ
 preplace netloc axi_interconnect_0_M00_AXI 1 2 1 N
-preplace netloc proc_sys_reset_0_peripheral_aresetn 1 1 3 390 320 NJ 320 1010
-preplace netloc mig_7series_0_ui_clk_sync_rst 1 0 4 20 310 NJ 310 670 310 1020
-levelinfo -pg 1 0 190 520 850 1050 -top 0 -bot 500
+preplace netloc proc_sys_reset_0_peripheral_aresetn 1 1 3 410 480 NJ 480 1100
+preplace netloc mig_7series_0_ui_clk_sync_rst 1 0 4 30 340 390J 290 730 280 1060
+levelinfo -pg 1 0 200 550 890 1120 -top 0 -bot 490
 ",
 }
 

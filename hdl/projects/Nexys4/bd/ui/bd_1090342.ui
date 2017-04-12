@@ -2,28 +2,31 @@
    guistr: "# # String gsaved with Nlview 6.6.5b  2016-09-06 bk=1.3687 VDI=39 GEI=35 GUI=JA:1.6
 #  -string -flagsOSRD
 preplace port S00_AXI -pg 1 -y 80 -defaultsOSRD
-preplace port sys_rst -pg 1 -y 300 -defaultsOSRD
+preplace port sys_rst -pg 1 -y 340 -defaultsOSRD
 preplace port DDR2 -pg 1 -y 130 -defaultsOSRD
-preplace port sys_clk_i -pg 1 -y 280 -defaultsOSRD
+preplace port sys_clk_i -pg 1 -y 360 -defaultsOSRD
 preplace port aclk -pg 1 -y 80 -defaultsOSRD
-preplace portBus peripheral_aresetn -pg 1 -y 320 -defaultsOSRD
-preplace portBus interconnect_aresetn -pg 1 -y 290 -defaultsOSRD
+preplace portBus peripheral_aresetn -pg 1 -y 470 -defaultsOSRD
+preplace portBus interconnect_aresetn -pg 1 -y 20 -defaultsOSRD
 preplace inst mig_7series_0 -pg 1 -lvl 3 -y 180 -defaultsOSRD
-preplace inst proc_sys_reset_0 -pg 1 -lvl 3 -y 410 -defaultsOSRD
-preplace inst proc_sys_reset_1 -pg 1 -lvl 1 -y 180 -defaultsOSRD
+preplace inst proc_sys_reset_0 -pg 1 -lvl 3 -y 370 -defaultsOSRD
+preplace inst proc_sys_reset_1 -pg 1 -lvl 1 -y 250 -defaultsOSRD
 preplace inst axi_interconnect_0 -pg 1 -lvl 2 -y 140 -defaultsOSRD
-preplace netloc sys_rst_1 1 0 3 NJ 300 NJ 300 660J
-preplace netloc mig_7series_0_mmcm_locked 1 0 4 30 450 NJ 450 680 280 1010
+preplace inst clk_wiz_0 -pg 1 -lvl 2 -y 350 -defaultsOSRD
+preplace netloc sys_rst_1 1 0 3 20J 160 370 270 680
+preplace netloc mig_7series_0_mmcm_locked 1 0 4 40 410 NJ 410 710 460 1050
 preplace netloc mig_7series_0_DDR2 1 3 1 NJ
-preplace netloc sys_clk_i_1 1 0 3 NJ 280 NJ 280 670
-preplace netloc mig_7series_0_ui_addn_clk_0 1 1 3 370 370 650 80 1030
-preplace netloc proc_sys_reset_1_peripheral_aresetn 1 1 2 360 20 680
-preplace netloc proc_sys_reset_0_interconnect_aresetn 1 1 3 380 290 NJ 290 1030
-preplace netloc mig_7series_0_ui_clk 1 0 4 20 10 350 10 NJ 10 1010
+preplace netloc clk_wiz_0_clk_ref_i 1 2 1 700
+preplace netloc sys_clk_i_1 1 0 3 NJ 360 370 280 710
+preplace netloc mig_7series_0_ui_addn_clk_0 1 1 3 390 20 720 20 1080
+preplace netloc proc_sys_reset_1_peripheral_aresetn 1 1 2 360 260 690
+preplace netloc proc_sys_reset_0_interconnect_aresetn 1 1 3 400 470 NJ 470 1090
+preplace netloc mig_7series_0_ui_clk 1 0 4 40 10 380 10 NJ 10 1070
 preplace netloc S00_AXI_1 1 0 2 NJ 80 NJ
 preplace netloc axi_interconnect_0_M00_AXI 1 2 1 N
-preplace netloc proc_sys_reset_0_peripheral_aresetn 1 1 3 390 320 NJ 320 1010
-preplace netloc mig_7series_0_ui_clk_sync_rst 1 0 4 20 310 NJ 310 670 310 1020
-levelinfo -pg 1 0 190 520 850 1050 -top 0 -bot 500
+preplace netloc proc_sys_reset_0_peripheral_aresetn 1 1 3 410 480 NJ 480 1100
+preplace netloc mig_7series_0_ui_clk_sync_rst 1 0 4 30 340 390J 290 730 280 1060
+levelinfo -pg 1 0 200 550 890 1120 -top 0 -bot 490
 ",
 }
+0

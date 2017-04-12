@@ -1,11 +1,11 @@
 -- Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2016.4 (win64) Build 1756540 Mon Jan 23 19:11:23 MST 2017
--- Date        : Fri Apr 07 14:48:45 2017
+-- Date        : Tue Apr 11 16:11:52 2017
 -- Host        : LAPTOP-IQ9G3D1I running 64-bit major release  (build 9200)
--- Command     : write_vhdl -force -mode funcsim
---               c:/Users/andrewandre/Documents/GitHub/kernel-on-chip/hdl/projects/Nexys4/rtl_project/rtl_project.srcs/sources_1/bd/bd/ip/bd_proc_sys_reset_1_0/bd_proc_sys_reset_1_0_sim_netlist.vhdl
--- Design      : bd_proc_sys_reset_1_0
+-- Command     : write_vhdl -force -mode funcsim -rename_top bd_proc_sys_reset_1_0 -prefix
+--               bd_proc_sys_reset_1_0_ bd_proc_sys_reset_0_0_sim_netlist.vhdl
+-- Design      : bd_proc_sys_reset_0_0
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
 -- Device      : xc7a100tcsg324-1
@@ -24,8 +24,6 @@ entity bd_proc_sys_reset_1_0_cdc_sync is
     p_3_out : in STD_LOGIC_VECTOR ( 2 downto 0 );
     slowest_sync_clk : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of bd_proc_sys_reset_1_0_cdc_sync : entity is "cdc_sync";
 end bd_proc_sys_reset_1_0_cdc_sync;
 
 architecture STRUCTURE of bd_proc_sys_reset_1_0_cdc_sync is
@@ -235,8 +233,6 @@ entity bd_proc_sys_reset_1_0_upcnt_n is
     seq_cnt_en : in STD_LOGIC;
     slowest_sync_clk : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of bd_proc_sys_reset_1_0_upcnt_n : entity is "upcnt_n";
 end bd_proc_sys_reset_1_0_upcnt_n;
 
 architecture STRUCTURE of bd_proc_sys_reset_1_0_upcnt_n is
@@ -401,8 +397,6 @@ entity bd_proc_sys_reset_1_0_lpf is
     mb_debug_sys_rst : in STD_LOGIC;
     aux_reset_in : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of bd_proc_sys_reset_1_0_lpf : entity is "lpf";
 end bd_proc_sys_reset_1_0_lpf;
 
 architecture STRUCTURE of bd_proc_sys_reset_1_0_lpf is
@@ -584,8 +578,6 @@ entity bd_proc_sys_reset_1_0_sequence_psr is
     lpf_int : in STD_LOGIC;
     slowest_sync_clk : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of bd_proc_sys_reset_1_0_sequence_psr : entity is "sequence_psr";
 end bd_proc_sys_reset_1_0_sequence_psr;
 
 architecture STRUCTURE of bd_proc_sys_reset_1_0_sequence_psr is
@@ -924,8 +916,6 @@ entity bd_proc_sys_reset_1_0_proc_sys_reset is
   attribute C_NUM_PERP_ARESETN of bd_proc_sys_reset_1_0_proc_sys_reset : entity is 1;
   attribute C_NUM_PERP_RST : integer;
   attribute C_NUM_PERP_RST of bd_proc_sys_reset_1_0_proc_sys_reset : entity is 1;
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of bd_proc_sys_reset_1_0_proc_sys_reset : entity is "proc_sys_reset";
 end bd_proc_sys_reset_1_0_proc_sys_reset;
 
 architecture STRUCTURE of bd_proc_sys_reset_1_0_proc_sys_reset is
@@ -1036,7 +1026,7 @@ entity bd_proc_sys_reset_1_0 is
   attribute NotValidForBitStream : boolean;
   attribute NotValidForBitStream of bd_proc_sys_reset_1_0 : entity is true;
   attribute CHECK_LICENSE_TYPE : string;
-  attribute CHECK_LICENSE_TYPE of bd_proc_sys_reset_1_0 : entity is "bd_proc_sys_reset_1_0,proc_sys_reset,{}";
+  attribute CHECK_LICENSE_TYPE of bd_proc_sys_reset_1_0 : entity is "bd_proc_sys_reset_0_0,proc_sys_reset,{}";
   attribute downgradeipidentifiedwarnings : string;
   attribute downgradeipidentifiedwarnings of bd_proc_sys_reset_1_0 : entity is "yes";
   attribute x_core_info : string;

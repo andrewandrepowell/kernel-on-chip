@@ -1,18 +1,18 @@
 // Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2016.4 (win64) Build 1756540 Mon Jan 23 19:11:23 MST 2017
-// Date        : Fri Apr 07 14:48:45 2017
+// Date        : Tue Apr 11 16:11:52 2017
 // Host        : LAPTOP-IQ9G3D1I running 64-bit major release  (build 9200)
-// Command     : write_verilog -force -mode funcsim
-//               c:/Users/andrewandre/Documents/GitHub/kernel-on-chip/hdl/projects/Nexys4/rtl_project/rtl_project.srcs/sources_1/bd/bd/ip/bd_proc_sys_reset_1_0/bd_proc_sys_reset_1_0_sim_netlist.v
-// Design      : bd_proc_sys_reset_1_0
+// Command     : write_verilog -force -mode funcsim -rename_top bd_proc_sys_reset_1_0 -prefix
+//               bd_proc_sys_reset_1_0_ bd_proc_sys_reset_0_0_sim_netlist.v
+// Design      : bd_proc_sys_reset_0_0
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
 // Device      : xc7a100tcsg324-1
 // --------------------------------------------------------------------------------
 `timescale 1 ps / 1 ps
 
-(* CHECK_LICENSE_TYPE = "bd_proc_sys_reset_1_0,proc_sys_reset,{}" *) (* downgradeipidentifiedwarnings = "yes" *) (* x_core_info = "proc_sys_reset,Vivado 2016.4" *) 
+(* CHECK_LICENSE_TYPE = "bd_proc_sys_reset_0_0,proc_sys_reset,{}" *) (* downgradeipidentifiedwarnings = "yes" *) (* x_core_info = "proc_sys_reset,Vivado 2016.4" *) 
 (* NotValidForBitStream *)
 module bd_proc_sys_reset_1_0
    (slowest_sync_clk,
@@ -69,7 +69,6 @@ module bd_proc_sys_reset_1_0
         .slowest_sync_clk(slowest_sync_clk));
 endmodule
 
-(* ORIG_REF_NAME = "cdc_sync" *) 
 module bd_proc_sys_reset_1_0_cdc_sync
    (lpf_exr_reg,
     scndry_out,
@@ -251,7 +250,6 @@ module bd_proc_sys_reset_1_0_cdc_sync_0
         .O(lpf_asr_reg));
 endmodule
 
-(* ORIG_REF_NAME = "lpf" *) 
 module bd_proc_sys_reset_1_0_lpf
    (lpf_int,
     slowest_sync_clk,
@@ -400,7 +398,6 @@ endmodule
 (* C_AUX_RESET_HIGH = "1'b0" *) (* C_AUX_RST_WIDTH = "4" *) (* C_EXT_RESET_HIGH = "1'b1" *) 
 (* C_EXT_RST_WIDTH = "4" *) (* C_FAMILY = "artix7" *) (* C_NUM_BUS_RST = "1" *) 
 (* C_NUM_INTERCONNECT_ARESETN = "1" *) (* C_NUM_PERP_ARESETN = "1" *) (* C_NUM_PERP_RST = "1" *) 
-(* ORIG_REF_NAME = "proc_sys_reset" *) 
 module bd_proc_sys_reset_1_0_proc_sys_reset
    (slowest_sync_clk,
     ext_reset_in,
@@ -501,7 +498,6 @@ module bd_proc_sys_reset_1_0_proc_sys_reset
         .R(1'b0));
 endmodule
 
-(* ORIG_REF_NAME = "sequence_psr" *) 
 module bd_proc_sys_reset_1_0_sequence_psr
    (Core,
     bsr,
@@ -742,7 +738,6 @@ module bd_proc_sys_reset_1_0_sequence_psr
         .R(lpf_int));
 endmodule
 
-(* ORIG_REF_NAME = "upcnt_n" *) 
 module bd_proc_sys_reset_1_0_upcnt_n
    (Q,
     seq_clr,

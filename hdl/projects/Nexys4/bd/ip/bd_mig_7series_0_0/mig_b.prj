@@ -10,16 +10,13 @@
     <XADC_En>Enabled</XADC_En>
     <TargetFPGA>xc7a100t-csg324/-1</TargetFPGA>
     <Version>4.0</Version>
-    <SystemClock>Single-Ended</SystemClock>
+    <SystemClock>No Buffer</SystemClock>
     <ReferenceClock>No Buffer</ReferenceClock>
     <SysResetPolarity>ACTIVE LOW</SysResetPolarity>
     <BankSelectionFlag>FALSE</BankSelectionFlag>
     <InternalVref>1</InternalVref>
     <dci_hr_inouts_inputs>50 Ohms</dci_hr_inouts_inputs>
     <dci_cascade>0</dci_cascade>
-    <FPGADevice>
-        <selected>7a/xc7a100ti-csg324</selected>
-    </FPGADevice>
     <Controller number="0" >
         <MemoryDevice>DDR2_SDRAM/Components/MT47H64M16HR-25E</MemoryDevice>
         <TimePeriod>4000</TimePeriod>
@@ -29,7 +26,7 @@
         <UIExtraClocks>1</UIExtraClocks>
         <MMCM_VCO>1200</MMCM_VCO>
         <MMCMClkOut0>24.000</MMCMClkOut0>
-        <MMCMClkOut1>1</MMCMClkOut1>
+        <MMCMClkOut1>6</MMCMClkOut1>
         <MMCMClkOut2>1</MMCMClkOut2>
         <MMCMClkOut3>1</MMCMClkOut3>
         <MMCMClkOut4>1</MMCMClkOut4>
@@ -94,11 +91,8 @@
             <Pin VCCAUX_IO="" IOSTANDARD="SSTL18_II" PADName="N4" SLEW="" name="ddr2_ras_n" IN_TERM="" />
             <Pin VCCAUX_IO="" IOSTANDARD="SSTL18_II" PADName="N2" SLEW="" name="ddr2_we_n" IN_TERM="" />
         </PinSelection>
-        <System_Clock>
-            <Pin PADName="E3(MRCC_P)" Bank="35" name="sys_clk_i" />
-        </System_Clock>
         <System_Control>
-            <Pin PADName="C12(DQS)" Bank="15" name="sys_rst" />
+            <Pin PADName="No connect" Bank="Select Bank" name="sys_rst" />
             <Pin PADName="No connect" Bank="Select Bank" name="init_calib_complete" />
             <Pin PADName="No connect" Bank="Select Bank" name="tg_compare_error" />
         </System_Control>
