@@ -5,8 +5,8 @@ CPU_BUS_FLAGS = \
 	--slave_count 1 --master_count 3 \
 	--address_width 32 --data_width 32 --slave_id_width 0 \
 	--slave_names cpu --master_names boot_bram ip cpuid_gpio \
-	--master_base_addresses 00000000 10000000 fffffff8 \
-	--master_high_addresses 0000ffff efffffff fffffffb
+	--master_base_addresses 00000000 10000000 ffffff08 \
+	--master_high_addresses 0000ffff efffffff ffffff0b
 
 INTERCONNECT_FLAGS = \
 	--slave_count 3 --master_count 6 \
