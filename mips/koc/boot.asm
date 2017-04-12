@@ -1,5 +1,3 @@
-CPUID_GPIO_ADDR		=	0x	
-	
 	.data
 	
 	.global		InitStack
