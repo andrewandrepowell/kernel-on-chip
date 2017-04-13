@@ -1,0 +1,13 @@
+
+#ifndef KOC_DEFS_H_
+#define KOC_DEFS_H_
+
+#define KOC_CPU_TOTAL						(3)
+#define KOC_CPU_STACK_SIZE					(512)
+#define KOC_CPUID_BASE_ADDRESS				(0xffffff08)
+#define KOC_LOCK_BASE_ADDRESS				(0x20000000)
+#define KOC_CPU_MASTER_CPUID				(0)
+#define KOC_CPU_CNTRL_BLK_SIZE				(12+KOC_CPU_STACK_SIZE)
+#define KOC_CPU_START_STACK_POINTER_OFFSET	(KOC_CPU_CNTRL_BLK_SIZE-24)
+
+#endif /* KOC_DEFS_H_ */

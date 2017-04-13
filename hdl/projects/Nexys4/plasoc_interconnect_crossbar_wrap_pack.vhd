@@ -16,8 +16,8 @@ component plasoc_interconnect_crossbar_wrap is
 		axi_slave_id_width : integer := 0;
 		axi_master_amount : integer := 6;
 		axi_slave_amount : integer := 3;
-		axi_master_base_address : std_logic_vector := X"200400002003000020020000200100002000000010000000";
-		axi_master_high_address : std_logic_vector := X"2004ffff2003ffff2002ffff2001ffff2000ffff1fffffff"
+		axi_master_base_address : std_logic_vector := X"200000002004000020030000200200002001000010000000";
+		axi_master_high_address : std_logic_vector := X"2000ffff2004ffff2003ffff2002ffff2001ffff1fffffff"
 	);
 	port
 	(

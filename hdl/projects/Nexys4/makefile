@@ -12,8 +12,8 @@ INTERCONNECT_FLAGS = \
 	--slave_count 3 --master_count 6 \
 	--address_width 32 --data_width 32 --slave_id_width 0 \
 	--slave_names cpu_0 cpu_1 cpu_2 --master_names ram int timer gpio uart lock \
-	--master_base_addresses 10000000 20000000 20010000 20020000 20030000 20040000 \
-	--master_high_addresses 1fffffff 2000ffff 2001ffff 2002ffff 2003ffff 2004ffff
+	--master_base_addresses 10000000 20010000 20020000 20030000 20040000 20000000 \
+	--master_high_addresses 1fffffff 2001ffff 2002ffff 2003ffff 2004ffff 2000ffff
 
 all: cpu0_bus cpu1_bus cpu2_bus interconnect
 
