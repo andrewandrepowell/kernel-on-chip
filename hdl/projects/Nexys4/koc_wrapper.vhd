@@ -1155,6 +1155,134 @@ architecture Behavioral of koc_wrapper is
     signal cpuid_gpio_bus_2_lite_rready : std_logic;                                                      
     signal cpuid_gpio_bus_2_lite_rresp : std_logic_vector(1 downto 0); 
     
+    -----------------------------------
+    -- CPU INT AXI Full2Lite Signals --
+    -----------------------------------
+    
+    signal int_bus_0_lite_awaddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal int_bus_0_lite_awprot : std_logic_vector(2 downto 0);                                   
+    signal int_bus_0_lite_awvalid : std_logic;                                                     
+    signal int_bus_0_lite_awready : std_logic;                                                    
+    signal int_bus_0_lite_wvalid : std_logic;                                                      
+    signal int_bus_0_lite_wready : std_logic;                                                     
+    signal int_bus_0_lite_wdata : std_logic_vector(axi_data_width-1 downto 0);                     
+    signal int_bus_0_lite_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);                   
+    signal int_bus_0_lite_bvalid : std_logic;                                                     
+    signal int_bus_0_lite_bready : std_logic;                                                      
+    signal int_bus_0_lite_bresp : std_logic_vector(1 downto 0);                     
+    signal int_bus_0_lite_araddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal int_bus_0_lite_arprot : std_logic_vector(2 downto 0);                                   
+    signal int_bus_0_lite_arvalid : std_logic;                                                     
+    signal int_bus_0_lite_arready : std_logic;                                                    
+    signal int_bus_0_lite_rdata : std_logic_vector(axi_data_width-1 downto 0);   
+    signal int_bus_0_lite_rvalid : std_logic;                                                     
+    signal int_bus_0_lite_rready : std_logic;                                                      
+    signal int_bus_0_lite_rresp : std_logic_vector(1 downto 0);  
+    
+    signal int_bus_1_lite_awaddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal int_bus_1_lite_awprot : std_logic_vector(2 downto 0);                                   
+    signal int_bus_1_lite_awvalid : std_logic;                                                     
+    signal int_bus_1_lite_awready : std_logic;                                                    
+    signal int_bus_1_lite_wvalid : std_logic;                                                      
+    signal int_bus_1_lite_wready : std_logic;                                                     
+    signal int_bus_1_lite_wdata : std_logic_vector(axi_data_width-1 downto 0);                     
+    signal int_bus_1_lite_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);                   
+    signal int_bus_1_lite_bvalid : std_logic;                                                     
+    signal int_bus_1_lite_bready : std_logic;                                                      
+    signal int_bus_1_lite_bresp : std_logic_vector(1 downto 0);                     
+    signal int_bus_1_lite_araddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal int_bus_1_lite_arprot : std_logic_vector(2 downto 0);                                   
+    signal int_bus_1_lite_arvalid : std_logic;                                                     
+    signal int_bus_1_lite_arready : std_logic;                                                    
+    signal int_bus_1_lite_rdata : std_logic_vector(axi_data_width-1 downto 0);   
+    signal int_bus_1_lite_rvalid : std_logic;                                                     
+    signal int_bus_1_lite_rready : std_logic;                                                      
+    signal int_bus_1_lite_rresp : std_logic_vector(1 downto 0); 
+    
+    signal int_bus_2_lite_awaddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal int_bus_2_lite_awprot : std_logic_vector(2 downto 0);                                   
+    signal int_bus_2_lite_awvalid : std_logic;                                                     
+    signal int_bus_2_lite_awready : std_logic;                                                    
+    signal int_bus_2_lite_wvalid : std_logic;                                                      
+    signal int_bus_2_lite_wready : std_logic;                                                     
+    signal int_bus_2_lite_wdata : std_logic_vector(axi_data_width-1 downto 0);                     
+    signal int_bus_2_lite_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);                   
+    signal int_bus_2_lite_bvalid : std_logic;                                                     
+    signal int_bus_2_lite_bready : std_logic;                                                      
+    signal int_bus_2_lite_bresp : std_logic_vector(1 downto 0);                     
+    signal int_bus_2_lite_araddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal int_bus_2_lite_arprot : std_logic_vector(2 downto 0);                                   
+    signal int_bus_2_lite_arvalid : std_logic;                                                     
+    signal int_bus_2_lite_arready : std_logic;                                                    
+    signal int_bus_2_lite_rdata : std_logic_vector(axi_data_width-1 downto 0);   
+    signal int_bus_2_lite_rvalid : std_logic;                                                     
+    signal int_bus_2_lite_rready : std_logic;                                                      
+    signal int_bus_2_lite_rresp : std_logic_vector(1 downto 0); 
+    
+    --------------------------------------
+    -- CPU Signal AXI Full2Lite Signals --
+    --------------------------------------
+    
+    signal signal_bus_0_lite_awaddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal signal_bus_0_lite_awprot : std_logic_vector(2 downto 0);                                   
+    signal signal_bus_0_lite_awvalid : std_logic;                                                     
+    signal signal_bus_0_lite_awready : std_logic;                                                    
+    signal signal_bus_0_lite_wvalid : std_logic;                                                      
+    signal signal_bus_0_lite_wready : std_logic;                                                     
+    signal signal_bus_0_lite_wdata : std_logic_vector(axi_data_width-1 downto 0);                     
+    signal signal_bus_0_lite_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);                   
+    signal signal_bus_0_lite_bvalid : std_logic;                                                     
+    signal signal_bus_0_lite_bready : std_logic;                                                      
+    signal signal_bus_0_lite_bresp : std_logic_vector(1 downto 0);                     
+    signal signal_bus_0_lite_araddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal signal_bus_0_lite_arprot : std_logic_vector(2 downto 0);                                   
+    signal signal_bus_0_lite_arvalid : std_logic;                                                     
+    signal signal_bus_0_lite_arready : std_logic;                                                    
+    signal signal_bus_0_lite_rdata : std_logic_vector(axi_data_width-1 downto 0);   
+    signal signal_bus_0_lite_rvalid : std_logic;                                                     
+    signal signal_bus_0_lite_rready : std_logic;                                                      
+    signal signal_bus_0_lite_rresp : std_logic_vector(1 downto 0);  
+    
+    signal signal_bus_1_lite_awaddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal signal_bus_1_lite_awprot : std_logic_vector(2 downto 0);                                   
+    signal signal_bus_1_lite_awvalid : std_logic;                                                     
+    signal signal_bus_1_lite_awready : std_logic;                                                    
+    signal signal_bus_1_lite_wvalid : std_logic;                                                      
+    signal signal_bus_1_lite_wready : std_logic;                                                     
+    signal signal_bus_1_lite_wdata : std_logic_vector(axi_data_width-1 downto 0);                     
+    signal signal_bus_1_lite_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);                   
+    signal signal_bus_1_lite_bvalid : std_logic;                                                     
+    signal signal_bus_1_lite_bready : std_logic;                                                      
+    signal signal_bus_1_lite_bresp : std_logic_vector(1 downto 0);                     
+    signal signal_bus_1_lite_araddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal signal_bus_1_lite_arprot : std_logic_vector(2 downto 0);                                   
+    signal signal_bus_1_lite_arvalid : std_logic;                                                     
+    signal signal_bus_1_lite_arready : std_logic;                                                    
+    signal signal_bus_1_lite_rdata : std_logic_vector(axi_data_width-1 downto 0);   
+    signal signal_bus_1_lite_rvalid : std_logic;                                                     
+    signal signal_bus_1_lite_rready : std_logic;                                                      
+    signal signal_bus_1_lite_rresp : std_logic_vector(1 downto 0); 
+    
+    signal signal_bus_2_lite_awaddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal signal_bus_2_lite_awprot : std_logic_vector(2 downto 0);                                   
+    signal signal_bus_2_lite_awvalid : std_logic;                                                     
+    signal signal_bus_2_lite_awready : std_logic;                                                    
+    signal signal_bus_2_lite_wvalid : std_logic;                                                      
+    signal signal_bus_2_lite_wready : std_logic;                                                     
+    signal signal_bus_2_lite_wdata : std_logic_vector(axi_data_width-1 downto 0);                     
+    signal signal_bus_2_lite_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);                   
+    signal signal_bus_2_lite_bvalid : std_logic;                                                     
+    signal signal_bus_2_lite_bready : std_logic;                                                      
+    signal signal_bus_2_lite_bresp : std_logic_vector(1 downto 0);                     
+    signal signal_bus_2_lite_araddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal signal_bus_2_lite_arprot : std_logic_vector(2 downto 0);                                   
+    signal signal_bus_2_lite_arvalid : std_logic;                                                     
+    signal signal_bus_2_lite_arready : std_logic;                                                    
+    signal signal_bus_2_lite_rdata : std_logic_vector(axi_data_width-1 downto 0);   
+    signal signal_bus_2_lite_rvalid : std_logic;                                                     
+    signal signal_bus_2_lite_rready : std_logic;                                                      
+    signal signal_bus_2_lite_rresp : std_logic_vector(1 downto 0); 
+    
     ---------------------------------------------
     -- Main Interconnect AXI Full2Lite Signals --
     ---------------------------------------------
@@ -2422,55 +2550,55 @@ begin
     ------------------------
     
     plasoc_cpu_0_inst : plasoc_cpu 
-            generic map (
-                cache_address_width => cache_address_width,
-                cache_way_width => cache_way_width,
-                cache_index_width => cache_index_width,
-                cache_offset_width => cache_offset_width,
-                cache_replace_strat => cache_replace_strat)
-            port map (
-                aclk => aclk,
-                aresetn => peripheral_aresetn(0),
-                axi_awid => cpu_bus_0_full_awid,
-                axi_awaddr => cpu_bus_0_full_awaddr,
-                axi_awlen => cpu_bus_0_full_awlen,
-                axi_awsize => cpu_bus_0_full_awsize,
-                axi_awburst => cpu_bus_0_full_awburst,
-                axi_awlock => cpu_bus_0_full_awlock,
-                axi_awcache => cpu_bus_0_full_awcache,
-                axi_awprot => cpu_bus_0_full_awprot,
-                axi_awqos => cpu_bus_0_full_awqos,
-                axi_awregion => cpu_bus_0_full_awregion,
-                axi_awvalid => cpu_bus_0_full_awvalid,
-                axi_awready => cpu_bus_0_full_awready,
-                axi_wdata => cpu_bus_0_full_wdata,
-                axi_wstrb => cpu_bus_0_full_wstrb,
-                axi_wlast => cpu_bus_0_full_wlast,
-                axi_wvalid => cpu_bus_0_full_wvalid,
-                axi_wready => cpu_bus_0_full_wready,
-                axi_bid => cpu_bus_0_full_bid,
-                axi_bresp => cpu_bus_0_full_bresp,
-                axi_bvalid => cpu_bus_0_full_bvalid,
-                axi_bready => cpu_bus_0_full_bready,
-                axi_arid => cpu_bus_0_full_arid,
-                axi_araddr => cpu_bus_0_full_araddr,
-                axi_arlen => cpu_bus_0_full_arlen,
-                axi_arsize => cpu_bus_0_full_arsize,
-                axi_arburst => cpu_bus_0_full_arburst,
-                axi_arlock => cpu_bus_0_full_arlock,
-                axi_arcache => cpu_bus_0_full_arcache,
-                axi_arprot => cpu_bus_0_full_arprot,
-                axi_arqos => cpu_bus_0_full_arqos,
-                axi_arregion => cpu_bus_0_full_arregion,
-                axi_arvalid => cpu_bus_0_full_arvalid,
-                axi_arready => cpu_bus_0_full_arready,
-                axi_rid => cpu_bus_0_full_rid,
-                axi_rdata => cpu_bus_0_full_rdata,
-                axi_rresp => cpu_bus_0_full_rresp,
-                axi_rlast => cpu_bus_0_full_rlast,
-                axi_rvalid => cpu_bus_0_full_rvalid,
-                axi_rready => cpu_bus_0_full_rready,
-                intr_in => cpu_int);
+        generic map (
+            cache_address_width => cache_address_width,
+            cache_way_width => cache_way_width,
+            cache_index_width => cache_index_width,
+            cache_offset_width => cache_offset_width,
+            cache_replace_strat => cache_replace_strat)
+        port map (
+            aclk => aclk,
+            aresetn => peripheral_aresetn(0),
+            axi_awid => cpu_bus_0_full_awid,
+            axi_awaddr => cpu_bus_0_full_awaddr,
+            axi_awlen => cpu_bus_0_full_awlen,
+            axi_awsize => cpu_bus_0_full_awsize,
+            axi_awburst => cpu_bus_0_full_awburst,
+            axi_awlock => cpu_bus_0_full_awlock,
+            axi_awcache => cpu_bus_0_full_awcache,
+            axi_awprot => cpu_bus_0_full_awprot,
+            axi_awqos => cpu_bus_0_full_awqos,
+            axi_awregion => cpu_bus_0_full_awregion,
+            axi_awvalid => cpu_bus_0_full_awvalid,
+            axi_awready => cpu_bus_0_full_awready,
+            axi_wdata => cpu_bus_0_full_wdata,
+            axi_wstrb => cpu_bus_0_full_wstrb,
+            axi_wlast => cpu_bus_0_full_wlast,
+            axi_wvalid => cpu_bus_0_full_wvalid,
+            axi_wready => cpu_bus_0_full_wready,
+            axi_bid => cpu_bus_0_full_bid,
+            axi_bresp => cpu_bus_0_full_bresp,
+            axi_bvalid => cpu_bus_0_full_bvalid,
+            axi_bready => cpu_bus_0_full_bready,
+            axi_arid => cpu_bus_0_full_arid,
+            axi_araddr => cpu_bus_0_full_araddr,
+            axi_arlen => cpu_bus_0_full_arlen,
+            axi_arsize => cpu_bus_0_full_arsize,
+            axi_arburst => cpu_bus_0_full_arburst,
+            axi_arlock => cpu_bus_0_full_arlock,
+            axi_arcache => cpu_bus_0_full_arcache,
+            axi_arprot => cpu_bus_0_full_arprot,
+            axi_arqos => cpu_bus_0_full_arqos,
+            axi_arregion => cpu_bus_0_full_arregion,
+            axi_arvalid => cpu_bus_0_full_arvalid,
+            axi_arready => cpu_bus_0_full_arready,
+            axi_rid => cpu_bus_0_full_rid,
+            axi_rdata => cpu_bus_0_full_rdata,
+            axi_rresp => cpu_bus_0_full_rresp,
+            axi_rlast => cpu_bus_0_full_rlast,
+            axi_rvalid => cpu_bus_0_full_rvalid,
+            axi_rready => cpu_bus_0_full_rready,
+            intr_in => cpu_int);
     
     plasoc_cpu_1_inst : plasoc_cpu 
         generic map (
@@ -2778,6 +2906,416 @@ begin
             m_axi_rvalid => cpuid_gpio_bus_2_lite_rvalid,
             m_axi_rready => cpuid_gpio_bus_2_lite_rready,
             m_axi_rresp => cpuid_gpio_bus_2_lite_rresp);
+            
+    ------------------------------------------
+    -- CPU INT AXI Full2Lite Instantiations --
+    ------------------------------------------
+    
+    int_0_full2lite : plasoc_axi4_full2lite 
+        generic map (
+            axi_slave_id_width => axi_cpu_bus_master_id_width,
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,                                   
+            aresetn => peripheral_aresetn(0),
+            s_axi_awid => int_bus_0_full_awid,
+            s_axi_awaddr => int_bus_0_full_awaddr,
+            s_axi_awlen => int_bus_0_full_awlen,
+            s_axi_awsize => int_bus_0_full_awsize,
+            s_axi_awburst => int_bus_0_full_awburst,
+            s_axi_awlock => int_bus_0_full_awlock,
+            s_axi_awcache => int_bus_0_full_awcache,
+            s_axi_awprot => int_bus_0_full_awprot,
+            s_axi_awqos => int_bus_0_full_awqos,
+            s_axi_awregion => int_bus_0_full_awregion,
+            s_axi_awvalid => int_bus_0_full_awvalid,
+            s_axi_awready => int_bus_0_full_awready,
+            s_axi_wdata => int_bus_0_full_wdata,
+            s_axi_wstrb => int_bus_0_full_wstrb,
+            s_axi_wlast => int_bus_0_full_wlast,
+            s_axi_wvalid => int_bus_0_full_wvalid,
+            s_axi_wready => int_bus_0_full_wready,
+            s_axi_bid => int_bus_0_full_bid,
+            s_axi_bresp => int_bus_0_full_bresp,
+            s_axi_bvalid => int_bus_0_full_bvalid,
+            s_axi_bready => int_bus_0_full_bready,
+            s_axi_arid => int_bus_0_full_arid,
+            s_axi_araddr => int_bus_0_full_araddr,
+            s_axi_arlen => int_bus_0_full_arlen,
+            s_axi_arsize => int_bus_0_full_arsize,
+            s_axi_arburst => int_bus_0_full_arburst,
+            s_axi_arlock => int_bus_0_full_arlock,
+            s_axi_arcache => int_bus_0_full_arcache,
+            s_axi_arprot => int_bus_0_full_arprot,
+            s_axi_arqos => int_bus_0_full_arqos,
+            s_axi_arregion => int_bus_0_full_arregion,
+            s_axi_arvalid => int_bus_0_full_arvalid,
+            s_axi_arready => int_bus_0_full_arready,
+            s_axi_rid => int_bus_0_full_rid,
+            s_axi_rdata => int_bus_0_full_rdata,
+            s_axi_rresp => int_bus_0_full_rresp,
+            s_axi_rlast => int_bus_0_full_rlast,
+            s_axi_rvalid => int_bus_0_full_rvalid,
+            s_axi_rready => int_bus_0_full_rready,
+            m_axi_awaddr => int_bus_0_lite_awaddr,
+            m_axi_awprot => int_bus_0_lite_awprot,
+            m_axi_awvalid => int_bus_0_lite_awvalid,
+            m_axi_awready => int_bus_0_lite_awready,
+            m_axi_wvalid => int_bus_0_lite_wvalid,
+            m_axi_wready => int_bus_0_lite_wready,
+            m_axi_wdata => int_bus_0_lite_wdata,
+            m_axi_wstrb => int_bus_0_lite_wstrb,
+            m_axi_bvalid => int_bus_0_lite_bvalid,
+            m_axi_bready => int_bus_0_lite_bready,
+            m_axi_bresp => int_bus_0_lite_bresp,
+            m_axi_araddr => int_bus_0_lite_araddr,
+            m_axi_arprot => int_bus_0_lite_arprot,
+            m_axi_arvalid => int_bus_0_lite_arvalid,
+            m_axi_arready => int_bus_0_lite_arready,
+            m_axi_rdata => int_bus_0_lite_rdata,
+            m_axi_rvalid => int_bus_0_lite_rvalid,
+            m_axi_rready => int_bus_0_lite_rready,
+            m_axi_rresp => int_bus_0_lite_rresp);
+            
+    int_1_full2lite : plasoc_axi4_full2lite 
+        generic map (
+            axi_slave_id_width => axi_cpu_bus_master_id_width,
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,                                   
+            aresetn => peripheral_aresetn(0),
+            s_axi_awid => int_bus_1_full_awid,
+            s_axi_awaddr => int_bus_1_full_awaddr,
+            s_axi_awlen => int_bus_1_full_awlen,
+            s_axi_awsize => int_bus_1_full_awsize,
+            s_axi_awburst => int_bus_1_full_awburst,
+            s_axi_awlock => int_bus_1_full_awlock,
+            s_axi_awcache => int_bus_1_full_awcache,
+            s_axi_awprot => int_bus_1_full_awprot,
+            s_axi_awqos => int_bus_1_full_awqos,
+            s_axi_awregion => int_bus_1_full_awregion,
+            s_axi_awvalid => int_bus_1_full_awvalid,
+            s_axi_awready => int_bus_1_full_awready,
+            s_axi_wdata => int_bus_1_full_wdata,
+            s_axi_wstrb => int_bus_1_full_wstrb,
+            s_axi_wlast => int_bus_1_full_wlast,
+            s_axi_wvalid => int_bus_1_full_wvalid,
+            s_axi_wready => int_bus_1_full_wready,
+            s_axi_bid => int_bus_1_full_bid,
+            s_axi_bresp => int_bus_1_full_bresp,
+            s_axi_bvalid => int_bus_1_full_bvalid,
+            s_axi_bready => int_bus_1_full_bready,
+            s_axi_arid => int_bus_1_full_arid,
+            s_axi_araddr => int_bus_1_full_araddr,
+            s_axi_arlen => int_bus_1_full_arlen,
+            s_axi_arsize => int_bus_1_full_arsize,
+            s_axi_arburst => int_bus_1_full_arburst,
+            s_axi_arlock => int_bus_1_full_arlock,
+            s_axi_arcache => int_bus_1_full_arcache,
+            s_axi_arprot => int_bus_1_full_arprot,
+            s_axi_arqos => int_bus_1_full_arqos,
+            s_axi_arregion => int_bus_1_full_arregion,
+            s_axi_arvalid => int_bus_1_full_arvalid,
+            s_axi_arready => int_bus_1_full_arready,
+            s_axi_rid => int_bus_1_full_rid,
+            s_axi_rdata => int_bus_1_full_rdata,
+            s_axi_rresp => int_bus_1_full_rresp,
+            s_axi_rlast => int_bus_1_full_rlast,
+            s_axi_rvalid => int_bus_1_full_rvalid,
+            s_axi_rready => int_bus_1_full_rready,
+            m_axi_awaddr => int_bus_1_lite_awaddr,
+            m_axi_awprot => int_bus_1_lite_awprot,
+            m_axi_awvalid => int_bus_1_lite_awvalid,
+            m_axi_awready => int_bus_1_lite_awready,
+            m_axi_wvalid => int_bus_1_lite_wvalid,
+            m_axi_wready => int_bus_1_lite_wready,
+            m_axi_wdata => int_bus_1_lite_wdata,
+            m_axi_wstrb => int_bus_1_lite_wstrb,
+            m_axi_bvalid => int_bus_1_lite_bvalid,
+            m_axi_bready => int_bus_1_lite_bready,
+            m_axi_bresp => int_bus_1_lite_bresp,
+            m_axi_araddr => int_bus_1_lite_araddr,
+            m_axi_arprot => int_bus_1_lite_arprot,
+            m_axi_arvalid => int_bus_1_lite_arvalid,
+            m_axi_arready => int_bus_1_lite_arready,
+            m_axi_rdata => int_bus_1_lite_rdata,
+            m_axi_rvalid => int_bus_1_lite_rvalid,
+            m_axi_rready => int_bus_1_lite_rready,
+            m_axi_rresp => int_bus_1_lite_rresp);
+            
+    int_2_full2lite : plasoc_axi4_full2lite 
+        generic map (
+            axi_slave_id_width => axi_cpu_bus_master_id_width,
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,                                   
+            aresetn => peripheral_aresetn(0),
+            s_axi_awid => int_bus_2_full_awid,
+            s_axi_awaddr => int_bus_2_full_awaddr,
+            s_axi_awlen => int_bus_2_full_awlen,
+            s_axi_awsize => int_bus_2_full_awsize,
+            s_axi_awburst => int_bus_2_full_awburst,
+            s_axi_awlock => int_bus_2_full_awlock,
+            s_axi_awcache => int_bus_2_full_awcache,
+            s_axi_awprot => int_bus_2_full_awprot,
+            s_axi_awqos => int_bus_2_full_awqos,
+            s_axi_awregion => int_bus_2_full_awregion,
+            s_axi_awvalid => int_bus_2_full_awvalid,
+            s_axi_awready => int_bus_2_full_awready,
+            s_axi_wdata => int_bus_2_full_wdata,
+            s_axi_wstrb => int_bus_2_full_wstrb,
+            s_axi_wlast => int_bus_2_full_wlast,
+            s_axi_wvalid => int_bus_2_full_wvalid,
+            s_axi_wready => int_bus_2_full_wready,
+            s_axi_bid => int_bus_2_full_bid,
+            s_axi_bresp => int_bus_2_full_bresp,
+            s_axi_bvalid => int_bus_2_full_bvalid,
+            s_axi_bready => int_bus_2_full_bready,
+            s_axi_arid => int_bus_2_full_arid,
+            s_axi_araddr => int_bus_2_full_araddr,
+            s_axi_arlen => int_bus_2_full_arlen,
+            s_axi_arsize => int_bus_2_full_arsize,
+            s_axi_arburst => int_bus_2_full_arburst,
+            s_axi_arlock => int_bus_2_full_arlock,
+            s_axi_arcache => int_bus_2_full_arcache,
+            s_axi_arprot => int_bus_2_full_arprot,
+            s_axi_arqos => int_bus_2_full_arqos,
+            s_axi_arregion => int_bus_2_full_arregion,
+            s_axi_arvalid => int_bus_2_full_arvalid,
+            s_axi_arready => int_bus_2_full_arready,
+            s_axi_rid => int_bus_2_full_rid,
+            s_axi_rdata => int_bus_2_full_rdata,
+            s_axi_rresp => int_bus_2_full_rresp,
+            s_axi_rlast => int_bus_2_full_rlast,
+            s_axi_rvalid => int_bus_2_full_rvalid,
+            s_axi_rready => int_bus_2_full_rready,
+            m_axi_awaddr => int_bus_2_lite_awaddr,
+            m_axi_awprot => int_bus_2_lite_awprot,
+            m_axi_awvalid => int_bus_2_lite_awvalid,
+            m_axi_awready => int_bus_2_lite_awready,
+            m_axi_wvalid => int_bus_2_lite_wvalid,
+            m_axi_wready => int_bus_2_lite_wready,
+            m_axi_wdata => int_bus_2_lite_wdata,
+            m_axi_wstrb => int_bus_2_lite_wstrb,
+            m_axi_bvalid => int_bus_2_lite_bvalid,
+            m_axi_bready => int_bus_2_lite_bready,
+            m_axi_bresp => int_bus_2_lite_bresp,
+            m_axi_araddr => int_bus_2_lite_araddr,
+            m_axi_arprot => int_bus_2_lite_arprot,
+            m_axi_arvalid => int_bus_2_lite_arvalid,
+            m_axi_arready => int_bus_2_lite_arready,
+            m_axi_rdata => int_bus_2_lite_rdata,
+            m_axi_rvalid => int_bus_2_lite_rvalid,
+            m_axi_rready => int_bus_2_lite_rready,
+            m_axi_rresp => int_bus_2_lite_rresp);
+            
+    ---------------------------------------------
+    -- CPU Signal AXI Full2Lite Instantiations --
+    ---------------------------------------------
+    
+    signal_0_full2lite : plasoc_axi4_full2lite 
+        generic map (
+            axi_slave_id_width => axi_cpu_bus_master_id_width,
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,                                   
+            aresetn => peripheral_aresetn(0),
+            s_axi_awid => signal_bus_0_full_awid,
+            s_axi_awaddr => signal_bus_0_full_awaddr,
+            s_axi_awlen => signal_bus_0_full_awlen,
+            s_axi_awsize => signal_bus_0_full_awsize,
+            s_axi_awburst => signal_bus_0_full_awburst,
+            s_axi_awlock => signal_bus_0_full_awlock,
+            s_axi_awcache => signal_bus_0_full_awcache,
+            s_axi_awprot => signal_bus_0_full_awprot,
+            s_axi_awqos => signal_bus_0_full_awqos,
+            s_axi_awregion => signal_bus_0_full_awregion,
+            s_axi_awvalid => signal_bus_0_full_awvalid,
+            s_axi_awready => signal_bus_0_full_awready,
+            s_axi_wdata => signal_bus_0_full_wdata,
+            s_axi_wstrb => signal_bus_0_full_wstrb,
+            s_axi_wlast => signal_bus_0_full_wlast,
+            s_axi_wvalid => signal_bus_0_full_wvalid,
+            s_axi_wready => signal_bus_0_full_wready,
+            s_axi_bid => signal_bus_0_full_bid,
+            s_axi_bresp => signal_bus_0_full_bresp,
+            s_axi_bvalid => signal_bus_0_full_bvalid,
+            s_axi_bready => signal_bus_0_full_bready,
+            s_axi_arid => signal_bus_0_full_arid,
+            s_axi_araddr => signal_bus_0_full_araddr,
+            s_axi_arlen => signal_bus_0_full_arlen,
+            s_axi_arsize => signal_bus_0_full_arsize,
+            s_axi_arburst => signal_bus_0_full_arburst,
+            s_axi_arlock => signal_bus_0_full_arlock,
+            s_axi_arcache => signal_bus_0_full_arcache,
+            s_axi_arprot => signal_bus_0_full_arprot,
+            s_axi_arqos => signal_bus_0_full_arqos,
+            s_axi_arregion => signal_bus_0_full_arregion,
+            s_axi_arvalid => signal_bus_0_full_arvalid,
+            s_axi_arready => signal_bus_0_full_arready,
+            s_axi_rid => signal_bus_0_full_rid,
+            s_axi_rdata => signal_bus_0_full_rdata,
+            s_axi_rresp => signal_bus_0_full_rresp,
+            s_axi_rlast => signal_bus_0_full_rlast,
+            s_axi_rvalid => signal_bus_0_full_rvalid,
+            s_axi_rready => signal_bus_0_full_rready,
+            m_axi_awaddr => signal_bus_0_lite_awaddr,
+            m_axi_awprot => signal_bus_0_lite_awprot,
+            m_axi_awvalid => signal_bus_0_lite_awvalid,
+            m_axi_awready => signal_bus_0_lite_awready,
+            m_axi_wvalid => signal_bus_0_lite_wvalid,
+            m_axi_wready => signal_bus_0_lite_wready,
+            m_axi_wdata => signal_bus_0_lite_wdata,
+            m_axi_wstrb => signal_bus_0_lite_wstrb,
+            m_axi_bvalid => signal_bus_0_lite_bvalid,
+            m_axi_bready => signal_bus_0_lite_bready,
+            m_axi_bresp => signal_bus_0_lite_bresp,
+            m_axi_araddr => signal_bus_0_lite_araddr,
+            m_axi_arprot => signal_bus_0_lite_arprot,
+            m_axi_arvalid => signal_bus_0_lite_arvalid,
+            m_axi_arready => signal_bus_0_lite_arready,
+            m_axi_rdata => signal_bus_0_lite_rdata,
+            m_axi_rvalid => signal_bus_0_lite_rvalid,
+            m_axi_rready => signal_bus_0_lite_rready,
+            m_axi_rresp => signal_bus_0_lite_rresp);
+            
+    signal_1_full2lite : plasoc_axi4_full2lite 
+        generic map (
+            axi_slave_id_width => axi_cpu_bus_master_id_width,
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,                                   
+            aresetn => peripheral_aresetn(0),
+            s_axi_awid => signal_bus_1_full_awid,
+            s_axi_awaddr => signal_bus_1_full_awaddr,
+            s_axi_awlen => signal_bus_1_full_awlen,
+            s_axi_awsize => signal_bus_1_full_awsize,
+            s_axi_awburst => signal_bus_1_full_awburst,
+            s_axi_awlock => signal_bus_1_full_awlock,
+            s_axi_awcache => signal_bus_1_full_awcache,
+            s_axi_awprot => signal_bus_1_full_awprot,
+            s_axi_awqos => signal_bus_1_full_awqos,
+            s_axi_awregion => signal_bus_1_full_awregion,
+            s_axi_awvalid => signal_bus_1_full_awvalid,
+            s_axi_awready => signal_bus_1_full_awready,
+            s_axi_wdata => signal_bus_1_full_wdata,
+            s_axi_wstrb => signal_bus_1_full_wstrb,
+            s_axi_wlast => signal_bus_1_full_wlast,
+            s_axi_wvalid => signal_bus_1_full_wvalid,
+            s_axi_wready => signal_bus_1_full_wready,
+            s_axi_bid => signal_bus_1_full_bid,
+            s_axi_bresp => signal_bus_1_full_bresp,
+            s_axi_bvalid => signal_bus_1_full_bvalid,
+            s_axi_bready => signal_bus_1_full_bready,
+            s_axi_arid => signal_bus_1_full_arid,
+            s_axi_araddr => signal_bus_1_full_araddr,
+            s_axi_arlen => signal_bus_1_full_arlen,
+            s_axi_arsize => signal_bus_1_full_arsize,
+            s_axi_arburst => signal_bus_1_full_arburst,
+            s_axi_arlock => signal_bus_1_full_arlock,
+            s_axi_arcache => signal_bus_1_full_arcache,
+            s_axi_arprot => signal_bus_1_full_arprot,
+            s_axi_arqos => signal_bus_1_full_arqos,
+            s_axi_arregion => signal_bus_1_full_arregion,
+            s_axi_arvalid => signal_bus_1_full_arvalid,
+            s_axi_arready => signal_bus_1_full_arready,
+            s_axi_rid => signal_bus_1_full_rid,
+            s_axi_rdata => signal_bus_1_full_rdata,
+            s_axi_rresp => signal_bus_1_full_rresp,
+            s_axi_rlast => signal_bus_1_full_rlast,
+            s_axi_rvalid => signal_bus_1_full_rvalid,
+            s_axi_rready => signal_bus_1_full_rready,
+            m_axi_awaddr => signal_bus_1_lite_awaddr,
+            m_axi_awprot => signal_bus_1_lite_awprot,
+            m_axi_awvalid => signal_bus_1_lite_awvalid,
+            m_axi_awready => signal_bus_1_lite_awready,
+            m_axi_wvalid => signal_bus_1_lite_wvalid,
+            m_axi_wready => signal_bus_1_lite_wready,
+            m_axi_wdata => signal_bus_1_lite_wdata,
+            m_axi_wstrb => signal_bus_1_lite_wstrb,
+            m_axi_bvalid => signal_bus_1_lite_bvalid,
+            m_axi_bready => signal_bus_1_lite_bready,
+            m_axi_bresp => signal_bus_1_lite_bresp,
+            m_axi_araddr => signal_bus_1_lite_araddr,
+            m_axi_arprot => signal_bus_1_lite_arprot,
+            m_axi_arvalid => signal_bus_1_lite_arvalid,
+            m_axi_arready => signal_bus_1_lite_arready,
+            m_axi_rdata => signal_bus_1_lite_rdata,
+            m_axi_rvalid => signal_bus_1_lite_rvalid,
+            m_axi_rready => signal_bus_1_lite_rready,
+            m_axi_rresp => signal_bus_1_lite_rresp);
+            
+    signal_2_full2lite : plasoc_axi4_full2lite 
+        generic map (
+            axi_slave_id_width => axi_cpu_bus_master_id_width,
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,                                   
+            aresetn => peripheral_aresetn(0),
+            s_axi_awid => signal_bus_2_full_awid,
+            s_axi_awaddr => signal_bus_2_full_awaddr,
+            s_axi_awlen => signal_bus_2_full_awlen,
+            s_axi_awsize => signal_bus_2_full_awsize,
+            s_axi_awburst => signal_bus_2_full_awburst,
+            s_axi_awlock => signal_bus_2_full_awlock,
+            s_axi_awcache => signal_bus_2_full_awcache,
+            s_axi_awprot => signal_bus_2_full_awprot,
+            s_axi_awqos => signal_bus_2_full_awqos,
+            s_axi_awregion => signal_bus_2_full_awregion,
+            s_axi_awvalid => signal_bus_2_full_awvalid,
+            s_axi_awready => signal_bus_2_full_awready,
+            s_axi_wdata => signal_bus_2_full_wdata,
+            s_axi_wstrb => signal_bus_2_full_wstrb,
+            s_axi_wlast => signal_bus_2_full_wlast,
+            s_axi_wvalid => signal_bus_2_full_wvalid,
+            s_axi_wready => signal_bus_2_full_wready,
+            s_axi_bid => signal_bus_2_full_bid,
+            s_axi_bresp => signal_bus_2_full_bresp,
+            s_axi_bvalid => signal_bus_2_full_bvalid,
+            s_axi_bready => signal_bus_2_full_bready,
+            s_axi_arid => signal_bus_2_full_arid,
+            s_axi_araddr => signal_bus_2_full_araddr,
+            s_axi_arlen => signal_bus_2_full_arlen,
+            s_axi_arsize => signal_bus_2_full_arsize,
+            s_axi_arburst => signal_bus_2_full_arburst,
+            s_axi_arlock => signal_bus_2_full_arlock,
+            s_axi_arcache => signal_bus_2_full_arcache,
+            s_axi_arprot => signal_bus_2_full_arprot,
+            s_axi_arqos => signal_bus_2_full_arqos,
+            s_axi_arregion => signal_bus_2_full_arregion,
+            s_axi_arvalid => signal_bus_2_full_arvalid,
+            s_axi_arready => signal_bus_2_full_arready,
+            s_axi_rid => signal_bus_2_full_rid,
+            s_axi_rdata => signal_bus_2_full_rdata,
+            s_axi_rresp => signal_bus_2_full_rresp,
+            s_axi_rlast => signal_bus_2_full_rlast,
+            s_axi_rvalid => signal_bus_2_full_rvalid,
+            s_axi_rready => signal_bus_2_full_rready,
+            m_axi_awaddr => signal_bus_2_lite_awaddr,
+            m_axi_awprot => signal_bus_2_lite_awprot,
+            m_axi_awvalid => signal_bus_2_lite_awvalid,
+            m_axi_awready => signal_bus_2_lite_awready,
+            m_axi_wvalid => signal_bus_2_lite_wvalid,
+            m_axi_wready => signal_bus_2_lite_wready,
+            m_axi_wdata => signal_bus_2_lite_wdata,
+            m_axi_wstrb => signal_bus_2_lite_wstrb,
+            m_axi_bvalid => signal_bus_2_lite_bvalid,
+            m_axi_bready => signal_bus_2_lite_bready,
+            m_axi_bresp => signal_bus_2_lite_bresp,
+            m_axi_araddr => signal_bus_2_lite_araddr,
+            m_axi_arprot => signal_bus_2_lite_arprot,
+            m_axi_arvalid => signal_bus_2_lite_arvalid,
+            m_axi_arready => signal_bus_2_lite_arready,
+            m_axi_rdata => signal_bus_2_lite_rdata,
+            m_axi_rvalid => signal_bus_2_lite_rvalid,
+            m_axi_rready => signal_bus_2_lite_rready,
+            m_axi_rresp => signal_bus_2_lite_rresp);
             
     ----------------------------------------------------
     -- Main Interconnect AXI Full2Lite Instantiations --
