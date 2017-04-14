@@ -201,7 +201,7 @@ architecture Behavioral of koc_wrapper is
     constant axi_address_width : integer := 32;
     constant axi_data_width : integer := 32;
     
-    constant bram_address_width : integer := 15;
+    constant bram_address_width : integer := 16;
     constant bram_data_width : integer := axi_data_width;
     constant bram_bram_depth : integer := 16384;
     
@@ -1434,7 +1434,7 @@ begin
         port map (
             s_axi_aclk => aclk,
             s_axi_aresetn => peripheral_aresetn(0),
-            s_axi_awaddr => boot_bram_axi_full_awaddr,
+            s_axi_awaddr => boot_bram_axi_full_awaddr(bram_address_width-1 downto 0),
             s_axi_awlen => boot_bram_axi_full_awlen,
             s_axi_awsize => boot_bram_axi_full_awsize,
             s_axi_awburst => boot_bram_axi_full_awburst,
@@ -1451,7 +1451,7 @@ begin
             s_axi_bresp => boot_bram_axi_full_bresp,
             s_axi_bvalid => boot_bram_axi_full_bvalid,
             s_axi_bready => boot_bram_axi_full_bready,
-            s_axi_araddr => boot_bram_axi_full_araddr,
+            s_axi_araddr => boot_bram_axi_full_araddr(bram_address_width-1 downto 0),
             s_axi_arlen => boot_bram_axi_full_arlen,
             s_axi_arsize => boot_bram_axi_full_arsize,
             s_axi_arburst => boot_bram_axi_full_arburst,

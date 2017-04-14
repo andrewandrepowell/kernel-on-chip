@@ -1,7 +1,7 @@
 -- Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2016.4 (win64) Build 1756540 Mon Jan 23 19:11:23 MST 2017
--- Date        : Tue Apr 11 16:11:52 2017
+-- Date        : Fri Apr 14 18:32:23 2017
 -- Host        : LAPTOP-IQ9G3D1I running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode funcsim
 --               C:/Users/andrewandre/Documents/GitHub/kernel-on-chip/hdl/projects/Nexys4/bd/ip/bd_proc_sys_reset_0_0/bd_proc_sys_reset_0_0_sim_netlist.vhdl

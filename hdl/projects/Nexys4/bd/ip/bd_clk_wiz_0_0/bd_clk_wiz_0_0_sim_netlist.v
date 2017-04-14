@@ -1,10 +1,10 @@
 // Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2016.4 (win64) Build 1756540 Mon Jan 23 19:11:23 MST 2017
-// Date        : Tue Apr 11 22:13:12 2017
+// Date        : Fri Apr 14 18:35:38 2017
 // Host        : LAPTOP-IQ9G3D1I running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim
-//               c:/Users/andrewandre/Documents/GitHub/kernel-on-chip/hdl/projects/Nexys4/bd/ip/bd_clk_wiz_0_0/bd_clk_wiz_0_0_sim_netlist.v
+//               C:/Users/andrewandre/Documents/GitHub/kernel-on-chip/hdl/projects/Nexys4/bd/ip/bd_clk_wiz_0_0/bd_clk_wiz_0_0_sim_netlist.v
 // Design      : bd_clk_wiz_0_0
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
