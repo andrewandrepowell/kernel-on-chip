@@ -92,6 +92,7 @@ begin
                     end if;
                 when state_response=>
                     if axi_bvalid_buff='1' and axi_bready='1' then
+                        axi_bvalid_buff <= '0';
                         state <= state_wait;
                     end if;
                 end case;

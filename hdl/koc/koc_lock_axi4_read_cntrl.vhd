@@ -47,6 +47,7 @@ begin
                 when state_wait=>
                     if axi_arvalid='1' and axi_arready_buff='1' then
                         axi_arready_buff <= '0';
+                        axi_rvalid_buff <= '1';
                         axi_araddr_buff <= axi_araddr;
                         state <= state_read;
                     else
