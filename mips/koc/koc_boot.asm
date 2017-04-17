@@ -1,8 +1,8 @@
-	.extern		koc_boot_setup
+	.extern		koc_boot_start
 	
 	.data
 
-	.comm		TempStack, 40
+	.comm		TempStack, 48
 	
 	.text
 	.section	.text.startup
@@ -15,11 +15,15 @@ entry:
 	
 	# Set global pointer and temporary stack.
 	la		$gp, _gp
-	la		$sp, TempStack+40
+	la		$sp, TempStack+24
 	
 	# Launch boot setup.
 	jal		koc_boot_setup
 	nop
+
+	# If boot setup function ends, this the current
+	# CPU is master. Clear BSS.
+	la		
 
 	.end entry
 
