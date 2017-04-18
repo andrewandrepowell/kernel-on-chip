@@ -28,7 +28,11 @@ void koc_boot_start()
 		:"memory");
 
 	/* Perform operations if slave. */
-	if (cpuid()!=KOC_CPU_MASTER_CPUID)
+	if (cpuid()==KOC_CPU_MASTER_CPUID)
+	{
+		
+	}
+	else
 	{
 		unsigned cpuid_val;
 		plasoc_int* cpu_int_ptr;
@@ -51,13 +55,11 @@ void koc_boot_start()
 		OS_AsmInterruptInit();
 		OS_AsmInterruptEnable(1);
 
-		/* Block until interrupt is called. */
-		while (1);
+		
 	}
 
-	/* Jump straight back to the entry function and skip
-	stack epilogue. */
-	__asm__ __volatile__ ("jr $31\nnop\n":::"memory");
+	/* Block until interrupt is called. */
+	while (1);
 }
 
 

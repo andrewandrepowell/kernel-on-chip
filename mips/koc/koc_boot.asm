@@ -21,10 +21,6 @@ entry:
 	jal		koc_boot_setup
 	nop
 
-	# If boot setup function ends, this the current
-	# CPU is master. Clear BSS.
-	la		
-
 	.end entry
 
 
