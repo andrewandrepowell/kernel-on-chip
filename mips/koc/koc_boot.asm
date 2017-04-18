@@ -18,7 +18,7 @@ entry:
 	la		$sp, TempStack+24
 	
 	# Launch boot setup.
-	jal		koc_boot_setup
+	jal		koc_boot_start
 	nop
 
 	.end entry
@@ -103,9 +103,6 @@ OS_AsmInterruptEnable:
 	.set		reorder
 	.end		OS_AsmInterruptEnable
 
-	.global		setjmp
-	.ent		setjmp
-
 	.global  	OS_AsmInterruptInit
 	.ent    	OS_AsmInterruptInit
 OS_AsmInterruptInit:
@@ -156,7 +153,8 @@ OS_Syscall:
 	.set		reorder
 	.end		OS_Syscall
 
-
+	.global		setjmp
+	.ent		setjmp
 setjmp:
 	.set noreorder
 	sw		$16, 0($4)	#s0

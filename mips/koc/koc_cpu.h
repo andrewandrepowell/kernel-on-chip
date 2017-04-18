@@ -3,6 +3,7 @@
 #define KOC_CPU_H_
 
 #include "plasoc_cpu.h"
+#include "plasoc_int.h"
 #include "koc_signal.h"
 
 #ifdef __cplusplus

@@ -1,7 +1,7 @@
 -- Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2016.4 (lin64) Build 1756540 Mon Jan 23 19:11:19 MST 2017
--- Date        : Mon Apr 17 11:39:57 2017
+-- Date        : Tue Apr 18 17:03:00 2017
 -- Host        : andrewandrepowell2-desktop running 64-bit Ubuntu 16.04 LTS
 -- Command     : write_vhdl -force -mode synth_stub
 --               /opt/Xilinx/Projects/koc/kernel-on-chip/hdl/projects/Nexys4/bd/ip/bd_mig_7series_0_0/bd_mig_7series_0_0_stub.vhdl
