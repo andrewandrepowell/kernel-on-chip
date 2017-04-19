@@ -18,18 +18,11 @@ void koc_cpu_signal_isr(void* param)
 	koc_signal_ack(&koc_cpu_signal_objs[cpuid()]);
 }
 
-void koc_boot_start()
+static void start()
 {
 	unsigned cpuid_val;
 	plasoc_int* cpu_int_ptr;
 	koc_signal* cpu_signal_ptr;
-
-	/* Configure stack of CPU. */
-	__asm__ __volatile__ (
-		"move $sp, %0\n"
-		:
-		:"r"(&(koc_cpu_stacks[cpuid()][(KOC_CPU_STACK_SIZE-KOC_CPU_STACK_STUB_SIZE)]))
-		:"memory");
 
 	/* Grab the pointers respective to the slave CPU. */
 	cpuid_val = cpuid();
@@ -51,14 +44,22 @@ void koc_boot_start()
 	if (cpuid()==KOC_CPU_MASTER_CPUID)
 	{
 		extern int main();
-		extern unsigned* __bss_start;
-		extern unsigned* _end;
+		extern unsigned __bss_start;
+		extern unsigned _end;
+		unsigned* cur;
+		unsigned* end;
 
-		unsigned* curr = __bss_start;
+		/* Clear BSS. */
+		cur = &__bss_start;
+		end = &_end;	
+		while (cur!=end)
+			*(cur++) = 0;
 
-		while (curr!=_end)
-			*(curr++) = 0;
+		l1_cache_flush_range(
+			(unsigned)&__bss_start,
+			((unsigned)&_end)-((unsigned)&__bss_start)+sizeof(unsigned));
 
+		/* Run main. */
 		(void)main();
 	}
 	else
@@ -68,6 +69,22 @@ void koc_boot_start()
 
 	/* Block until interrupt is called. */
 	while (1);
+}
+
+void koc_boot_start()
+{
+	//*(volatile unsigned*)0x20030008 = 0x00000010;
+	//__asm__ __volatile__ ("":::"memory");
+
+	/* Configure stack of CPU. */
+	__asm__ __volatile__ (
+		"move $sp, %0\n"
+		:
+		:"r"(&(koc_cpu_stacks[cpuid()][(KOC_CPU_STACK_SIZE-KOC_CPU_STACK_STUB_SIZE)]))
+		:"memory");
+
+	/* At this point, each CPU should be using its corresponding stack. */
+	start();
 }
 
 

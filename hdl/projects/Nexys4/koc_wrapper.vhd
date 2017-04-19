@@ -199,6 +199,7 @@ architecture Behavioral of koc_wrapper is
     constant axi_slave_id_width : integer := axi_cpu_bus_master_id_width;
     constant axi_master_id_width : integer := clogb2(axi_slave_amount)+axi_slave_id_width;
     constant axi_address_width : integer := 32;
+    constant axi_address_periph_width : integer := 16;
     constant axi_data_width : integer := 32;
     
     constant bram_address_width : integer := 16;
@@ -3770,14 +3771,14 @@ begin
         generic map (
             data_in_width => axi_data_width,
             data_out_width => 0,
-            axi_address_width => axi_address_width,
+            axi_address_width => axi_address_periph_width,
             axi_data_width => axi_data_width)
         port map (
             aclk => aclk,                                             
             aresetn => peripheral_aresetn(0),
             data_in => std_logic_vector(to_unsigned(0,axi_data_width)),
             data_out => open,
-            axi_awaddr => cpuid_gpio_bus_0_lite_awaddr,
+            axi_awaddr => cpuid_gpio_bus_0_lite_awaddr(axi_address_periph_width-1 downto 0),
             axi_awprot => cpuid_gpio_bus_0_lite_awprot,
             axi_awvalid => cpuid_gpio_bus_0_lite_awvalid,
             axi_awready => cpuid_gpio_bus_0_lite_awready,
@@ -3788,7 +3789,7 @@ begin
             axi_bvalid => cpuid_gpio_bus_0_lite_bvalid,
             axi_bready => cpuid_gpio_bus_0_lite_bready,
             axi_bresp => cpuid_gpio_bus_0_lite_bresp,
-            axi_araddr => cpuid_gpio_bus_0_lite_araddr,
+            axi_araddr => cpuid_gpio_bus_0_lite_araddr(axi_address_periph_width-1 downto 0),
             axi_arprot => cpuid_gpio_bus_0_lite_arprot,
             axi_arvalid => cpuid_gpio_bus_0_lite_arvalid,
             axi_arready => cpuid_gpio_bus_0_lite_arready,
@@ -3802,14 +3803,14 @@ begin
         generic map (
             data_in_width => axi_data_width,
             data_out_width => 0,
-            axi_address_width => axi_address_width,
+            axi_address_width => axi_address_periph_width,
             axi_data_width => axi_data_width)
         port map (
             aclk => aclk,                                             
             aresetn => peripheral_aresetn(0),
             data_in => std_logic_vector(to_unsigned(1,axi_data_width)),
             data_out => open,
-            axi_awaddr => cpuid_gpio_bus_1_lite_awaddr,
+            axi_awaddr => cpuid_gpio_bus_1_lite_awaddr(axi_address_periph_width-1 downto 0),
             axi_awprot => cpuid_gpio_bus_1_lite_awprot,
             axi_awvalid => cpuid_gpio_bus_1_lite_awvalid,
             axi_awready => cpuid_gpio_bus_1_lite_awready,
@@ -3820,7 +3821,7 @@ begin
             axi_bvalid => cpuid_gpio_bus_1_lite_bvalid,
             axi_bready => cpuid_gpio_bus_1_lite_bready,
             axi_bresp => cpuid_gpio_bus_1_lite_bresp,
-            axi_araddr => cpuid_gpio_bus_1_lite_araddr,
+            axi_araddr => cpuid_gpio_bus_1_lite_araddr(axi_address_periph_width-1 downto 0),
             axi_arprot => cpuid_gpio_bus_1_lite_arprot,
             axi_arvalid => cpuid_gpio_bus_1_lite_arvalid,
             axi_arready => cpuid_gpio_bus_1_lite_arready,
@@ -3834,14 +3835,14 @@ begin
         generic map (
             data_in_width => axi_data_width,
             data_out_width => 0,
-            axi_address_width => axi_address_width,
+            axi_address_width => axi_address_periph_width,
             axi_data_width => axi_data_width)
         port map (
             aclk => aclk,                                             
             aresetn => peripheral_aresetn(0),
             data_in => std_logic_vector(to_unsigned(2,axi_data_width)),
             data_out => open,
-            axi_awaddr => cpuid_gpio_bus_2_lite_awaddr,
+            axi_awaddr => cpuid_gpio_bus_2_lite_awaddr(axi_address_periph_width-1 downto 0),
             axi_awprot => cpuid_gpio_bus_2_lite_awprot,
             axi_awvalid => cpuid_gpio_bus_2_lite_awvalid,
             axi_awready => cpuid_gpio_bus_2_lite_awready,
@@ -3852,7 +3853,7 @@ begin
             axi_bvalid => cpuid_gpio_bus_2_lite_bvalid,
             axi_bready => cpuid_gpio_bus_2_lite_bready,
             axi_bresp => cpuid_gpio_bus_2_lite_bresp,
-            axi_araddr => cpuid_gpio_bus_2_lite_araddr,
+            axi_araddr => cpuid_gpio_bus_2_lite_araddr(axi_address_periph_width-1 downto 0),
             axi_arprot => cpuid_gpio_bus_2_lite_arprot,
             axi_arvalid => cpuid_gpio_bus_2_lite_arvalid,
             axi_arready => cpuid_gpio_bus_2_lite_arready,
@@ -3868,13 +3869,13 @@ begin
     
     int_0_inst : plasoc_int
         generic map (
-            axi_address_width => axi_address_width,
+            axi_address_width => axi_address_periph_width,
             axi_data_width => axi_data_width,
             interrupt_total => axi_data_width)
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
-            axi_awaddr => int_bus_0_lite_awaddr,
+            axi_awaddr => int_bus_0_lite_awaddr(axi_address_periph_width-1 downto 0),
             axi_awprot => int_bus_0_lite_awprot,
             axi_awvalid => int_bus_0_lite_awvalid,
             axi_awready => int_bus_0_lite_awready,
@@ -3885,7 +3886,7 @@ begin
             axi_bvalid => int_bus_0_lite_bvalid,
             axi_bready => int_bus_0_lite_bready,
             axi_bresp => int_bus_0_lite_bresp,
-            axi_araddr => int_bus_0_lite_araddr,
+            axi_araddr => int_bus_0_lite_araddr(axi_address_periph_width-1 downto 0),
             axi_arprot => int_bus_0_lite_arprot,
             axi_arvalid => int_bus_0_lite_arvalid,
             axi_arready => int_bus_0_lite_arready,
@@ -3898,13 +3899,13 @@ begin
             
     int_1_inst : plasoc_int
         generic map (
-            axi_address_width => axi_address_width,
+            axi_address_width => axi_address_periph_width,
             axi_data_width => axi_data_width,
             interrupt_total => axi_data_width)
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
-            axi_awaddr => int_bus_1_lite_awaddr,
+            axi_awaddr => int_bus_1_lite_awaddr(axi_address_periph_width-1 downto 0),
             axi_awprot => int_bus_1_lite_awprot,
             axi_awvalid => int_bus_1_lite_awvalid,
             axi_awready => int_bus_1_lite_awready,
@@ -3915,7 +3916,7 @@ begin
             axi_bvalid => int_bus_1_lite_bvalid,
             axi_bready => int_bus_1_lite_bready,
             axi_bresp => int_bus_1_lite_bresp,
-            axi_araddr => int_bus_1_lite_araddr,
+            axi_araddr => int_bus_1_lite_araddr(axi_address_periph_width-1 downto 0),
             axi_arprot => int_bus_1_lite_arprot,
             axi_arvalid => int_bus_1_lite_arvalid,
             axi_arready => int_bus_1_lite_arready,
@@ -3928,13 +3929,13 @@ begin
             
     int_2_inst : plasoc_int
         generic map (
-            axi_address_width => axi_address_width,
+            axi_address_width => axi_address_periph_width,
             axi_data_width => axi_data_width,
             interrupt_total => axi_data_width)
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
-            axi_awaddr => int_bus_2_lite_awaddr,
+            axi_awaddr => int_bus_2_lite_awaddr(axi_address_periph_width-1 downto 0),
             axi_awprot => int_bus_2_lite_awprot,
             axi_awvalid => int_bus_2_lite_awvalid,
             axi_awready => int_bus_2_lite_awready,
@@ -3945,7 +3946,7 @@ begin
             axi_bvalid => int_bus_2_lite_bvalid,
             axi_bready => int_bus_2_lite_bready,
             axi_bresp => int_bus_2_lite_bresp,
-            axi_araddr => int_bus_2_lite_araddr,
+            axi_araddr => int_bus_2_lite_araddr(axi_address_periph_width-1 downto 0),
             axi_arprot => int_bus_2_lite_arprot,
             axi_arvalid => int_bus_2_lite_arvalid,
             axi_arready => int_bus_2_lite_arready,
@@ -3962,12 +3963,12 @@ begin
     
     signal_0_inst : koc_signal 
         generic map (
-            axi_address_width => axi_address_width,
+            axi_address_width => axi_address_periph_width,
             axi_data_width => axi_data_width)
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
-            axi_awaddr => signal_bus_0_lite_awaddr,
+            axi_awaddr => signal_bus_0_lite_awaddr(axi_address_periph_width-1 downto 0),
             axi_awprot => signal_bus_0_lite_awprot,
             axi_awvalid => signal_bus_0_lite_awvalid,
             axi_awready => signal_bus_0_lite_awready,
@@ -3978,7 +3979,7 @@ begin
             axi_bvalid => signal_bus_0_lite_bvalid,
             axi_bready => signal_bus_0_lite_bready,
             axi_bresp => signal_bus_0_lite_bresp,
-            axi_araddr => signal_bus_0_lite_araddr,
+            axi_araddr => signal_bus_0_lite_araddr(axi_address_periph_width-1 downto 0),
             axi_arprot => signal_bus_0_lite_arprot,
             axi_arvalid => signal_bus_0_lite_arvalid,
             axi_arready => signal_bus_0_lite_arready,
@@ -3992,12 +3993,12 @@ begin
             
     signal_1_inst : koc_signal 
         generic map (
-            axi_address_width => axi_address_width,
+            axi_address_width => axi_address_periph_width,
             axi_data_width => axi_data_width)
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
-            axi_awaddr => signal_bus_1_lite_awaddr,
+            axi_awaddr => signal_bus_1_lite_awaddr(axi_address_periph_width-1 downto 0),
             axi_awprot => signal_bus_1_lite_awprot,
             axi_awvalid => signal_bus_1_lite_awvalid,
             axi_awready => signal_bus_1_lite_awready,
@@ -4008,7 +4009,7 @@ begin
             axi_bvalid => signal_bus_1_lite_bvalid,
             axi_bready => signal_bus_1_lite_bready,
             axi_bresp => signal_bus_1_lite_bresp,
-            axi_araddr => signal_bus_1_lite_araddr,
+            axi_araddr => signal_bus_1_lite_araddr(axi_address_periph_width-1 downto 0),
             axi_arprot => signal_bus_1_lite_arprot,
             axi_arvalid => signal_bus_1_lite_arvalid,
             axi_arready => signal_bus_1_lite_arready,
@@ -4022,12 +4023,12 @@ begin
             
     signal_2_inst : koc_signal 
         generic map (
-            axi_address_width => axi_address_width,
+            axi_address_width => axi_address_periph_width,
             axi_data_width => axi_data_width)
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
-            axi_awaddr => signal_bus_2_lite_awaddr,
+            axi_awaddr => signal_bus_2_lite_awaddr(axi_address_periph_width-1 downto 0),
             axi_awprot => signal_bus_2_lite_awprot,
             axi_awvalid => signal_bus_2_lite_awvalid,
             axi_awready => signal_bus_2_lite_awready,
@@ -4038,7 +4039,7 @@ begin
             axi_bvalid => signal_bus_2_lite_bvalid,
             axi_bready => signal_bus_2_lite_bready,
             axi_bresp => signal_bus_2_lite_bresp,
-            axi_araddr => signal_bus_2_lite_araddr,
+            axi_araddr => signal_bus_2_lite_araddr(axi_address_periph_width-1 downto 0),
             axi_arprot => signal_bus_2_lite_arprot,
             axi_arvalid => signal_bus_2_lite_arvalid,
             axi_arready => signal_bus_2_lite_arready,
@@ -4056,13 +4057,13 @@ begin
         
     int_main_inst : plasoc_int
         generic map (
-            axi_address_width => axi_address_width,
+            axi_address_width => axi_address_periph_width,
             axi_data_width => axi_data_width,
             interrupt_total => axi_data_width)
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
-            axi_awaddr => int_axi_lite_awaddr,
+            axi_awaddr => int_axi_lite_awaddr(axi_address_periph_width-1 downto 0),
             axi_awprot => int_axi_lite_awprot,
             axi_awvalid => int_axi_lite_awvalid,
             axi_awready => int_axi_lite_awready,
@@ -4073,7 +4074,7 @@ begin
             axi_bvalid => int_axi_lite_bvalid,
             axi_bready => int_axi_lite_bready,
             axi_bresp => int_axi_lite_bresp,
-            axi_araddr => int_axi_lite_araddr,
+            axi_araddr => int_axi_lite_araddr(axi_address_periph_width-1 downto 0),
             axi_arprot => int_axi_lite_arprot,
             axi_arvalid => int_axi_lite_arvalid,
             axi_arready => int_axi_lite_arready,
@@ -4087,12 +4088,12 @@ begin
     timer_main_inst : plasoc_timer 
         generic map (
             timer_width => axi_data_width,
-            axi_address_width => axi_address_width,
+            axi_address_width => axi_address_periph_width,
             axi_data_width => axi_data_width)
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
-            axi_awaddr => timer_axi_lite_awaddr,
+            axi_awaddr => timer_axi_lite_awaddr(axi_address_periph_width-1 downto 0),
             axi_awprot => timer_axi_lite_awprot,
             axi_awvalid => timer_axi_lite_awvalid,
             axi_awready => timer_axi_lite_awready,
@@ -4103,7 +4104,7 @@ begin
             axi_bvalid => timer_axi_lite_bvalid,
             axi_bready => timer_axi_lite_bready,
             axi_bresp => timer_axi_lite_bresp,
-            axi_araddr => timer_axi_lite_araddr,
+            axi_araddr => timer_axi_lite_araddr(axi_address_periph_width-1 downto 0),
             axi_arprot => timer_axi_lite_arprot,
             axi_arvalid => timer_axi_lite_arvalid,
             axi_arready => timer_axi_lite_arready,
@@ -4117,14 +4118,14 @@ begin
         generic map (
             data_in_width => data_in_width,
             data_out_width => data_out_width,
-            axi_address_width => axi_address_width,                   
+            axi_address_width => axi_address_periph_width,                   
             axi_data_width => axi_data_width)
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
             data_in => gpio_input,
             data_out => gpio_output,
-            axi_awaddr => gpio_axi_lite_awaddr,
+            axi_awaddr => gpio_axi_lite_awaddr(axi_address_periph_width-1 downto 0),
             axi_awprot => gpio_axi_lite_awprot,
             axi_awvalid => gpio_axi_lite_awvalid,
             axi_awready => gpio_axi_lite_awready,
@@ -4135,7 +4136,7 @@ begin
             axi_bvalid => gpio_axi_lite_bvalid,
             axi_bready => gpio_axi_lite_bready,
             axi_bresp => gpio_axi_lite_bresp,
-            axi_araddr => gpio_axi_lite_araddr,
+            axi_araddr => gpio_axi_lite_araddr(axi_address_periph_width-1 downto 0),
             axi_arprot => gpio_axi_lite_arprot,
             axi_arvalid => gpio_axi_lite_arvalid,
             axi_arready => gpio_axi_lite_arready,
@@ -4147,14 +4148,14 @@ begin
             
     uart_main_inst : plasoc_uart
         generic map (
-            axi_address_width => axi_address_width,
+            axi_address_width => axi_address_periph_width,
             axi_data_width => axi_data_width,
             baud => uart_baud,
             clock_frequency => uart_clock_frequency)
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
-            axi_awaddr => uart_axi_lite_awaddr,
+            axi_awaddr => uart_axi_lite_awaddr(axi_address_periph_width-1 downto 0),
             axi_awprot => uart_axi_lite_awprot,
             axi_awvalid => uart_axi_lite_awvalid,
             axi_awready => uart_axi_lite_awready,
@@ -4165,7 +4166,7 @@ begin
             axi_bvalid => uart_axi_lite_bvalid,
             axi_bready => uart_axi_lite_bready,
             axi_bresp => uart_axi_lite_bresp,
-            axi_araddr => uart_axi_lite_araddr,
+            axi_araddr => uart_axi_lite_araddr(axi_address_periph_width-1 downto 0),
             axi_arprot => uart_axi_lite_arprot,
             axi_arvalid => uart_axi_lite_arvalid,
             axi_arready => uart_axi_lite_arready,
@@ -4179,13 +4180,13 @@ begin
             
     lock_main_inst : koc_lock
         generic map (
-            axi_address_width => axi_address_width,
+            axi_address_width => axi_address_periph_width,
             axi_data_width => axi_data_width,
             control_default => 1)
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
-            axi_awaddr => lock_axi_lite_awaddr,
+            axi_awaddr => lock_axi_lite_awaddr(axi_address_periph_width-1 downto 0),
             axi_awprot => lock_axi_lite_awprot,
             axi_awvalid => lock_axi_lite_awvalid,
             axi_awready => lock_axi_lite_awready,
@@ -4196,7 +4197,7 @@ begin
             axi_bvalid => lock_axi_lite_bvalid,
             axi_bready => lock_axi_lite_bready,
             axi_bresp => lock_axi_lite_bresp,
-            axi_araddr => lock_axi_lite_araddr,
+            axi_araddr => lock_axi_lite_araddr(axi_address_periph_width-1 downto 0),
             axi_arprot => lock_axi_lite_arprot,
             axi_arvalid => lock_axi_lite_arvalid,
             axi_arready => lock_axi_lite_arready,

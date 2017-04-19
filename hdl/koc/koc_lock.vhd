@@ -83,7 +83,7 @@ architecture Behavioral of koc_lock is
         );
     end component;
     constant axi_control_offset_slv : std_logic_vector := std_logic_vector(to_unsigned(axi_control_offset,axi_address_width));
-    constant control_default_slv : std_logic_vector := std_logic_vector(to_unsigned(control_default,axi_address_width));
+    constant control_default_slv : std_logic_vector := std_logic_vector(to_unsigned(control_default,axi_data_width));
     signal reg_control : std_logic_vector(axi_data_width-1 downto 0);
 begin
 
