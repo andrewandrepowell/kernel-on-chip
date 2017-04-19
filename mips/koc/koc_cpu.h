@@ -30,6 +30,20 @@ extern "C"
 		return plasoc_gpio_get_data_in(&gpio_obj); 
 	}
 
+	static inline __attribute__ ((always_inline))
+	plasoc_int* cpuint()
+	{
+		extern plasoc_int koc_cpu_int_objs[KOC_CPU_TOTAL];
+		return &koc_cpu_int_objs[cpuid()];
+	}
+
+	static inline __attribute__ ((always_inline))
+	koc_signal* cpusignal()
+	{
+		extern koc_signal koc_cpu_signal_objs[KOC_CPU_TOTAL];
+		return &koc_cpu_signal_objs[cpuid()];
+	}
+
 #ifdef __cplusplus
 }
 #endif

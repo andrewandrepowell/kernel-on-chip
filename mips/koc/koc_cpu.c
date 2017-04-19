@@ -7,27 +7,26 @@ unsigned char koc_cpu_stacks[KOC_CPU_TOTAL][KOC_CPU_STACK_SIZE];
 plasoc_int koc_cpu_int_objs[KOC_CPU_TOTAL] = {[0 ... KOC_CPU_TOTAL-1] = {-1}};
 koc_signal koc_cpu_signal_objs[KOC_CPU_TOTAL] = {[0 ... KOC_CPU_TOTAL-1] = {-1}};
 
+__attribute__((weak))
 void OS_InterruptServiceRoutine()
 {
-	plasoc_int_service_interrupts(&koc_cpu_int_objs[cpuid()]);
+	plasoc_int_service_interrupts(cpuint());
 }
 
 __attribute__((weak))
 void koc_cpu_signal_isr(void* param)
 {
-	koc_signal_ack(&koc_cpu_signal_objs[cpuid()]);
+	koc_signal_ack(cpusignal());
 }
 
 static void start()
 {
-	unsigned cpuid_val;
 	plasoc_int* cpu_int_ptr;
 	koc_signal* cpu_signal_ptr;
 
 	/* Grab the pointers respective to the slave CPU. */
-	cpuid_val = cpuid();
-	cpu_int_ptr = &koc_cpu_int_objs[cpuid_val];
-	cpu_signal_ptr = &koc_cpu_signal_objs[cpuid_val];
+	cpu_int_ptr = cpuint();
+	cpu_signal_ptr = cpusignal();
 
 	/* Configure signal object. */
 	koc_signal_setup(cpu_signal_ptr,KOC_CPU_SIGNAL_BASE_ADDRESS);
@@ -40,7 +39,7 @@ static void start()
 	/* Patch the interrupt service routine. */
 	OS_AsmInterruptInit();
 
-	/* Clear BSS and run main if master, else enable interrupts and then block. */
+	/* Clear BSS and run main if master. */
 	if (cpuid()==KOC_CPU_MASTER_CPUID)
 	{
 		extern int main();
@@ -62,10 +61,9 @@ static void start()
 		/* Run main. */
 		(void)main();
 	}
-	else
-	{
-		OS_AsmInterruptEnable(1);
-	}
+
+	/* Each CPU's interrupt is enabled by default. */
+	OS_AsmInterruptEnable(1);
 
 	/* Block until interrupt is called. */
 	while (1);

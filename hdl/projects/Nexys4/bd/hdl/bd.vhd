@@ -1,7 +1,7 @@
 --Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2016.4 (lin64) Build 1756540 Mon Jan 23 19:11:19 MST 2017
---Date        : Wed Apr 19 15:27:12 2017
+--Date        : Wed Apr 19 15:34:44 2017
 --Host        : andrewandrepowell2-desktop running 64-bit Ubuntu 16.04 LTS
 --Command     : generate_target bd.bd
 --Design      : bd
