@@ -25,7 +25,7 @@ static void start()
 	koc_signal* cpu_signal_ptr;
 
 	/* Grab the pointers respective to the slave CPU. */
-	cpu_int_ptr = cpuint();
+	cpu_int_ptr = cpuint(); 
 	cpu_signal_ptr = cpusignal();
 
 	/* Configure signal object. */
