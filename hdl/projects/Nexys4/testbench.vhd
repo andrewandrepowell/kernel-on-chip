@@ -41,7 +41,7 @@ architecture Behavioral of testbench is
     signal sys_clk_i : std_logic := '1';
     signal sys_rst : std_logic := '0';
     signal gpio_output : gpio_type;
-    signal gpio_input : gpio_type;
+    signal gpio_input : gpio_type := (others=>'0');
     signal uart_tx : std_logic;
     signal uart_clock : std_logic := '1';
     signal uart_tx_data_avail : std_logic := '0';

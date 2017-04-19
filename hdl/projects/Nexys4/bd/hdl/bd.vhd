@@ -1,7 +1,7 @@
 --Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2016.4 (lin64) Build 1756540 Mon Jan 23 19:11:19 MST 2017
---Date        : Tue Apr 11 11:55:51 2017
+--Date        : Wed Apr 19 13:12:34 2017
 --Host        : andrewandrepowell2-desktop running 64-bit Ubuntu 16.04 LTS
 --Command     : generate_target bd.bd
 --Design      : bd
@@ -835,7 +835,7 @@ entity bd is
     sys_rst : in STD_LOGIC
   );
   attribute CORE_GENERATION_INFO : string;
-  attribute CORE_GENERATION_INFO of bd : entity is "bd,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=bd,x_ipVersion=1.00.a,x_ipLanguage=VHDL,numBlks=6,numReposBlks=4,numNonXlnxBlks=0,numHierBlks=2,maxHierDepth=0,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=0,numPkgbdBlks=0,bdsource=USER,synth_mode=OOC_per_IP}";
+  attribute CORE_GENERATION_INFO of bd : entity is "bd,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=bd,x_ipVersion=1.00.a,x_ipLanguage=VHDL,numBlks=7,numReposBlks=5,numNonXlnxBlks=0,numHierBlks=2,maxHierDepth=0,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=0,numPkgbdBlks=0,bdsource=USER,synth_mode=OOC_per_IP}";
   attribute HW_HANDOFF : string;
   attribute HW_HANDOFF of bd : entity is "bd.hwdef";
 end bd;
@@ -933,6 +933,13 @@ architecture STRUCTURE of bd is
     peripheral_aresetn : out STD_LOGIC_VECTOR ( 0 to 0 )
   );
   end component bd_proc_sys_reset_1_0;
+  component bd_clk_wiz_0_0 is
+  port (
+    resetn : in STD_LOGIC;
+    clk_in1 : in STD_LOGIC;
+    clk_ref_i : out STD_LOGIC
+  );
+  end component bd_clk_wiz_0_0;
   signal S00_AXI_1_ARADDR : STD_LOGIC_VECTOR ( 31 downto 0 );
   signal S00_AXI_1_ARBURST : STD_LOGIC_VECTOR ( 1 downto 0 );
   signal S00_AXI_1_ARCACHE : STD_LOGIC_VECTOR ( 3 downto 0 );
@@ -1009,6 +1016,7 @@ architecture STRUCTURE of bd is
   signal axi_interconnect_0_M00_AXI_WREADY : STD_LOGIC;
   signal axi_interconnect_0_M00_AXI_WSTRB : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal axi_interconnect_0_M00_AXI_WVALID : STD_LOGIC;
+  signal clk_wiz_0_clk_ref_i : STD_LOGIC;
   signal mig_7series_0_DDR2_ADDR : STD_LOGIC_VECTOR ( 12 downto 0 );
   signal mig_7series_0_DDR2_BA : STD_LOGIC_VECTOR ( 2 downto 0 );
   signal mig_7series_0_DDR2_CAS_N : STD_LOGIC;
@@ -1181,10 +1189,16 @@ axi_interconnect_0: entity work.bd_axi_interconnect_0_0
       S00_AXI_wstrb(3 downto 0) => S00_AXI_1_WSTRB(3 downto 0),
       S00_AXI_wvalid => S00_AXI_1_WVALID
     );
+clk_wiz_0: component bd_clk_wiz_0_0
+     port map (
+      clk_in1 => sys_clk_i_1,
+      clk_ref_i => clk_wiz_0_clk_ref_i,
+      resetn => '0'
+    );
 mig_7series_0: component bd_mig_7series_0_0
      port map (
       aresetn => proc_sys_reset_1_peripheral_aresetn(0),
-      clk_ref_i => sys_clk_i_1,
+      clk_ref_i => clk_wiz_0_clk_ref_i,
       ddr2_addr(12 downto 0) => mig_7series_0_DDR2_ADDR(12 downto 0),
       ddr2_ba(2 downto 0) => mig_7series_0_DDR2_BA(2 downto 0),
       ddr2_cas_n => mig_7series_0_DDR2_CAS_N,

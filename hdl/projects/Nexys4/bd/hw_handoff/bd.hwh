@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Tue Apr 11 22:12:26 2017" VIVADOVERSION="2016.4">
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Wed Apr 19 13:12:34 2017" VIVADOVERSION="2016.4">
 
   <SYSTEMINFO ARCH="artix7" DEVICE="7a100t" NAME="bd" PACKAGE="csg324" SPEEDGRADE="-1"/>
 
@@ -1440,7 +1440,7 @@
             <CONNECTION INSTANCE="External_Ports" PORT="sys_clk_i"/>
           </CONNECTIONS>
         </PORT>
-        <PORT CLKFREQUENCY="200000000" DIR="O" NAME="clk_ref_i" SIGIS="clk" SIGNAME="clk_wiz_0_clk_ref_i">
+        <PORT CLKFREQUENCY="100000000" DIR="O" NAME="clk_ref_i" SIGIS="clk" SIGNAME="clk_wiz_0_clk_ref_i">
           <CONNECTIONS>
             <CONNECTION INSTANCE="mig_7series_0" PORT="clk_ref_i"/>
           </CONNECTIONS>

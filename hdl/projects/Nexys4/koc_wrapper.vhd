@@ -1424,7 +1424,29 @@ begin
     ram_axi_full_arid_ext(axi_master_id_width-1 downto 0) <= ram_axi_full_arid;
     ram_axi_full_rid_ext(axi_master_id_width-1 downto 0) <= ram_axi_full_rid;
     
+    -----------------
+    -- ID samplers --
+    -----------------
     
+    process (aclk)
+    begin
+        if rising_edge (aclk) then
+            if boot_bram_axi_full_awvalid='1' and boot_bram_axi_full_awready='1' then
+                boot_bram_axi_full_bid <= boot_bram_axi_full_awid;
+            end if;
+            if boot_bram_axi_full_arvalid='1' and boot_bram_axi_full_arready='1' then
+                boot_bram_axi_full_rid <= boot_bram_axi_full_arid;
+            end if; 
+            if upper_ext=false then
+                if ram_axi_full_awvalid='1'and ram_axi_full_awready='1' then
+                    ram_axi_full_bid <= ram_axi_full_awid;
+                end if;
+                if ram_axi_full_arvalid='1' and ram_axi_full_arready='1' then
+                    ram_axi_full_rid <= ram_axi_full_arid;
+                end if;
+            end if;
+        end if;
+    end process;
     
     ------------------------------
     -- Boot Bram Instantiations --
@@ -1601,7 +1623,7 @@ begin
                 bram_rddata_a => ram_bram_rddata_a);
         bd_bram_inst : bram 
             generic map (
-                select_app => lower_app,
+                select_app => upper_app,
                 address_width => bram_address_width,
                 data_width => bram_data_width,
                 bram_depth => bram_bram_depth)
