@@ -15,6 +15,10 @@
 #define INT_UART_ID			(2)
 #define INT_MASK			(1<<INT_GPIO_ID)
 
+#define CPUINT_SIGNAL_ID	(KOC_CPU_SIGNAL_INT_ID)
+#define CPUINT_INT_ID		(1)
+#define CPUINT_MASK			((1<<CPUINT_SIGNAL_ID)|(1<<CPUINT_INT_ID))
+
 plasoc_int int_obj;
 plasoc_gpio gpio_obj;
 koc_lock lock_obj;
@@ -54,9 +58,10 @@ void koc_cpu_signal_isr(void* param)
 			break;
 		case 2:
 			/* The only job of slave CPU2 is to continuously read 
-			data and write it to the output. It's interrupt is left
-			disabled. */
+			data and write it to the output. It's interrupt is enabled so
+			that future signals are acknlowedged. */
 			{
+				OS_AsmInterruptEnable(1);
 				while (1)
 				{
 					l1_cache_invalidate_range((unsigned)&data,sizeof(data));
@@ -82,6 +87,12 @@ void koc_cpu_signal_isr(void* param)
 
 }
 
+void int_isr(void* param)
+{
+	(void) param;
+	plasoc_int_service_interrupts(&int_obj);
+}
+
 void gpio_isr(void* param)
 {
 	(void) param;
@@ -105,6 +116,7 @@ int main()
 		plasoc_gpio_setup(&gpio_obj,HW_GPIO_BASE_ADDRESS);
 		plasoc_int_setup(&int_obj,HW_INT_BASE_ADDRESS);
 		plasoc_int_attach_isr(&int_obj,INT_GPIO_ID,gpio_isr,0);
+		plasoc_int_attach_isr(cpuint(),CPUINT_INT_ID,int_isr,0);
 		
 		l1_cache_flush_range((unsigned)&lock_obj,sizeof(lock_obj));
 		l1_cache_flush_range((unsigned)&gpio_obj,sizeof(gpio_obj));
@@ -113,8 +125,10 @@ int main()
 	
 	/* Enable interrupts and trigger the other CPUs. */
 	{
+		plasoc_gpio_set_data_out(&gpio_obj,1);
 		plasoc_gpio_enable_int(&gpio_obj,0);
 		plasoc_int_set_enables(&int_obj,INT_MASK);
+		plasoc_int_set_enables(cpuint(),CPUINT_MASK);
 		koc_signal_start(cpusignal());
 	}
 	

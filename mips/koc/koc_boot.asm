@@ -53,9 +53,16 @@ interrupt_service_routine:
 	sw		$24, 76($29)	#t8
 	sw		$25, 80($29)	#t9
 	sw		$31, 84($29)	#lr
+	mfc0	$26, $14        #C0_EPC=14 (Exception PC)
+	addi	$26, $26, -4    #Backup one opcode
+	sw		$26, 88($29)    #pc
+	mfhi	$27
+	sw		$27, 92($29)    #hi
+	mflo	$27
+	sw		$27, 96($29)    #lo
 
 	jal		OS_InterruptServiceRoutine
-	addi		$5, $29, 0
+	addi	$5, $29, 0
 
    	#Restore all temporary registers
 	lw		$1, 16($29)	#at
