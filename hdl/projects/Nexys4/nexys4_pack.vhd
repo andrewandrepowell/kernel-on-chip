@@ -14,5 +14,6 @@ package nexys4_pack is
     constant cache_replace_strat : string := "rr";
     constant uart_baud : positive := 9600;
     constant uart_clock_frequency : positive := 50000000;
+    constant lock_control_default : integer := 0;
 
 end package;

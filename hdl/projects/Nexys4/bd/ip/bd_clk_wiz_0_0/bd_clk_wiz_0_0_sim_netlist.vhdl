@@ -1,10 +1,10 @@
 -- Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
--- Tool Version: Vivado v.2016.4 (lin64) Build 1756540 Mon Jan 23 19:11:19 MST 2017
--- Date        : Wed Apr 19 15:35:39 2017
--- Host        : andrewandrepowell2-desktop running 64-bit Ubuntu 16.04 LTS
--- Command     : write_vhdl -force -mode funcsim
---               /opt/Xilinx/Projects/koc/kernel-on-chip/hdl/projects/Nexys4/bd/ip/bd_clk_wiz_0_0/bd_clk_wiz_0_0_sim_netlist.vhdl
+-- Tool Version: Vivado v.2016.4 (win64) Build 1756540 Mon Jan 23 19:11:23 MST 2017
+-- Date        : Fri Apr 14 18:35:38 2017
+-- Host        : LAPTOP-IQ9G3D1I running 64-bit major release  (build 9200)
+-- Command     : write_vhdl -force -mode funcsim -rename_top bd_clk_wiz_0_0 -prefix
+--               bd_clk_wiz_0_0_ bd_clk_wiz_0_0_sim_netlist.vhdl
 -- Design      : bd_clk_wiz_0_0
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -20,8 +20,6 @@ entity bd_clk_wiz_0_0_bd_clk_wiz_0_0_clk_wiz is
     resetn : in STD_LOGIC;
     clk_in1 : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of bd_clk_wiz_0_0_bd_clk_wiz_0_0_clk_wiz : entity is "bd_clk_wiz_0_0_clk_wiz";
 end bd_clk_wiz_0_0_bd_clk_wiz_0_0_clk_wiz;
 
 architecture STRUCTURE of bd_clk_wiz_0_0_bd_clk_wiz_0_0_clk_wiz is

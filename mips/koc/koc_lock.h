@@ -1,6 +1,8 @@
 #ifndef KOC_LOCK_H_
 #define KOC_LOCK_H_
 
+#include "koc_cpu.h"
+
 #ifdef __cplusplus
 extern "C" 
 {
@@ -16,15 +18,15 @@ extern "C"
 	koc_lock;
 	
 	static inline __attribute__ ((always_inline))
-	void koc_lock_setup(koc_lock* obj,unsigned base_address,unsigned cpuid)
+	void koc_lock_setup(koc_lock* obj,unsigned base_address)
 	{
 		obj->base_address = base_address;
 	}
 	
 	static inline __attribute__ ((always_inline))
-	unsigned koc_lock_take(koc_lock* obj,unsigned cpuid)
+	unsigned koc_lock_take(koc_lock* obj)
 	{
-		unsigned lockid = cpuid+1;
+		unsigned lockid = cpuid()+1;
 		
 		__asm__ __volatile__ ( "" : : : "memory");
 		*((volatile unsigned*)(obj->base_address+KOC_LOCK_CONTROL_OFFSET)) = lockid;

@@ -4182,7 +4182,7 @@ begin
         generic map (
             axi_address_width => axi_address_periph_width,
             axi_data_width => axi_data_width,
-            control_default => 1)
+            control_default => lock_control_default)
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
