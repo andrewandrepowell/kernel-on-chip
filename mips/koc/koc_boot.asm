@@ -31,6 +31,11 @@ interrupt_service_routine:
 	.set		noreorder
 	.set		noat
 
+	# The following statements were used for debugging purposes.
+	#lui	$26,	0x2003
+	#ori	$26,	0x0008
+	#sw	$29,	0($26)
+
    	#Registers $26 and $27 are reserved for the OS
    	#Save all temporary registers
    	#Slots 0($29) through 12($29) reserved for saving a0-a3

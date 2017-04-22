@@ -2,6 +2,7 @@
 
 /* The stacks will be initialized to zero by the master CPU. */
 unsigned char koc_cpu_stacks[KOC_CPU_TOTAL][KOC_CPU_STACK_SIZE];
+cpucode* koc_cpu_codes[KOC_CPU_TOTAL];
 
 /* The following arrays are initialized to -1 to ensure they're not placed in BSS. */
 plasoc_int koc_cpu_int_objs[KOC_CPU_TOTAL] = {[0 ... KOC_CPU_TOTAL-1] = {-1}};
@@ -21,10 +22,12 @@ void koc_cpu_signal_isr(void* param)
 
 static void start()
 {
+	unsigned cpuid_val;
 	plasoc_int* cpu_int_ptr;
 	koc_signal* cpu_signal_ptr;
 
 	/* Grab the pointers respective to the slave CPU. */
+	cpuid_val = cpuid();
 	cpu_int_ptr = cpuint(); 
 	cpu_signal_ptr = cpusignal();
 
@@ -39,8 +42,11 @@ static void start()
 	/* Patch the interrupt service routine. */
 	OS_AsmInterruptInit();
 
+	/* Each CPU's interrupt is enabled by default. */
+	OS_AsmInterruptEnable(1);
+
 	/* Clear BSS and run main if master. */
-	if (cpuid()==KOC_CPU_MASTER_CPUID)
+	if (cpuid_val==KOC_CPU_MASTER_CPUID)
 	{
 		extern int main();
 		extern unsigned __bss_start;
@@ -61,9 +67,18 @@ static void start()
 		/* Run main. */
 		(void)main();
 	}
-
-	/* Each CPU's interrupt is enabled by default. */
-	OS_AsmInterruptEnable(1);
+	else
+	{
+		while (1)
+		{
+			l1_cache_invalidate_range((unsigned)&koc_cpu_codes[cpuid()],sizeof(koc_cpu_codes[0]));
+			if (koc_cpu_codes[cpuid_val]!=0)
+			{
+				koc_cpu_codes[cpuid_val]();
+				break;
+			}
+		}
+	}
 
 	/* Block until interrupt is called. */
 	while (1);
@@ -71,9 +86,6 @@ static void start()
 
 void koc_boot_start()
 {
-	//*(volatile unsigned*)0x20030008 = 0x00000010;
-	//__asm__ __volatile__ ("":::"memory");
-
 	/* Configure stack of CPU. */
 	__asm__ __volatile__ (
 		"move $sp, %0\n"

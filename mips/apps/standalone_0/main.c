@@ -25,66 +25,44 @@ koc_lock lock_obj;
 volatile unsigned initialized[KOC_CPU_TOTAL];
 volatile unsigned data;
 
-__attribute__((weak))
 void koc_cpu_signal_isr(void* param)
-{	
-	unsigned cpuid_val;
-
+{
 	/* Acknowledge any signals and acquire CPUID. */
 	koc_signal_ack(cpusignal());
-	cpuid_val = cpuid();
-	
-	/* Perform initialization operations.*/
-	if (initialized[cpuid_val]==0)
-	{
-		initialized[cpuid_val] = 1;
-		
-		/* Objects needs to be invalidated to ensure they're 
-		located in each CPU's cache. */
-		l1_cache_invalidate_range((unsigned)&lock_obj,sizeof(lock_obj));
-		l1_cache_invalidate_range((unsigned)&gpio_obj,sizeof(gpio_obj));
-		l1_cache_invalidate_range((unsigned)&int_obj,sizeof(int_obj));
-		
-		/* Perform operations unique to each CPU. */
-		switch (cpuid_val)
-		{
-		case 1:
-			/* slave CPU1 initializes data by reading from
-			the input and writing it to data. */
-			{
-				data = plasoc_gpio_get_data_in(&gpio_obj);
-				l1_cache_flush_range((unsigned)&data,sizeof(data));
-			}
-			break;
-		case 2:
-			/* The only job of slave CPU2 is to continuously read 
-			data and write it to the output. It's interrupt is enabled so
-			that future signals are acknlowedged. */
-			{
-				OS_AsmInterruptEnable(1);
-				while (1)
-				{
-					l1_cache_invalidate_range((unsigned)&data,sizeof(data));
-					plasoc_gpio_set_data_out(&gpio_obj,data);
-				}
-			}
-			break;
-		}
-	}
-	else
-	{
-		switch (cpuid_val)
-		{
-		case 1:
-			{
-				data = plasoc_gpio_get_data_in(&gpio_obj);
-				l1_cache_flush_range((unsigned)&data,sizeof(data));
-			}
-			break;
-		}
-	}
-	
 
+	/* Perform operations based on CPU. */
+	if (cpuid()==1)
+	{
+		data = plasoc_gpio_get_data_in(&gpio_obj);
+		l1_cache_flush_range((unsigned)&data,sizeof(data));
+	}
+}
+
+void cpuloop()
+{	
+	/* Objects needs to be invalidated to ensure they're 
+	located in each CPU's cache. */
+	l1_cache_invalidate_range((unsigned)&lock_obj,sizeof(lock_obj));
+	l1_cache_invalidate_range((unsigned)&gpio_obj,sizeof(gpio_obj));
+	l1_cache_invalidate_range((unsigned)&int_obj,sizeof(int_obj));
+
+	/* Perform operations based on CPU. */
+	if (cpuid()==1)
+	{
+		data = plasoc_gpio_get_data_in(&gpio_obj);
+		l1_cache_flush_range((unsigned)&data,sizeof(data));
+	}
+	if (cpuid()==2)
+	{
+		while (1)
+		{
+			register unsigned sp;
+			l1_cache_invalidate_range((unsigned)&data,sizeof(data));
+			plasoc_gpio_set_data_out(&gpio_obj,data);
+			//__asm__ __volatile__ ("move %0,$29\n":"=r"(sp)::"memory");
+			//plasoc_gpio_set_data_out(&gpio_obj,sp);
+		}
+	}
 }
 
 void int_isr(void* param)
@@ -129,7 +107,8 @@ int main()
 		plasoc_gpio_enable_int(&gpio_obj,0);
 		plasoc_int_set_enables(&int_obj,INT_MASK);
 		plasoc_int_set_enables(cpuint(),CPUINT_MASK);
-		koc_signal_start(cpusignal());
+		cpurun(1,cpuloop);
+		cpurun(2,cpuloop);
 	}
 	
 	/* The master CPU is allowed to end since it's purpose in this application is complete. */
