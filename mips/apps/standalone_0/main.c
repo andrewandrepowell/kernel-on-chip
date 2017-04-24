@@ -27,6 +27,9 @@ volatile unsigned data;
 
 void koc_cpu_signal_isr(void* param)
 {
+	static unsigned test = 0;
+	if (cpuid()==2) plasoc_gpio_set_data_out(&gpio_obj,cpusignal()->base_address);
+
 	/* Acknowledge any signals and acquire CPUID. */
 	koc_signal_ack(cpusignal());
 
@@ -34,33 +37,37 @@ void koc_cpu_signal_isr(void* param)
 	if (cpuid()==1)
 	{
 		data = plasoc_gpio_get_data_in(&gpio_obj);
+		//OS_AsmInterruptEnable(0);
 		l1_cache_flush_range((unsigned)&data,sizeof(data));
+		//OS_AsmInterruptEnable(1);
 	}
 }
 
 void cpuloop()
 {	
 	/* Objects needs to be invalidated to ensure they're 
-	located in each CPU's cache. */
+	located in each CPU's cache. This operation needs to occur in 
+	a critical section, along with all other cache operations. */
+	//OS_AsmInterruptEnable(0);
 	l1_cache_invalidate_range((unsigned)&lock_obj,sizeof(lock_obj));
 	l1_cache_invalidate_range((unsigned)&gpio_obj,sizeof(gpio_obj));
 	l1_cache_invalidate_range((unsigned)&int_obj,sizeof(int_obj));
+	//OS_AsmInterruptEnable(1);
 
 	/* Perform operations based on CPU. */
 	if (cpuid()==1)
 	{
 		data = plasoc_gpio_get_data_in(&gpio_obj);
+		//OS_AsmInterruptEnable(0);
 		l1_cache_flush_range((unsigned)&data,sizeof(data));
+		//OS_AsmInterruptEnable(1);
 	}
 	if (cpuid()==2)
 	{
 		while (1)
 		{
-			register unsigned sp;
-			l1_cache_invalidate_range((unsigned)&data,sizeof(data));
-			plasoc_gpio_set_data_out(&gpio_obj,data);
-			//__asm__ __volatile__ ("move %0,$29\n":"=r"(sp)::"memory");
-			//plasoc_gpio_set_data_out(&gpio_obj,sp);
+			//l1_cache_invalidate_range((unsigned)&data,sizeof(data));
+			//plasoc_gpio_set_data_out(&gpio_obj,data);
 		}
 	}
 }

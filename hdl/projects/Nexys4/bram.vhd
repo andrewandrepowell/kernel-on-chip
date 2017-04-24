@@ -88,7 +88,16 @@ architecture Behavioral of bram is
     end;
     
     signal bram_buff : bram_buff_type := load_selected_app;
+    
+    --debug
+    signal gpio_obj : std_logic_vector(31 downto 0);
+    signal lock_obj : std_logic_vector(31 downto 0);
+    signal data_obj : std_logic_vector(31 downto 0);
 begin
+    gpio_obj <= bram_buff(544);
+    lock_obj <= bram_buff(545);
+    data_obj <= bram_buff(546);
+
 
     process (bram_clk_a)
         variable base_index : integer; 

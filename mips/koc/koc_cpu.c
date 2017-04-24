@@ -2,11 +2,11 @@
 
 /* The stacks will be initialized to zero by the master CPU. */
 unsigned char koc_cpu_stacks[KOC_CPU_TOTAL][KOC_CPU_STACK_SIZE];
-cpucode* koc_cpu_codes[KOC_CPU_TOTAL];
 
 /* The following arrays are initialized to -1 to ensure they're not placed in BSS. */
 plasoc_int koc_cpu_int_objs[KOC_CPU_TOTAL] = {[0 ... KOC_CPU_TOTAL-1] = {-1}};
 koc_signal koc_cpu_signal_objs[KOC_CPU_TOTAL] = {[0 ... KOC_CPU_TOTAL-1] = {-1}};
+cpucode* koc_cpu_codes[KOC_CPU_TOTAL] = {[0 ... KOC_CPU_TOTAL-1] = (cpucode*)-1};
 
 __attribute__((weak))
 void OS_InterruptServiceRoutine()
@@ -72,8 +72,8 @@ static void start()
 		while (1)
 		{
 			l1_cache_invalidate_range((unsigned)&koc_cpu_codes[cpuid()],sizeof(koc_cpu_codes[0]));
-			if (koc_cpu_codes[cpuid_val]!=0)
-			{
+			if (koc_cpu_codes[cpuid_val]!=(cpucode*)-1)
+			{				
 				koc_cpu_codes[cpuid_val]();
 				break;
 			}
