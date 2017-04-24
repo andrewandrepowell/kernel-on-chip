@@ -33,17 +33,13 @@ static void start()
 
 	/* Configure signal object. */
 	koc_signal_setup(cpu_signal_ptr,KOC_CPU_SIGNAL_BASE_ADDRESS);
+	l1_cache_flush_range((unsigned)cpu_signal_ptr,sizeof(*cpu_signal_ptr));
 
 	/* Configure interrupt controller of CPU. */
 	plasoc_int_setup(cpu_int_ptr,KOC_CPU_INT_BASE_ADDRESS);
 	plasoc_int_attach_isr(cpu_int_ptr,KOC_CPU_SIGNAL_INT_ID,koc_cpu_signal_isr,0);
 	plasoc_int_set_enables(cpu_int_ptr,(1<<KOC_CPU_SIGNAL_INT_ID));
-
-	/* Patch the interrupt service routine. */
-	OS_AsmInterruptInit();
-
-	/* Each CPU's interrupt is enabled by default. */
-	OS_AsmInterruptEnable(1);
+	l1_cache_flush_range((unsigned)cpu_int_ptr,sizeof(*cpu_signal_ptr));
 
 	/* Clear BSS and run main if master. */
 	if (cpuid_val==KOC_CPU_MASTER_CPUID)
@@ -53,6 +49,9 @@ static void start()
 		extern unsigned _end;
 		unsigned* cur;
 		unsigned* end;
+
+		/* Patch the interrupt service routine. */
+		OS_AsmInterruptInit();
 
 		/* Clear BSS. */
 		cur = &__bss_start;
@@ -72,6 +71,7 @@ static void start()
 		while (1)
 		{
 			l1_cache_invalidate_range((unsigned)&koc_cpu_codes[cpuid()],sizeof(koc_cpu_codes[0]));
+
 			if (koc_cpu_codes[cpuid_val]!=(cpucode*)-1)
 			{				
 				koc_cpu_codes[cpuid_val]();

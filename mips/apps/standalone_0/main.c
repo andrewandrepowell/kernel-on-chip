@@ -27,9 +27,6 @@ volatile unsigned data;
 
 void koc_cpu_signal_isr(void* param)
 {
-	static unsigned test = 0;
-	if (cpuid()==2) plasoc_gpio_set_data_out(&gpio_obj,cpusignal()->base_address);
-
 	/* Acknowledge any signals and acquire CPUID. */
 	koc_signal_ack(cpusignal());
 
@@ -37,37 +34,33 @@ void koc_cpu_signal_isr(void* param)
 	if (cpuid()==1)
 	{
 		data = plasoc_gpio_get_data_in(&gpio_obj);
-		//OS_AsmInterruptEnable(0);
 		l1_cache_flush_range((unsigned)&data,sizeof(data));
-		//OS_AsmInterruptEnable(1);
 	}
 }
 
-void cpuloop()
+void cpumain()
 {	
 	/* Objects needs to be invalidated to ensure they're 
 	located in each CPU's cache. This operation needs to occur in 
 	a critical section, along with all other cache operations. */
-	//OS_AsmInterruptEnable(0);
 	l1_cache_invalidate_range((unsigned)&lock_obj,sizeof(lock_obj));
 	l1_cache_invalidate_range((unsigned)&gpio_obj,sizeof(gpio_obj));
 	l1_cache_invalidate_range((unsigned)&int_obj,sizeof(int_obj));
-	//OS_AsmInterruptEnable(1);
+
+	OS_AsmInterruptEnable(1);
 
 	/* Perform operations based on CPU. */
 	if (cpuid()==1)
 	{
 		data = plasoc_gpio_get_data_in(&gpio_obj);
-		//OS_AsmInterruptEnable(0);
 		l1_cache_flush_range((unsigned)&data,sizeof(data));
-		//OS_AsmInterruptEnable(1);
 	}
 	if (cpuid()==2)
 	{
 		while (1)
 		{
-			//l1_cache_invalidate_range((unsigned)&data,sizeof(data));
-			//plasoc_gpio_set_data_out(&gpio_obj,data);
+			l1_cache_invalidate_range((unsigned)&data,sizeof(data));
+			plasoc_gpio_set_data_out(&gpio_obj,data);
 		}
 	}
 }
@@ -114,8 +107,9 @@ int main()
 		plasoc_gpio_enable_int(&gpio_obj,0);
 		plasoc_int_set_enables(&int_obj,INT_MASK);
 		plasoc_int_set_enables(cpuint(),CPUINT_MASK);
-		cpurun(1,cpuloop);
-		cpurun(2,cpuloop);
+		OS_AsmInterruptEnable(1);
+		cpurun(1,cpumain);
+		cpurun(2,cpumain);
 	}
 	
 	/* The master CPU is allowed to end since it's purpose in this application is complete. */
