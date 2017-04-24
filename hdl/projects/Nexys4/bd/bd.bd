@@ -758,6 +758,7 @@
         <spirit:name>sys_rst_1</spirit:name>
         <spirit:externalPortReference spirit:portRef="sys_rst"/>
         <spirit:internalPortReference spirit:componentRef="mig_7series_0" spirit:portRef="sys_rst"/>
+        <spirit:internalPortReference spirit:componentRef="clk_wiz_0" spirit:portRef="resetn"/>
       </spirit:adHocConnection>
       <spirit:adHocConnection>
         <spirit:name>sys_clk_i_1</spirit:name>

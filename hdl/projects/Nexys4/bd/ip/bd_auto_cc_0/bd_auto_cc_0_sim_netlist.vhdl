@@ -1,10 +1,10 @@
 -- Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
--- Tool Version: Vivado v.2016.4 (win64) Build 1756540 Mon Jan 23 19:11:23 MST 2017
--- Date        : Fri Apr 14 18:39:28 2017
--- Host        : LAPTOP-IQ9G3D1I running 64-bit major release  (build 9200)
+-- Tool Version: Vivado v.2016.4 (lin64) Build 1756540 Mon Jan 23 19:11:19 MST 2017
+-- Date        : Mon Apr 24 08:52:43 2017
+-- Host        : andrewandrepowell2-desktop running 64-bit Ubuntu 16.04 LTS
 -- Command     : write_vhdl -force -mode funcsim
---               C:/Users/andrewandre/Documents/GitHub/kernel-on-chip/hdl/projects/Nexys4/bd/ip/bd_auto_cc_0/bd_auto_cc_0_sim_netlist.vhdl
+--               /opt/Xilinx/Projects/koc/kernel-on-chip/hdl/projects/Nexys4/bd/ip/bd_auto_cc_0/bd_auto_cc_0_sim_netlist.vhdl
 -- Design      : bd_auto_cc_0
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.

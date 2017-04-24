@@ -1,7 +1,7 @@
 --Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2016.4 (lin64) Build 1756540 Mon Jan 23 19:11:19 MST 2017
---Date        : Wed Apr 19 15:34:44 2017
+--Date        : Mon Apr 24 08:51:44 2017
 --Host        : andrewandrepowell2-desktop running 64-bit Ubuntu 16.04 LTS
 --Command     : generate_target bd.bd
 --Design      : bd
@@ -834,10 +834,10 @@ entity bd is
     sys_clk_i : in STD_LOGIC;
     sys_rst : in STD_LOGIC
   );
-  attribute CORE_GENERATION_INFO : string;
-  attribute CORE_GENERATION_INFO of bd : entity is "bd,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=bd,x_ipVersion=1.00.a,x_ipLanguage=VHDL,numBlks=7,numReposBlks=5,numNonXlnxBlks=0,numHierBlks=2,maxHierDepth=0,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=0,numPkgbdBlks=0,bdsource=USER,synth_mode=OOC_per_IP}";
-  attribute HW_HANDOFF : string;
-  attribute HW_HANDOFF of bd : entity is "bd.hwdef";
+  attribute core_generation_info : string;
+  attribute core_generation_info of bd : entity is "bd,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=bd,x_ipVersion=1.00.a,x_ipLanguage=VHDL,numBlks=7,numReposBlks=5,numNonXlnxBlks=0,numHierBlks=2,maxHierDepth=0,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=0,numPkgbdBlks=0,bdsource=USER,synth_mode=OOC_per_IP}";
+  attribute hw_handoff : string;
+  attribute hw_handoff of bd : entity is "bd.hwdef";
 end bd;
 
 architecture STRUCTURE of bd is
@@ -1193,7 +1193,7 @@ clk_wiz_0: component bd_clk_wiz_0_0
      port map (
       clk_in1 => sys_clk_i_1,
       clk_ref_i => clk_wiz_0_clk_ref_i,
-      resetn => '0'
+      resetn => sys_rst_1
     );
 mig_7series_0: component bd_mig_7series_0_0
      port map (

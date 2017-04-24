@@ -50,9 +50,6 @@ static void start()
 		unsigned* cur;
 		unsigned* end;
 
-		/* Patch the interrupt service routine. */
-		OS_AsmInterruptInit();
-
 		/* Clear BSS. */
 		cur = &__bss_start;
 		end = &_end;	

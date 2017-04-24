@@ -9,8 +9,8 @@ end testbench;
 architecture Behavioral of testbench is
     component koc_wrapper is
         generic (
-            lower_app : string := "jump";
-            upper_app : string := "main";
+            lower_app : string := "main";
+            upper_app : string := "none";
             upper_ext : boolean := false);
         port (
             sys_clk_i : in std_logic;
