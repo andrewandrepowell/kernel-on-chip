@@ -19,7 +19,7 @@ use work.koc_signal_pack.koc_signal;
 
 entity koc_wrapper is
     generic (
-        lower_app : string := "main";
+        lower_app : string := "boot";
         upper_app : string := "none";
         upper_ext : boolean := true);
     port (

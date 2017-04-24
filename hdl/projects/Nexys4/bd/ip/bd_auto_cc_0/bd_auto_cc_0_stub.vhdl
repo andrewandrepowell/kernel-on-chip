@@ -1,10 +1,10 @@
 -- Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
--- Tool Version: Vivado v.2016.4 (lin64) Build 1756540 Mon Jan 23 19:11:19 MST 2017
--- Date        : Mon Apr 24 08:52:43 2017
--- Host        : andrewandrepowell2-desktop running 64-bit Ubuntu 16.04 LTS
--- Command     : write_vhdl -force -mode synth_stub
---               /opt/Xilinx/Projects/koc/kernel-on-chip/hdl/projects/Nexys4/bd/ip/bd_auto_cc_0/bd_auto_cc_0_stub.vhdl
+-- Tool Version: Vivado v.2016.4 (win64) Build 1756540 Mon Jan 23 19:11:23 MST 2017
+-- Date        : Fri Apr 14 18:39:27 2017
+-- Host        : LAPTOP-IQ9G3D1I running 64-bit major release  (build 9200)
+-- Command     : write_vhdl -force -mode synth_stub -rename_top bd_auto_cc_0 -prefix
+--               bd_auto_cc_0_ bd_auto_cc_0_stub.vhdl
 -- Design      : bd_auto_cc_0
 -- Purpose     : Stub declaration of top-level module interface
 -- Device      : xc7a100tcsg324-1

@@ -2,6 +2,7 @@
 #ifndef KOC_CPU_H_
 #define KOC_CPU_H_
 
+#include "koc_defs.h"
 #include "plasoc_cpu.h"
 #include "plasoc_int.h"
 #include "plasoc_gpio.h"
@@ -11,17 +12,6 @@
 extern "C" 
 {
 #endif
-
-	#define KOC_CPU_TOTAL					(3)
-	#define KOC_CPU_STACK_SIZE				(1024)
-	#define KOC_CPU_STACK_STUB_SIZE				(24)
-	#define KOC_CPU_MASTER_CPUID				(0)
-	#define KOC_CPUID_BASE_ADDRESS				(0xf0000000)
-	#define KOC_CPU_INT_BASE_ADDRESS			(0xf0010000)
-	#define KOC_CPU_SIGNAL_BASE_ADDRESS			(0xf0020000)
-	#define KOC_CPU_SIGNAL_INT_ID				(0)
-	#define KOC_CPU_OSINT_BASE_ADDRESS			(0x3c)
-	#define KOC_CPU_OSINT_PATCHSIZE				(4*sizeof(unsigned))
 
 	typedef void (cpucode)(void);
 
@@ -58,14 +48,22 @@ extern "C"
 	static inline __attribute__ ((always_inline))
 	void OS_AsmInterruptInitFlush()
 	{
-		OS_AsmInterruptInit();
-		l1_cache_flush_range((unsigned)KOC_CPU_OSINT_BASE_ADDRESS,KOC_CPU_OSINT_PATCHSIZE);
+		extern void interrupt_service_routine();
+		
+		if ((unsigned)interrupt_service_routine!=KOC_CPU_OSINT_BASE_ADDRESS)
+		{
+			OS_AsmInterruptInit();
+			l1_cache_flush_range((unsigned)KOC_CPU_OSINT_BASE_ADDRESS,KOC_CPU_OSINT_PATCHSIZE);
+		}
 	}
 
 	static inline __attribute__ ((always_inline))
 	void OS_AsmInterruptInitInvalidate()
 	{
-		l1_cache_invalidate_range((unsigned)KOC_CPU_OSINT_BASE_ADDRESS,KOC_CPU_OSINT_PATCHSIZE);
+		extern void interrupt_service_routine();
+		
+		if ((unsigned)interrupt_service_routine!=KOC_CPU_OSINT_BASE_ADDRESS)
+			l1_cache_invalidate_range((unsigned)KOC_CPU_OSINT_BASE_ADDRESS,KOC_CPU_OSINT_PATCHSIZE);
 	}
 
 #ifdef __cplusplus

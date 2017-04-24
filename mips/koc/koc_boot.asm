@@ -121,6 +121,7 @@ OS_AsmInterruptEnable:
 
 	.set		reorder
 	.end		OS_AsmInterruptEnable
+	
 
 	.global  	OS_AsmInterruptInit
 	.ent    	OS_AsmInterruptInit
