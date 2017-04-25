@@ -16,12 +16,10 @@ void launch_application()
 }
 
 int main()
-{
-	setout(0x1);
-	
+{	
 	initialize();
 	
-	setout(0x2);
+	setout(0x1);
 	
 	while (1)
 	{
@@ -39,6 +37,8 @@ int main()
 			cache_counter = 0;
 			load_address = (unsigned*)BOOT_LOADER_START_ADDRESS;
 			setbyte(BOOT_LOADER_ACK_SUCCESS_BYTE);
+			
+			setout(0x2);
 
 			do
 			{

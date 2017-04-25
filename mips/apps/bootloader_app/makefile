@@ -16,7 +16,7 @@ LDAFTERFLAGS = -L$(LD_DIR) -static -lc -T$(PLASOC_DIR)/linker.ld
 PREFIX = $(BIN_DIR)mips-none-elf-
 SUFFIX =
 C_SOURCES = main.c port_layer.c $(KOC_DIR)/koc_cpu.c $(PLASOC_DIR)/plasoc_cpu.c
-ASM_SOURCES = $(PLASMA_DIR)/boot.asm
+ASM_SOURCES = $(KOC_DIR)/koc_boot.asm
 BIN2COE = python2 $(MISC_DIR)/bin2coe.py --swap_bytes --vhdl_hex 
 
 CFLAGS += -c -fno-pic -mips1 -mno-abicalls

@@ -52,7 +52,7 @@ void initialize()
 	
 	plasoc_int_enable(&int_obj,INT_UART_ID);
 	plasoc_int_enable(cpuint(),CPUINT_INT_ID);
-	
+
 	OS_AsmInterruptInitFlush();
 	OS_AsmInterruptEnable(1);
 }
