@@ -10,8 +10,8 @@ end testbench;
 architecture Behavioral of testbench is
     component koc_wrapper is
         generic (
-            lower_app : string := "boot";
-            upper_app : string := "none";
+            lower_app : string := "jump";
+            upper_app : string := "main";
             upper_ext : boolean := false);
         port (
             sys_clk_i : in std_logic;
@@ -133,106 +133,106 @@ begin
         end if;
     end process;
     
-       process 
-         constant word_width : integer := 32;
-         subtype byte_type is std_logic_vector(7 downto 0);
-         subtype word_type is std_logic_vector(word_width-1 downto 0);
+--       process 
+--         constant word_width : integer := 32;
+--         subtype byte_type is std_logic_vector(7 downto 0);
+--         subtype word_type is std_logic_vector(word_width-1 downto 0);
          
-         constant BOOT_LOADER_START_WORD : word_type := x"f0f0f0f0";
-         constant BOOT_LOADER_ACK_SUCCESS_BYTE : byte_type := x"01";
-         constant BOOT_LOADER_ACK_FAILURE_BYTE : byte_type := x"02";
-         constant BOOT_LOADER_STATUS_MORE : byte_type := x"01";
-         constant BOOT_LOADER_STATUS_DONE : byte_type := x"02";
-         constant BOOT_LOADER_CHECKSUM_DIVISOR : integer := 230;
+--         constant BOOT_LOADER_START_WORD : word_type := x"f0f0f0f0";
+--         constant BOOT_LOADER_ACK_SUCCESS_BYTE : byte_type := x"01";
+--         constant BOOT_LOADER_ACK_FAILURE_BYTE : byte_type := x"02";
+--         constant BOOT_LOADER_STATUS_MORE : byte_type := x"01";
+--         constant BOOT_LOADER_STATUS_DONE : byte_type := x"02";
+--         constant BOOT_LOADER_CHECKSUM_DIVISOR : integer := 230;
          
-         variable word : word_type;
-         variable byte : byte_type;
-         variable app_data : ram_type := load_hex;
-         variable app_ptr : integer := 0;
+--         variable word : word_type;
+--         variable byte : byte_type;
+--         variable app_data : ram_type := load_hex;
+--         variable app_ptr : integer := 0;
          
-         procedure set_uart_rx( byte : in byte_type ) is
-         begin
-             uart_rx_data <= byte;
-             uart_rx_enable <= '1';
-             wait until uart_rx_done='1';
-             wait for uart_period;
-             uart_rx_enable <= '0';
-             wait for uart_period;
-         end;
+--         procedure set_uart_rx( byte : in byte_type ) is
+--         begin
+--             uart_rx_data <= byte;
+--             uart_rx_enable <= '1';
+--             wait until uart_rx_done='1';
+--             wait for uart_period;
+--             uart_rx_enable <= '0';
+--             wait for uart_period;
+--         end;
          
-         procedure set_uart_word ( word : in word_type ) is
-         begin
-             for each_byte in 0 to word_width/8-1 loop
-                 set_uart_rx(word(7+each_byte*8 downto each_byte*8));
-             end loop;
-         end;
+--         procedure set_uart_word ( word : in word_type ) is
+--         begin
+--             for each_byte in 0 to word_width/8-1 loop
+--                 set_uart_rx(word(7+each_byte*8 downto each_byte*8));
+--             end loop;
+--         end;
          
-         procedure get_uart_tx is
-         begin
-             wait until uart_tx_data_avail='1';
-             wait for uart_period;
-             byte := uart_tx_data;
-             uart_tx_data_ack <= '1';
-             wait for uart_period;
-             uart_tx_data_ack <= '0';
-             wait for uart_period;
-         end;
+--         procedure get_uart_tx is
+--         begin
+--             wait until uart_tx_data_avail='1';
+--             wait for uart_period;
+--             byte := uart_tx_data;
+--             uart_tx_data_ack <= '1';
+--             wait for uart_period;
+--             uart_tx_data_ack <= '0';
+--             wait for uart_period;
+--         end;
          
-     begin
-         wait until sys_rst='1';
-         wait until gpio_output=X"0001";
-         --wait for 2 ms;
+--     begin
+--         wait until sys_rst='1';
+--         wait until gpio_output=X"0001";
+--         --wait for 2 ms;
          
-         set_uart_word(BOOT_LOADER_START_WORD);
-         get_uart_tx;
+--         set_uart_word(BOOT_LOADER_START_WORD);
+--         get_uart_tx;
          
-         if byte=BOOT_LOADER_ACK_SUCCESS_BYTE then
-             report "Success ACK";
-         elsif byte=BOOT_LOADER_ACK_FAILURE_BYTE then
-             report "Failed ACK";
-             wait;
-         else
-             report "???";
-             wait;
-         end if;
+--         if byte=BOOT_LOADER_ACK_SUCCESS_BYTE then
+--             report "Success ACK";
+--         elsif byte=BOOT_LOADER_ACK_FAILURE_BYTE then
+--             report "Failed ACK";
+--             wait;
+--         else
+--             report "???";
+--             wait;
+--         end if;
          
-         while true loop
+--         while true loop
          
-             -- instruction
-             word := app_data(app_ptr);
-             set_uart_word(word);
+--             -- instruction
+--             word := app_data(app_ptr);
+--             set_uart_word(word);
              
-             -- checksum
-             word := std_logic_vector(unsigned(word) mod BOOT_LOADER_CHECKSUM_DIVISOR);
-             boot_checksum <= word(7 downto 0);
-             set_uart_rx(word(7 downto 0));
+--             -- checksum
+--             word := std_logic_vector(unsigned(word) mod BOOT_LOADER_CHECKSUM_DIVISOR);
+--             boot_checksum <= word(7 downto 0);
+--             set_uart_rx(word(7 downto 0));
          
-             -- status
-             app_ptr := app_ptr+1;
-             --if app_ptr=ram_size then
-             if app_ptr=13 then
-                 set_uart_rx(BOOT_LOADER_STATUS_DONE);
-                 exit;
-             else
-                 set_uart_rx(BOOT_LOADER_STATUS_MORE);
-             end if;
+--             -- status
+--             app_ptr := app_ptr+1;
+--             --if app_ptr=ram_size then
+--             if app_ptr=13 then
+--                 set_uart_rx(BOOT_LOADER_STATUS_DONE);
+--                 exit;
+--             else
+--                 set_uart_rx(BOOT_LOADER_STATUS_MORE);
+--             end if;
          
-             -- ack
-             get_uart_tx;
-             if byte=BOOT_LOADER_ACK_SUCCESS_BYTE then
-                 report "Success ACK";
-             elsif byte=BOOT_LOADER_ACK_FAILURE_BYTE then
-                 report "Failed ACK";
-                 wait;
-             else
-                 report "???";
-                 wait;
-             end if;
+--             -- ack
+--             get_uart_tx;
+--             if byte=BOOT_LOADER_ACK_SUCCESS_BYTE then
+--                 report "Success ACK";
+--             elsif byte=BOOT_LOADER_ACK_FAILURE_BYTE then
+--                 report "Failed ACK";
+--                 wait;
+--             else
+--                 report "???";
+--                 wait;
+--             end if;
          
-         end loop;
+--         end loop;
          
-         wait;
-     end process;
+--         wait;
+--     end process;
     
     -- Run testbench application.
     process 
