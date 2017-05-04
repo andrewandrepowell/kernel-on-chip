@@ -27,7 +27,6 @@ extern "C"
 	unsigned koc_lock_take(koc_lock* obj)
 	{
 		unsigned lockid = cpuid()+1;
-		
 		__asm__ __volatile__ ( "" : : : "memory");
 		*((volatile unsigned*)(obj->base_address+KOC_LOCK_CONTROL_OFFSET)) = lockid;
 		__asm__ __volatile__ ( "" : : : "memory");
@@ -38,7 +37,7 @@ extern "C"
 	void koc_lock_give(koc_lock* obj)
 	{
 		__asm__ __volatile__ ( "" : : : "memory");
-		*((volatile unsigned*)(obj->base_address+KOC_LOCK_CONTROL_OFFSET)) = 0;
+		*((volatile unsigned*)(obj->base_address+KOC_LOCK_CONTROL_OFFSET)) = cpuid()+1;
 	}
 	
 

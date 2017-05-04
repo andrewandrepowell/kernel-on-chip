@@ -48,8 +48,12 @@ begin
                     if axi_arvalid='1' and axi_arready_buff='1' then
                         axi_arready_buff <= '0';
                         axi_rvalid_buff <= '1';
-                        axi_araddr_buff <= axi_araddr;
                         state <= state_read;
+                        if axi_araddr=reg_control_offset then 
+                            axi_rdata <= reg_control;
+                        else
+                            axi_rdata <= (others=>'0');
+                        end if;
                     else
                         axi_arready_buff <= '1';
                     end if;
@@ -57,13 +61,6 @@ begin
                     if axi_rvalid_buff='1' and axi_rready='1' then
                         axi_rvalid_buff <= '0';
                         state <= state_wait;
-                    else
-                        axi_rvalid_buff <= '1';
-                        if axi_araddr_buff=reg_control_offset then 
-                            axi_rdata <= reg_control;
-                        else
-                            axi_rdata <= (others=>'0');
-                        end if;
                     end if;
                 end case;
             end if;

@@ -1,36 +1,31 @@
 #include "port_layer.h"
 
-volatile unsigned counter = 3;
+volatile unsigned counter = 0;
 
 void runmain()
 {
 	cpuinitialize();
 	
-	setout(2);
-	
 	while (1)
 	{
-		unsigned byte;
-		//blocklock();
-		byte = getbyte();
-		setout(byte);
-		setbyte(byte);
-		//printf("test\n\r");
-		//givelock();
+		blocklock();
+		l1_cache_invalidate_range((unsigned)&counter,sizeof(counter));
+		setout(counter);
+		printf("CPU%u: %u\n\r",cpuid(),counter);
+		counter++;
+		l1_cache_flush_range((unsigned)&counter,sizeof(counter));
+		givelock();
 	}
 }
 
 int main()
 {
 	initialize();
-	
 	setout(1);
 	
-	//cpurun(1,runmain);
-	//cpurun(2,runmain);
+	cpurun(1,runmain);
+	cpurun(2,runmain);
 	runmain();
-	
-	
 	
 	return 0;
 }
