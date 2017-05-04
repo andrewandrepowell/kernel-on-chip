@@ -9,7 +9,8 @@ extern "C"
 #endif
 
 	#define KOC_LOCK_CONTROL_OFFSET             (0)
-	#define KOC_LOCK_CONTROL_DEFAULT_VALUE		(1)
+	#define KOC_LOCK_CONTROL_DEFAULT_VALUE		(0
+	#define KOC_LOCK_MEMORY_BARRIER				({__asm__ __volatile__ ( "" : : : "memory");})
 	
 	typedef struct
 	{
@@ -27,16 +28,16 @@ extern "C"
 	unsigned koc_lock_take(koc_lock* obj)
 	{
 		unsigned lockid = cpuid()+1;
-		__asm__ __volatile__ ( "" : : : "memory");
+		KOC_LOCK_MEMORY_BARRIER;
 		*((volatile unsigned*)(obj->base_address+KOC_LOCK_CONTROL_OFFSET)) = lockid;
-		__asm__ __volatile__ ( "" : : : "memory");
+		KOC_LOCK_MEMORY_BARRIER;
 		return (*((volatile unsigned*)(obj->base_address+KOC_LOCK_CONTROL_OFFSET)))==lockid;
 	}
 	
 	static inline __attribute__ ((always_inline))
 	void koc_lock_give(koc_lock* obj)
 	{
-		__asm__ __volatile__ ( "" : : : "memory");
+		KOC_LOCK_MEMORY_BARRIER;
 		*((volatile unsigned*)(obj->base_address+KOC_LOCK_CONTROL_OFFSET)) = cpuid()+1;
 	}
 	
