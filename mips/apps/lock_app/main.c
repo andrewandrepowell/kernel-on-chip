@@ -1,16 +1,21 @@
 #include "port_layer.h"
 
-volatile unsigned counter = 5;
+volatile unsigned counter = 3;
 
 void runmain()
 {
 	cpuinitialize();
 	
+	setout(2);
+	
 	while (1)
 	{
+		unsigned byte;
 		//blocklock();
-		printf("test\n\r");
-		counter++;
+		byte = getbyte();
+		setout(byte);
+		setbyte(byte);
+		//printf("test\n\r");
 		//givelock();
 	}
 }
@@ -19,19 +24,13 @@ int main()
 {
 	initialize();
 	
-	setout(0x0001);
-	while (1)
-	{
-	getbyte();
-	setout(counter++);
-	printf("test\n\r");
-	}
+	setout(1);
 	
 	//cpurun(1,runmain);
 	//cpurun(2,runmain);
 	runmain();
 	
-	setout(0x0003);
+	
 	
 	return 0;
 }

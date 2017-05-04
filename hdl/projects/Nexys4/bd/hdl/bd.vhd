@@ -1,8 +1,8 @@
 --Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
---Tool Version: Vivado v.2016.4 (lin64) Build 1756540 Mon Jan 23 19:11:19 MST 2017
---Date        : Mon Apr 24 08:51:44 2017
---Host        : andrewandrepowell2-desktop running 64-bit Ubuntu 16.04 LTS
+--Tool Version: Vivado v.2016.4 (win64) Build 1756540 Mon Jan 23 19:11:23 MST 2017
+--Date        : Wed May 03 18:19:08 2017
+--Host        : LAPTOP-IQ9G3D1I running 64-bit major release  (build 9200)
 --Command     : generate_target bd.bd
 --Design      : bd
 --Purpose     : IP block netlist
@@ -861,7 +861,6 @@ architecture STRUCTURE of bd is
     ddr2_odt : out STD_LOGIC_VECTOR ( 0 to 0 );
     ui_clk_sync_rst : out STD_LOGIC;
     ui_clk : out STD_LOGIC;
-    ui_addn_clk_0 : out STD_LOGIC;
     s_axi_awid : in STD_LOGIC_VECTOR ( 3 downto 0 );
     s_axi_awaddr : in STD_LOGIC_VECTOR ( 31 downto 0 );
     s_axi_awlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
@@ -937,7 +936,9 @@ architecture STRUCTURE of bd is
   port (
     resetn : in STD_LOGIC;
     clk_in1 : in STD_LOGIC;
-    clk_ref_i : out STD_LOGIC
+    clk_ref_i : out STD_LOGIC;
+    aclk : out STD_LOGIC;
+    sys_clk_i : out STD_LOGIC
   );
   end component bd_clk_wiz_0_0;
   signal S00_AXI_1_ARADDR : STD_LOGIC_VECTOR ( 31 downto 0 );
@@ -1017,6 +1018,7 @@ architecture STRUCTURE of bd is
   signal axi_interconnect_0_M00_AXI_WSTRB : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal axi_interconnect_0_M00_AXI_WVALID : STD_LOGIC;
   signal clk_wiz_0_clk_ref_i : STD_LOGIC;
+  signal clk_wiz_0_sys_clk_i : STD_LOGIC;
   signal mig_7series_0_DDR2_ADDR : STD_LOGIC_VECTOR ( 12 downto 0 );
   signal mig_7series_0_DDR2_BA : STD_LOGIC_VECTOR ( 2 downto 0 );
   signal mig_7series_0_DDR2_CAS_N : STD_LOGIC;
@@ -1191,9 +1193,11 @@ axi_interconnect_0: entity work.bd_axi_interconnect_0_0
     );
 clk_wiz_0: component bd_clk_wiz_0_0
      port map (
+      aclk => mig_7series_0_ui_addn_clk_0,
       clk_in1 => sys_clk_i_1,
       clk_ref_i => clk_wiz_0_clk_ref_i,
-      resetn => sys_rst_1
+      resetn => sys_rst_1,
+      sys_clk_i => clk_wiz_0_sys_clk_i
     );
 mig_7series_0: component bd_mig_7series_0_0
      port map (
@@ -1252,9 +1256,8 @@ mig_7series_0: component bd_mig_7series_0_0
       s_axi_wready => axi_interconnect_0_M00_AXI_WREADY,
       s_axi_wstrb(3 downto 0) => axi_interconnect_0_M00_AXI_WSTRB(3 downto 0),
       s_axi_wvalid => axi_interconnect_0_M00_AXI_WVALID,
-      sys_clk_i => sys_clk_i_1,
+      sys_clk_i => clk_wiz_0_sys_clk_i,
       sys_rst => sys_rst_1,
-      ui_addn_clk_0 => mig_7series_0_ui_addn_clk_0,
       ui_clk => mig_7series_0_ui_clk,
       ui_clk_sync_rst => mig_7series_0_ui_clk_sync_rst
     );

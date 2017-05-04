@@ -36,7 +36,7 @@ architecture Behavioral of testbench is
             DDR2_we_n : out STD_LOGIC);
     end component;
     constant clock_period : time := 10 ns;
-    constant uart_period : time := 104167 ns;
+    constant uart_period : time := 208333 ns;
     constant time_out_threshold : integer := 2**30;
     subtype gpio_type is std_logic_vector(data_out_width-1 downto 0);
     signal sys_clk_i : std_logic := '1';

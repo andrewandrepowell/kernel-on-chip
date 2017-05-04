@@ -149,7 +149,7 @@ proc write_mig_file_bd_mig_7series_0_0 { str_mig_prj_filepath } {
    puts $mig_prj_file {        <InputClkFreq>100</InputClkFreq>}
    puts $mig_prj_file {        <UIExtraClocks>1</UIExtraClocks>}
    puts $mig_prj_file {        <MMCM_VCO>1200</MMCM_VCO>}
-   puts $mig_prj_file {        <MMCMClkOut0>24.000</MMCMClkOut0>}
+   puts $mig_prj_file {        <MMCMClkOut0> 1.000</MMCMClkOut0>}
    puts $mig_prj_file {        <MMCMClkOut1>1</MMCMClkOut1>}
    puts $mig_prj_file {        <MMCMClkOut2>1</MMCMClkOut2>}
    puts $mig_prj_file {        <MMCMClkOut3>1</MMCMClkOut3>}
@@ -350,13 +350,25 @@ CONFIG.NUM_MI {1} \
 CONFIG.CLKOUT1_JITTER {114.829} \
 CONFIG.CLKOUT1_PHASE_ERROR {98.575} \
 CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {200.000} \
+CONFIG.CLKOUT2_JITTER {151.636} \
+CONFIG.CLKOUT2_PHASE_ERROR {98.575} \
+CONFIG.CLKOUT2_REQUESTED_OUT_FREQ {50.000} \
+CONFIG.CLKOUT2_USED {true} \
+CONFIG.CLKOUT3_JITTER {130.958} \
+CONFIG.CLKOUT3_PHASE_ERROR {98.575} \
+CONFIG.CLKOUT3_USED {true} \
 CONFIG.CLK_OUT1_PORT {clk_ref_i} \
+CONFIG.CLK_OUT2_PORT {aclk} \
+CONFIG.CLK_OUT3_PORT {sys_clk_i} \
 CONFIG.MMCM_CLKFBOUT_MULT_F {10.000} \
 CONFIG.MMCM_CLKIN1_PERIOD {10.0} \
 CONFIG.MMCM_CLKIN2_PERIOD {10.0} \
 CONFIG.MMCM_CLKOUT0_DIVIDE_F {5.000} \
+CONFIG.MMCM_CLKOUT1_DIVIDE {20} \
+CONFIG.MMCM_CLKOUT2_DIVIDE {10} \
 CONFIG.MMCM_COMPENSATION {ZHOLD} \
 CONFIG.MMCM_DIVCLK_DIVIDE {1} \
+CONFIG.NUM_OUT_CLKS {3} \
 CONFIG.RESET_PORT {resetn} \
 CONFIG.RESET_TYPE {ACTIVE_LOW} \
 CONFIG.USE_LOCKED {false} \
@@ -376,7 +388,7 @@ CONFIG.MMCM_COMPENSATION.VALUE_SRC {DEFAULT} \
 
   # Generate the PRJ File for MIG
   set str_mig_folder [get_property IP_DIR [ get_ips [ get_property CONFIG.Component_Name $mig_7series_0 ] ] ]
-  set str_mig_file_name mig_a.prj
+  set str_mig_file_name mig_b.prj
   set str_mig_file_path ${str_mig_folder}/${str_mig_file_name}
 
   write_mig_file_bd_mig_7series_0_0 $str_mig_file_path
@@ -385,7 +397,7 @@ CONFIG.MMCM_COMPENSATION.VALUE_SRC {DEFAULT} \
 CONFIG.BOARD_MIG_PARAM {Custom} \
 CONFIG.MIG_DONT_TOUCH_PARAM {Custom} \
 CONFIG.RESET_BOARD_INTERFACE {Custom} \
-CONFIG.XML_INPUT_FILE {mig_a.prj} \
+CONFIG.XML_INPUT_FILE {mig_b.prj} \
  ] $mig_7series_0
 
   # Create instance: proc_sys_reset_0, and set properties
@@ -401,14 +413,15 @@ CONFIG.XML_INPUT_FILE {mig_a.prj} \
 
   # Create port connections
   connect_bd_net -net clk_wiz_0_clk_ref_i [get_bd_pins clk_wiz_0/clk_ref_i] [get_bd_pins mig_7series_0/clk_ref_i]
+  connect_bd_net -net clk_wiz_0_sys_clk_i [get_bd_pins clk_wiz_0/sys_clk_i] [get_bd_pins mig_7series_0/sys_clk_i]
   connect_bd_net -net mig_7series_0_mmcm_locked [get_bd_pins mig_7series_0/mmcm_locked] [get_bd_pins proc_sys_reset_0/dcm_locked] [get_bd_pins proc_sys_reset_1/dcm_locked]
-  connect_bd_net -net mig_7series_0_ui_addn_clk_0 [get_bd_ports aclk] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins mig_7series_0/ui_addn_clk_0] [get_bd_pins proc_sys_reset_0/slowest_sync_clk]
+  connect_bd_net -net mig_7series_0_ui_addn_clk_0 [get_bd_ports aclk] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins clk_wiz_0/aclk] [get_bd_pins proc_sys_reset_0/slowest_sync_clk]
   connect_bd_net -net mig_7series_0_ui_clk [get_bd_pins axi_interconnect_0/M00_ACLK] [get_bd_pins mig_7series_0/ui_clk] [get_bd_pins proc_sys_reset_1/slowest_sync_clk]
   connect_bd_net -net mig_7series_0_ui_clk_sync_rst [get_bd_pins mig_7series_0/ui_clk_sync_rst] [get_bd_pins proc_sys_reset_0/ext_reset_in] [get_bd_pins proc_sys_reset_1/ext_reset_in]
   connect_bd_net -net proc_sys_reset_0_interconnect_aresetn [get_bd_ports interconnect_aresetn] [get_bd_pins axi_interconnect_0/ARESETN] [get_bd_pins proc_sys_reset_0/interconnect_aresetn]
   connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_ports peripheral_aresetn] [get_bd_pins axi_interconnect_0/S00_ARESETN] [get_bd_pins proc_sys_reset_0/peripheral_aresetn]
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_0/M00_ARESETN] [get_bd_pins mig_7series_0/aresetn] [get_bd_pins proc_sys_reset_1/peripheral_aresetn]
-  connect_bd_net -net sys_clk_i_1 [get_bd_ports sys_clk_i] [get_bd_pins clk_wiz_0/clk_in1] [get_bd_pins mig_7series_0/sys_clk_i]
+  connect_bd_net -net sys_clk_i_1 [get_bd_ports sys_clk_i] [get_bd_pins clk_wiz_0/clk_in1]
   connect_bd_net -net sys_rst_1 [get_bd_ports sys_rst] [get_bd_pins clk_wiz_0/resetn] [get_bd_pins mig_7series_0/sys_rst]
 
   # Create address segments
@@ -419,31 +432,32 @@ CONFIG.XML_INPUT_FILE {mig_a.prj} \
    guistr: "# # String gsaved with Nlview 6.6.5b  2016-09-06 bk=1.3687 VDI=39 GEI=35 GUI=JA:1.6
 #  -string -flagsOSRD
 preplace port S00_AXI -pg 1 -y 80 -defaultsOSRD
-preplace port sys_rst -pg 1 -y 350 -defaultsOSRD
-preplace port DDR2 -pg 1 -y 130 -defaultsOSRD
-preplace port sys_clk_i -pg 1 -y 360 -defaultsOSRD
-preplace port aclk -pg 1 -y 80 -defaultsOSRD
-preplace portBus peripheral_aresetn -pg 1 -y 470 -defaultsOSRD
+preplace port sys_rst -pg 1 -y 380 -defaultsOSRD
+preplace port DDR2 -pg 1 -y 140 -defaultsOSRD
+preplace port sys_clk_i -pg 1 -y 410 -defaultsOSRD
+preplace port aclk -pg 1 -y 70 -defaultsOSRD
+preplace portBus peripheral_aresetn -pg 1 -y 430 -defaultsOSRD
 preplace portBus interconnect_aresetn -pg 1 -y 20 -defaultsOSRD
 preplace inst mig_7series_0 -pg 1 -lvl 3 -y 180 -defaultsOSRD
-preplace inst proc_sys_reset_0 -pg 1 -lvl 3 -y 370 -defaultsOSRD
-preplace inst proc_sys_reset_1 -pg 1 -lvl 1 -y 250 -defaultsOSRD
+preplace inst proc_sys_reset_0 -pg 1 -lvl 3 -y 340 -defaultsOSRD
+preplace inst proc_sys_reset_1 -pg 1 -lvl 1 -y 280 -defaultsOSRD
 preplace inst axi_interconnect_0 -pg 1 -lvl 2 -y 140 -defaultsOSRD
 preplace inst clk_wiz_0 -pg 1 -lvl 2 -y 350 -defaultsOSRD
-preplace netloc sys_rst_1 1 0 3 NJ 350 400 280 700
-preplace netloc mig_7series_0_mmcm_locked 1 0 4 30 460 NJ 460 750 460 1090
+preplace netloc sys_rst_1 1 0 3 NJ 380 360 420 690
+preplace netloc mig_7series_0_mmcm_locked 1 0 4 30 430 NJ 430 720 430 1050
 preplace netloc mig_7series_0_DDR2 1 3 1 NJ
-preplace netloc clk_wiz_0_clk_ref_i 1 2 1 710
-preplace netloc sys_clk_i_1 1 0 3 NJ 360 390 410 740
-preplace netloc mig_7series_0_ui_addn_clk_0 1 1 3 400 260 730 80 1120
-preplace netloc proc_sys_reset_1_peripheral_aresetn 1 1 2 380 270 720
-preplace netloc proc_sys_reset_0_interconnect_aresetn 1 1 3 390 20 NJ 20 1130
-preplace netloc mig_7series_0_ui_clk 1 0 4 20 10 380 10 NJ 10 1110
+preplace netloc clk_wiz_0_clk_ref_i 1 2 1 670
+preplace netloc sys_clk_i_1 1 0 2 NJ 410 380
+preplace netloc mig_7series_0_ui_addn_clk_0 1 1 3 380 260 660 70 NJ
+preplace netloc proc_sys_reset_1_peripheral_aresetn 1 1 2 370 270 680
+preplace netloc proc_sys_reset_0_interconnect_aresetn 1 1 3 370 20 NJ 20 1070
+preplace netloc mig_7series_0_ui_clk 1 0 4 20 10 360 10 NJ 10 1050
+preplace netloc clk_wiz_0_sys_clk_i 1 2 1 700
 preplace netloc S00_AXI_1 1 0 2 NJ 80 NJ
 preplace netloc axi_interconnect_0_M00_AXI 1 2 1 N
-preplace netloc proc_sys_reset_0_peripheral_aresetn 1 1 3 410 470 NJ 470 1110
-preplace netloc mig_7series_0_ui_clk_sync_rst 1 0 4 20 340 390J 290 750 280 1100
-levelinfo -pg 1 0 210 560 920 1150 -top 0 -bot 480
+preplace netloc proc_sys_reset_0_peripheral_aresetn 1 1 3 390 450 NJ 450 1070
+preplace netloc mig_7series_0_ui_clk_sync_rst 1 0 4 20 440 NJ 440 710 440 1060
+levelinfo -pg 1 0 200 530 890 1100 -top 0 -bot 460
 ",
 }
 

@@ -228,7 +228,7 @@ module bd_mig_7series_0_0_mig #
                                      // write MMCM VCO multiplier
    parameter MMCM_DIVCLK_DIVIDE    = 1,
                                      // write MMCM VCO divisor
-   parameter MMCM_CLKOUT0_EN       = "TRUE",
+   parameter MMCM_CLKOUT0_EN       = "FALSE",
                                      // "TRUE" - MMCM output clock (CLKOUT0) is enabled
                                      // "FALSE" - MMCM output clock (CLKOUT0) is disabled
    parameter MMCM_CLKOUT1_EN       = "FALSE",
@@ -243,7 +243,7 @@ module bd_mig_7series_0_0_mig #
    parameter MMCM_CLKOUT4_EN       = "FALSE",
                                      // "TRUE" - MMCM output clock (CLKOUT4) is enabled
                                      // "FALSE" - MMCM output clock (CLKOUT4) is disabled
-   parameter MMCM_CLKOUT0_DIVIDE   = 24.000,
+   parameter MMCM_CLKOUT0_DIVIDE   =  1.000,
                                      // VCO output divisor for MMCM output clock (CLKOUT0)
    parameter MMCM_CLKOUT1_DIVIDE   = 1,
                                      // VCO output divisor for MMCM output clock (CLKOUT1)
