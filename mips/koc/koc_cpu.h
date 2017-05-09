@@ -42,7 +42,7 @@ extern "C"
 	{
 		extern cpucode* koc_cpu_codes[KOC_CPU_TOTAL];
 		koc_cpu_codes[cpuid_val] = code;
-		l1_cache_flush_range((unsigned)&koc_cpu_codes[cpuid_val],sizeof(koc_cpu_codes[0]));
+		l1_cache_flush_all();
 	}
 
 	static inline __attribute__ ((always_inline))

@@ -61,6 +61,7 @@ void initialize()
 		koc_lock_setup(&lock_obj,HW_LOCK_BASE_ADDRESS);
 		plasoc_uart_setup(&uart_obj,HW_UART_BASE_ADDRESS);
 		plasoc_gpio_setup(&gpio_obj,HW_GPIO_BASE_ADDRESS);
+		init_printf(0,putc_port);
 	}
 	
 	{
@@ -72,27 +73,14 @@ void initialize()
 	{
 		plasoc_int_enable(&int_obj,INT_UART_ID);
 		plasoc_int_enable(cpuint(),CPUINT_INT_ID);
-		
-		l1_cache_flush_range((unsigned)&lock_obj,sizeof(lock_obj));
-		l1_cache_flush_range((unsigned)&uart_obj,sizeof(uart_obj));
-		l1_cache_flush_range((unsigned)&gpio_obj,sizeof(gpio_obj));
-		l1_cache_flush_range((unsigned)&int_obj,sizeof(int_obj));
 
-		OS_AsmInterruptInitFlush();
+		OS_AsmInterruptInit();
 		OS_AsmInterruptEnable(1);
 	}
 }
 
 void cpuinitialize()
 {
-	l1_cache_invalidate_range((unsigned)&lock_obj,sizeof(lock_obj));
-	l1_cache_invalidate_range((unsigned)&uart_obj,sizeof(uart_obj));
-	l1_cache_invalidate_range((unsigned)&gpio_obj,sizeof(gpio_obj));
-	l1_cache_invalidate_range((unsigned)&int_obj,sizeof(int_obj));
-	
-	init_printf(0,putc_port);
-	
-	OS_AsmInterruptInitInvalidate();
 	OS_AsmInterruptEnable(1);
 }
 
@@ -157,10 +145,12 @@ void blocklock()
 {
 	while (koc_lock_take(&lock_obj)==0)
 		continue;
+	l1_cache_memory_barrier();
 }
 
 void givelock()
 {
+	l1_cache_memory_barrier();
 	koc_lock_give(&lock_obj);
 }
 
