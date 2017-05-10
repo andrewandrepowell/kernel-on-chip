@@ -1,3 +1,9 @@
+##
+# @author Andrew Powell
+# @date May 10, 2017
+# @brief Contains the instructions needed to boot the koc.
+##
+
 	.extern		koc_boot_start
 	
 	.data
@@ -8,6 +14,12 @@
 	.section	.text.startup
 	.align 		2
 	
+##
+# @brief Operations necessary for initializing the CPU on boot.
+#
+# Booting the CPU consists of setting the global pointer and a small temporary stack.
+# The final operation is to call the boot function.
+##
 	.global		entry
 	.ent		entry
 entry:
@@ -35,7 +47,15 @@ entry:
 
 	.end entry
 
-
+##
+# @brief Defines the default operations of the CPU's interrupt service routine.
+#
+# If interrupts are enabled and either a system call or an external interrupt is called,
+# the following operations are excuted as part of the interrupt_service_routine. First, the CPU interrupt
+# is disabled and the context of the CPU is saved on to the stack, barring the saved registers. Next, the 
+# OS_InterruptServiceRoutine function is called to service the interrupt. Finally, the original context is 
+# restored and the CPU interrupt is enabled.
+##
    	#address 0x3c
 	.global		interrupt_service_routine
 	.ent		interrupt_service_routine
@@ -110,7 +130,11 @@ isr_return:
 	.set		at
 	.end		interrupt_service_routine
 	
-
+##
+# @brief Sets the CPU interrupt.
+# @param int_mask A value of 0 disables the CPU interrupt, whereas a value of 1 enables the CPU interrupt.
+# @return Returns the prior int_mask.
+##
 	.global		OS_AsmInterruptEnable
 	.ent		OS_AsmInterruptEnable
 OS_AsmInterruptEnable:
@@ -122,7 +146,12 @@ OS_AsmInterruptEnable:
 	.set		reorder
 	.end		OS_AsmInterruptEnable
 	
-
+##
+# @brief Write instructions at 0x3c to force the CPU to jump
+# to the correct address of interrupt_service_routine.
+# @warning This function is necessary to for applications not located 
+# at address 0x0.
+##
 	.global  	OS_AsmInterruptInit
 	.ent    	OS_AsmInterruptInit
 OS_AsmInterruptInit:
@@ -148,7 +177,13 @@ OS_AsmPatchValue:
 	.set		reorder
 	.end		OS_AsmInterruptInit
 
-
+##
+# @brief Performs a multiplication operation.
+# @param oper1 The first operand.
+# @param oper2 The second operand.
+# @param res Pointer to the 32 most significant bits of product.
+# @return The 32 least significant bits of product.
+##
 	.global		OS_AsmMult
 	.ent		OS_AsmMult
 OS_AsmMult:
@@ -163,6 +198,9 @@ OS_AsmMult:
 	.set		reorder
 	.end		OS_AsmMult
 
+##
+# @brief Initiates a system call.
+##	
 	.global		OS_Syscall
 	.ent		OS_Syscall
 OS_Syscall:
@@ -173,6 +211,9 @@ OS_Syscall:
 	.set		reorder
 	.end		OS_Syscall
 
+##
+# @brief See documentation for setjmp.h in the C standard library.
+##
 	.global		setjmp
 	.ent		setjmp
 setjmp:
@@ -195,7 +236,9 @@ setjmp:
 	.set 		reorder
 	.end		setjmp
 
-
+##
+# @brief See documentation for setjmp.h in the C standard library.
+##
 	.global		longjmp
 	.ent		longjmp
 longjmp:
