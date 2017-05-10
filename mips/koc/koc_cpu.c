@@ -58,17 +58,14 @@ static void start()
 			while (cur!=end)
 				*(cur++) = 0;
 		}
-
-		//l1_cache_flush_range(
-		//	(unsigned)&__bss_start,
-		//	((unsigned)&_end)-((unsigned)&__bss_start)+sizeof(unsigned));
-
+		
 		/* Run main. */
 		{
 			extern int main();
 			(void)main();
 		}
 	}
+	/* If slave, continuously keep checking for a new code value. */
 	else
 	{
 		l1_cache_flush_all();

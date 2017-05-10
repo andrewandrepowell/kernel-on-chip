@@ -1,4 +1,9 @@
-
+/**
+ * @author Andrew Powell
+ * @date May 10, 2017
+ * @brief Contains hardware definitions and drivers for the Hard Real-Time Kernel-on-Chip.
+ */
+ 
 #ifndef KOC_CPU_H_
 #define KOC_CPU_H_
 
@@ -13,8 +18,15 @@ extern "C"
 {
 #endif
 
+	/**
+	 * @brief The signature of each CPU function. 
+	 */
 	typedef void (cpucode)(void);
 
+	/**
+	 * @brief Gets the CPUID of the current CPU.
+	 * @return Returns the CPUID of the currenet CPU.
+	 */
 	static inline __attribute__ ((always_inline))
 	unsigned cpuid() 
 	{
@@ -23,6 +35,10 @@ extern "C"
 		return plasoc_gpio_get_data_in(&gpio_obj); 
 	}
 
+	/**
+	 * @brief Gets the object representing the interrupt controller of the current CPU.
+	 * @return Returns the pointer to the object.
+	 */
 	static inline __attribute__ ((always_inline))
 	plasoc_int* cpuint()
 	{
@@ -30,6 +46,10 @@ extern "C"
 		return &koc_cpu_int_objs[cpuid()];
 	}
 
+	/**
+	 * @brief Gets the object representing the signal event core of the current CPU.
+	 * @return Returns the pointer to the object.
+	 */
 	static inline __attribute__ ((always_inline))
 	koc_signal* cpusignal()
 	{
@@ -37,6 +57,11 @@ extern "C"
 		return &koc_cpu_signal_objs[cpuid()];
 	}
 
+	/**
+	 * @brief Starts a specified CPU with code.
+	 * @param cpuid_val The CPUID that specifies the CPU to start.
+	 * @param code The pointer to the code to run over the specified CPU.
+	 */
 	static inline __attribute__ ((always_inline))
 	void cpurun(unsigned cpuid_val, cpucode* code)
 	{
