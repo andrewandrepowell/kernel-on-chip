@@ -267,27 +267,27 @@ begin
             wait for clock_period;
         end;
     begin
---        wait until sys_rst='1';
---        wait until gpio_output=X"0001";
---        wait for 500 us;
---        gpio_input <= X"0003";
---        wait for 2 ms;
---        gpio_input <= X"00f3";
---        wait for 2 ms;
---        while True loop
---            gpio_input <= X"00f1";
---            wait for 50 us;
---            gpio_input <= X"00f0";
---            wait for 50 us;
---            gpio_input <= X"00f5";
---            wait for 50 us;
---            gpio_input <= X"00ff";
---            wait for 50 us;
---            gpio_input <= X"05f7";
---            wait for 50 us;
---            gpio_input <= X"10f0";
---            wait for 50 us;
---        end loop;
+        wait until sys_rst='1';
+        wait until gpio_output=X"0001";
+        wait for 500 us;
+        gpio_input <= X"0003";
+        wait for 2 ms;
+        gpio_input <= X"00f3";
+        wait for 2 ms;
+        while True loop
+            gpio_input <= X"00f1";
+            wait for 50 us;
+            gpio_input <= X"00f0";
+            wait for 50 us;
+            gpio_input <= X"00f5";
+            wait for 50 us;
+            gpio_input <= X"00ff";
+            wait for 50 us;
+            gpio_input <= X"05f7";
+            wait for 50 us;
+            gpio_input <= X"10f0";
+            wait for 50 us;
+        end loop;
         wait;
     end process;
 

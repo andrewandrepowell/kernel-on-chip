@@ -25,20 +25,28 @@ extern "C"
 	}
 	
 	static inline __attribute__ ((always_inline))
-	unsigned koc_lock_take(koc_lock* obj)
+	unsigned koc_lock_check(koc_lock* obj)
 	{
 		unsigned lockid = cpuid()+1;
-		KOC_LOCK_MEMORY_BARRIER;
-		*((volatile unsigned*)(obj->base_address+KOC_LOCK_CONTROL_OFFSET)) = lockid;
 		KOC_LOCK_MEMORY_BARRIER;
 		return (*((volatile unsigned*)(obj->base_address+KOC_LOCK_CONTROL_OFFSET)))==lockid;
 	}
 	
 	static inline __attribute__ ((always_inline))
+	unsigned koc_lock_take(koc_lock* obj)
+	{
+		unsigned lockid = cpuid()+1;
+		KOC_LOCK_MEMORY_BARRIER;
+		*((volatile unsigned*)(obj->base_address+KOC_LOCK_CONTROL_OFFSET)) = lockid;
+		return koc_lock_check(obj);
+	}
+	
+	static inline __attribute__ ((always_inline))
 	void koc_lock_give(koc_lock* obj)
 	{
+		unsigned lockid = cpuid()+1;
 		KOC_LOCK_MEMORY_BARRIER;
-		*((volatile unsigned*)(obj->base_address+KOC_LOCK_CONTROL_OFFSET)) = cpuid()+1;
+		*((volatile unsigned*)(obj->base_address+KOC_LOCK_CONTROL_OFFSET)) = lockid;
 	}
 	
 
