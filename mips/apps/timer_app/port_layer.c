@@ -17,7 +17,7 @@
 #define CPUINT_SIGNAL_ID	(KOC_CPU_SIGNAL_INT_ID)
 #define CPUINT_INT_ID		(1)
 #define CPUINT_MASK			((1<<CPUINT_SIGNAL_ID)|(1<<CPUINT_INT_ID))
-#define TIMER_100US_TICKS		(5000)
+#define TIMER_1MS_TICKS		(50000)
 #define UART_FIFO_DEPTH			(512)
 
 koc_lock lock_obj;
@@ -30,7 +30,7 @@ volatile unsigned char uart_fifo[UART_FIFO_DEPTH];
 volatile unsigned uart_in_ptr = 0;
 volatile unsigned uart_out_ptr = 0;
 
-volatile unsigned timer_100us_cntr = 0;
+volatile unsigned timer_1ms_cntr = 0;
 
 /* Define the CPU's service routine such that it calls the
  interrupt controller's service method. */
@@ -59,8 +59,8 @@ void uart_isr(void* ptr)
 void timer_isr(void* ptr)
 {
 	plasoc_timer_reload_start(&timer_obj,1);
-	timer_100us_cntr++;
-	l1_cache_flush_range((unsigned)&timer_100us_cntr,sizeof(timer_100us_cntr));
+	timer_1ms_cntr++;
+	l1_cache_flush_range((unsigned)&timer_1ms_cntr,sizeof(timer_1ms_cntr));
 }
 
 void putc_port(void* p, char c)
@@ -77,7 +77,7 @@ void initialize()
 		plasoc_uart_setup(&uart_obj,HW_UART_BASE_ADDRESS);
 		plasoc_gpio_setup(&gpio_obj,HW_GPIO_BASE_ADDRESS);
 		init_printf(0,putc_port);
-		plasoc_timer_set_trig_value(&timer_obj,TIMER_100US_TICKS);
+		plasoc_timer_set_trig_value(&timer_obj,TIMER_1MS_TICKS);
 	}
 	
 	{
@@ -167,26 +167,15 @@ unsigned getin()
 
 void blocklock()
 {
-	register unsigned int_mask;
-
-	int_mask = enter_critical();
 	while (koc_lock_take(&lock_obj)==0)
-	{
-		leave_critical(int_mask);
-		int_mask = enter_critical();
-	}
+		continue;
 	l1_cache_memory_barrier();
-	leave_critical(int_mask);
 }
 
 void givelock()
 {
-	register unsigned int_mask;
-
-	int_mask = enter_critical();
 	l1_cache_memory_barrier();
 	koc_lock_give(&lock_obj);
-	leave_critical(int_mask);
 }
 
 void waituntil(unsigned tick)
@@ -198,6 +187,6 @@ void waituntil(unsigned tick)
 unsigned gettick()
 {
 	l1_cache_memory_barrier();
-	return timer_100us_cntr;
+	return timer_1ms_cntr;
 }
 
