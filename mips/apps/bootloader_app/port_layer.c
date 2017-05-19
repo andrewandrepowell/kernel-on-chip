@@ -53,7 +53,6 @@ void initialize()
 	plasoc_int_enable(&int_obj,INT_UART_ID);
 	plasoc_int_enable(cpuint(),CPUINT_INT_ID);
 
-	OS_AsmInterruptInitFlush();
 	OS_AsmInterruptEnable(1);
 }
 
@@ -75,15 +74,16 @@ unsigned getbyte()
 
 	while (1)
 	{
-		OS_AsmInterruptEnable(0);
+		register unsigned int_mask;
+		int_mask = enter_critical();
 		if (uart_in_ptr!=uart_out_ptr)
 		{
 			byte = (unsigned)uart_fifo[uart_out_ptr];
 			uart_out_ptr = (uart_out_ptr+1)%UART_FIFO_DEPTH;
-			OS_AsmInterruptEnable(1);
+			leave_critical(int_mask);
 			break;
 		}
-		OS_AsmInterruptEnable(1);
+		leave_critical(int_mask);
 	}
 	
 	return byte;

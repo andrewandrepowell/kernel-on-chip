@@ -9,12 +9,14 @@ extern "C"
 {
 #endif
 
+	typedef void (Handler)(void);
+
 	/**
 	 * @brief Initializes and configures the necessary hardware.
 	 */
 	void initialize();
 	
-	void cpuinitialize();
+	void slaveinit();
 	
 	/**
 	 * @brief Writes a byte.
@@ -39,21 +41,22 @@ extern "C"
 	 * @return The input data. */
 	unsigned getword();
 
-	/**
-	 * @brief When necessary, the function should be called to perform cleanup of resources. 
-	 *
-	 * In many cases, the initialize could simply perform the necessary cleanup without having to
-	 * rely on a call to the cleanup function within the run function. However, in cases for which
-	 * the run function needs to exit in an unconventional way, the cleanup may be needed to ensure
-	 * proper cleanup is done.
-	 */
-	void cleanup();
-
 	void setout(unsigned value);
+	
+	unsigned getout();
+	
+	unsigned getin();
 	
 	void blocklock();
 	
 	void givelock();
+	
+	void waituntil(unsigned tick);
+	
+	unsigned gettick();
+	
+	void setsignalhandler(Handler* func_ptr);
+	void setgpiohandler(Handler* func_ptr);
 	
 #ifdef __cplusplus
 }
