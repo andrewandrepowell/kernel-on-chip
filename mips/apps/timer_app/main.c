@@ -83,19 +83,6 @@ void runmain()
 		}
 		setout(out);
 		givelock();
-		
-		if (cpuid_val==KOC_CPU_MASTER_CPUID)
-		{
-			if (alive_cntr==(ALIVE_THRES-1))
-			{
-				alive_cntr = 0;
-				printf("Application is alive and the current is the following! %x\n\r",in);
-			}
-			else
-			{
-				alive_cntr++;
-			}
-		}
 	}
 }
 

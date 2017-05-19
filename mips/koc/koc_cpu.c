@@ -25,27 +25,27 @@ static void start()
 	unsigned cpuid_val;
 	cpuid_val = cpuid();
 	
+	/* Configure low-level drivers. */
+	{
+		plasoc_int* cpu_int_ptr;
+		koc_signal* cpu_signal_ptr;
+
+		/* Grab the pointers respective to the slave CPU. */
+		cpu_int_ptr = cpuint(); 
+		cpu_signal_ptr = cpusignal();
+
+		/* Configure signal object. */
+		koc_signal_setup(cpu_signal_ptr,KOC_CPU_SIGNAL_BASE_ADDRESS);
+
+		/* Configure interrupt controller of CPU. */
+		plasoc_int_setup(cpu_int_ptr,KOC_CPU_INT_BASE_ADDRESS);
+		plasoc_int_attach_isr(cpu_int_ptr,KOC_CPU_SIGNAL_INT_ID,koc_cpu_signal_isr,0);
+		plasoc_int_set_enables(cpu_int_ptr,(1<<KOC_CPU_SIGNAL_INT_ID));
+	}
+	
 	/* Clear BSS and run main if master. */
 	if (cpuid_val==KOC_CPU_MASTER_CPUID)
 	{
-		/* Configure low-level drivers. */
-		{
-			plasoc_int* cpu_int_ptr;
-			koc_signal* cpu_signal_ptr;
-
-			/* Grab the pointers respective to the slave CPU. */
-			cpu_int_ptr = cpuint(); 
-			cpu_signal_ptr = cpusignal();
-
-			/* Configure signal object. */
-			koc_signal_setup(cpu_signal_ptr,KOC_CPU_SIGNAL_BASE_ADDRESS);
-
-			/* Configure interrupt controller of CPU. */
-			plasoc_int_setup(cpu_int_ptr,KOC_CPU_INT_BASE_ADDRESS);
-			plasoc_int_attach_isr(cpu_int_ptr,KOC_CPU_SIGNAL_INT_ID,koc_cpu_signal_isr,0);
-			plasoc_int_set_enables(cpu_int_ptr,(1<<KOC_CPU_SIGNAL_INT_ID));
-		}
-		
 		/* Clear BSS. */
 		{
 			extern unsigned __bss_start;
