@@ -70,27 +70,6 @@ extern "C"
 		l1_cache_flush_all();
 	}
 
-	static inline __attribute__ ((always_inline))
-	void OS_AsmInterruptInitFlush()
-	{
-		extern void interrupt_service_routine();
-		
-		if ((unsigned)interrupt_service_routine!=KOC_CPU_OSINT_BASE_ADDRESS)
-		{
-			OS_AsmInterruptInit();
-			l1_cache_flush_range((unsigned)KOC_CPU_OSINT_BASE_ADDRESS,KOC_CPU_OSINT_PATCHSIZE);
-		}
-	}
-
-	static inline __attribute__ ((always_inline))
-	void OS_AsmInterruptInitInvalidate()
-	{
-		extern void interrupt_service_routine();
-		
-		if ((unsigned)interrupt_service_routine!=KOC_CPU_OSINT_BASE_ADDRESS)
-			l1_cache_invalidate_range((unsigned)KOC_CPU_OSINT_BASE_ADDRESS,KOC_CPU_OSINT_PATCHSIZE);
-	}
-
 #ifdef __cplusplus
 }
 #endif
