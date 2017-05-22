@@ -10,6 +10,7 @@ use work.plasoc_cpu_1_crossbar_wrap_pack.plasoc_cpu_1_crossbar_wrap;
 use work.plasoc_cpu_2_crossbar_wrap_pack.plasoc_cpu_2_crossbar_wrap;
 use work.plasoc_cpu_pack.plasoc_cpu;
 use work.plasoc_int_pack.plasoc_int;
+use work.plasoc_int_pack.default_interrupt_total;
 use work.plasoc_timer_pack.plasoc_timer;
 use work.plasoc_gpio_pack.plasoc_gpio;
 use work.plasoc_uart_pack.plasoc_uart;
@@ -788,6 +789,45 @@ architecture Behavioral of koc_wrapper is
     signal signal_bus_0_full_rlast : std_logic;
     signal signal_bus_0_full_rvalid : std_logic;
     signal signal_bus_0_full_rready : std_logic;
+    signal timer_bus_0_full_awid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
+    signal timer_bus_0_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal timer_bus_0_full_awlen : std_logic_vector(7 downto 0);
+    signal timer_bus_0_full_awsize : std_logic_vector(2 downto 0);
+    signal timer_bus_0_full_awburst : std_logic_vector(1 downto 0);
+    signal timer_bus_0_full_awlock : std_logic;
+    signal timer_bus_0_full_awcache : std_logic_vector(3 downto 0);
+    signal timer_bus_0_full_awprot : std_logic_vector(2 downto 0);
+    signal timer_bus_0_full_awqos : std_logic_vector(3 downto 0);
+    signal timer_bus_0_full_awregion : std_logic_vector(3 downto 0);
+    signal timer_bus_0_full_awvalid : std_logic;
+    signal timer_bus_0_full_awready : std_logic;
+    signal timer_bus_0_full_wdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal timer_bus_0_full_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);
+    signal timer_bus_0_full_wlast : std_logic;
+    signal timer_bus_0_full_wvalid : std_logic;
+    signal timer_bus_0_full_wready : std_logic;
+    signal timer_bus_0_full_bid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
+    signal timer_bus_0_full_bresp : std_logic_vector(1 downto 0);
+    signal timer_bus_0_full_bvalid : std_logic;
+    signal timer_bus_0_full_bready : std_logic;
+    signal timer_bus_0_full_arid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
+    signal timer_bus_0_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal timer_bus_0_full_arlen : std_logic_vector(7 downto 0);
+    signal timer_bus_0_full_arsize : std_logic_vector(2 downto 0);
+    signal timer_bus_0_full_arburst : std_logic_vector(1 downto 0);
+    signal timer_bus_0_full_arlock : std_logic;
+    signal timer_bus_0_full_arcache : std_logic_vector(3 downto 0);
+    signal timer_bus_0_full_arprot : std_logic_vector(2 downto 0);
+    signal timer_bus_0_full_arqos : std_logic_vector(3 downto 0);
+    signal timer_bus_0_full_arregion : std_logic_vector(3 downto 0);
+    signal timer_bus_0_full_arvalid : std_logic;
+    signal timer_bus_0_full_arready : std_logic;
+    signal timer_bus_0_full_rid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
+    signal timer_bus_0_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal timer_bus_0_full_rresp : std_logic_vector(1 downto 0);
+    signal timer_bus_0_full_rlast : std_logic;
+    signal timer_bus_0_full_rvalid : std_logic;
+    signal timer_bus_0_full_rready : std_logic;
     
     signal cpu_bus_1_full_awid : std_logic_vector(axi_cpu_bus_slave_id_width-1 downto 0);
     signal cpu_bus_1_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
@@ -945,6 +985,45 @@ architecture Behavioral of koc_wrapper is
     signal signal_bus_1_full_rlast : std_logic;
     signal signal_bus_1_full_rvalid : std_logic;
     signal signal_bus_1_full_rready : std_logic;
+    signal timer_bus_1_full_awid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
+    signal timer_bus_1_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal timer_bus_1_full_awlen : std_logic_vector(7 downto 0);
+    signal timer_bus_1_full_awsize : std_logic_vector(2 downto 0);
+    signal timer_bus_1_full_awburst : std_logic_vector(1 downto 0);
+    signal timer_bus_1_full_awlock : std_logic;
+    signal timer_bus_1_full_awcache : std_logic_vector(3 downto 0);
+    signal timer_bus_1_full_awprot : std_logic_vector(2 downto 0);
+    signal timer_bus_1_full_awqos : std_logic_vector(3 downto 0);
+    signal timer_bus_1_full_awregion : std_logic_vector(3 downto 0);
+    signal timer_bus_1_full_awvalid : std_logic;
+    signal timer_bus_1_full_awready : std_logic;
+    signal timer_bus_1_full_wdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal timer_bus_1_full_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);
+    signal timer_bus_1_full_wlast : std_logic;
+    signal timer_bus_1_full_wvalid : std_logic;
+    signal timer_bus_1_full_wready : std_logic;
+    signal timer_bus_1_full_bid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
+    signal timer_bus_1_full_bresp : std_logic_vector(1 downto 0);
+    signal timer_bus_1_full_bvalid : std_logic;
+    signal timer_bus_1_full_bready : std_logic;
+    signal timer_bus_1_full_arid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
+    signal timer_bus_1_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal timer_bus_1_full_arlen : std_logic_vector(7 downto 0);
+    signal timer_bus_1_full_arsize : std_logic_vector(2 downto 0);
+    signal timer_bus_1_full_arburst : std_logic_vector(1 downto 0);
+    signal timer_bus_1_full_arlock : std_logic;
+    signal timer_bus_1_full_arcache : std_logic_vector(3 downto 0);
+    signal timer_bus_1_full_arprot : std_logic_vector(2 downto 0);
+    signal timer_bus_1_full_arqos : std_logic_vector(3 downto 0);
+    signal timer_bus_1_full_arregion : std_logic_vector(3 downto 0);
+    signal timer_bus_1_full_arvalid : std_logic;
+    signal timer_bus_1_full_arready : std_logic;
+    signal timer_bus_1_full_rid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
+    signal timer_bus_1_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal timer_bus_1_full_rresp : std_logic_vector(1 downto 0);
+    signal timer_bus_1_full_rlast : std_logic;
+    signal timer_bus_1_full_rvalid : std_logic;
+    signal timer_bus_1_full_rready : std_logic;
     
     signal cpu_bus_2_full_awid : std_logic_vector(axi_cpu_bus_slave_id_width-1 downto 0);
     signal cpu_bus_2_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
@@ -1102,6 +1181,45 @@ architecture Behavioral of koc_wrapper is
     signal signal_bus_2_full_rlast : std_logic;
     signal signal_bus_2_full_rvalid : std_logic;
     signal signal_bus_2_full_rready : std_logic;
+    signal timer_bus_2_full_awid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
+    signal timer_bus_2_full_awaddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal timer_bus_2_full_awlen : std_logic_vector(7 downto 0);
+    signal timer_bus_2_full_awsize : std_logic_vector(2 downto 0);
+    signal timer_bus_2_full_awburst : std_logic_vector(1 downto 0);
+    signal timer_bus_2_full_awlock : std_logic;
+    signal timer_bus_2_full_awcache : std_logic_vector(3 downto 0);
+    signal timer_bus_2_full_awprot : std_logic_vector(2 downto 0);
+    signal timer_bus_2_full_awqos : std_logic_vector(3 downto 0);
+    signal timer_bus_2_full_awregion : std_logic_vector(3 downto 0);
+    signal timer_bus_2_full_awvalid : std_logic;
+    signal timer_bus_2_full_awready : std_logic;
+    signal timer_bus_2_full_wdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal timer_bus_2_full_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);
+    signal timer_bus_2_full_wlast : std_logic;
+    signal timer_bus_2_full_wvalid : std_logic;
+    signal timer_bus_2_full_wready : std_logic;
+    signal timer_bus_2_full_bid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
+    signal timer_bus_2_full_bresp : std_logic_vector(1 downto 0);
+    signal timer_bus_2_full_bvalid : std_logic;
+    signal timer_bus_2_full_bready : std_logic;
+    signal timer_bus_2_full_arid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
+    signal timer_bus_2_full_araddr : std_logic_vector(axi_address_width-1 downto 0);
+    signal timer_bus_2_full_arlen : std_logic_vector(7 downto 0);
+    signal timer_bus_2_full_arsize : std_logic_vector(2 downto 0);
+    signal timer_bus_2_full_arburst : std_logic_vector(1 downto 0);
+    signal timer_bus_2_full_arlock : std_logic;
+    signal timer_bus_2_full_arcache : std_logic_vector(3 downto 0);
+    signal timer_bus_2_full_arprot : std_logic_vector(2 downto 0);
+    signal timer_bus_2_full_arqos : std_logic_vector(3 downto 0);
+    signal timer_bus_2_full_arregion : std_logic_vector(3 downto 0);
+    signal timer_bus_2_full_arvalid : std_logic;
+    signal timer_bus_2_full_arready : std_logic;
+    signal timer_bus_2_full_rid : std_logic_vector(axi_cpu_bus_master_id_width-1 downto 0);
+    signal timer_bus_2_full_rdata : std_logic_vector(axi_data_width-1 downto 0);
+    signal timer_bus_2_full_rresp : std_logic_vector(1 downto 0);
+    signal timer_bus_2_full_rlast : std_logic;
+    signal timer_bus_2_full_rvalid : std_logic;
+    signal timer_bus_2_full_rready : std_logic;
     
     --------------------------------------
     -- CPUID GPIO AXI Full2Lite Signals --
@@ -1295,6 +1413,70 @@ architecture Behavioral of koc_wrapper is
     signal signal_bus_2_lite_rready : std_logic;                                                      
     signal signal_bus_2_lite_rresp : std_logic_vector(1 downto 0); 
     
+    -------------------------------------
+    -- CPU Timer AXI Full2Lite Signals --
+    -------------------------------------
+    
+    signal timer_bus_0_lite_awaddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal timer_bus_0_lite_awprot : std_logic_vector(2 downto 0);                                   
+    signal timer_bus_0_lite_awvalid : std_logic;                                                     
+    signal timer_bus_0_lite_awready : std_logic;                                                    
+    signal timer_bus_0_lite_wvalid : std_logic;                                                      
+    signal timer_bus_0_lite_wready : std_logic;                                                     
+    signal timer_bus_0_lite_wdata : std_logic_vector(axi_data_width-1 downto 0);                     
+    signal timer_bus_0_lite_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);                   
+    signal timer_bus_0_lite_bvalid : std_logic;                                                     
+    signal timer_bus_0_lite_bready : std_logic;                                                      
+    signal timer_bus_0_lite_bresp : std_logic_vector(1 downto 0);                     
+    signal timer_bus_0_lite_araddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal timer_bus_0_lite_arprot : std_logic_vector(2 downto 0);                                   
+    signal timer_bus_0_lite_arvalid : std_logic;                                                     
+    signal timer_bus_0_lite_arready : std_logic;                                                    
+    signal timer_bus_0_lite_rdata : std_logic_vector(axi_data_width-1 downto 0);   
+    signal timer_bus_0_lite_rvalid : std_logic;                                                     
+    signal timer_bus_0_lite_rready : std_logic;                                                      
+    signal timer_bus_0_lite_rresp : std_logic_vector(1 downto 0);  
+    
+    signal timer_bus_1_lite_awaddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal timer_bus_1_lite_awprot : std_logic_vector(2 downto 0);                                   
+    signal timer_bus_1_lite_awvalid : std_logic;                                                     
+    signal timer_bus_1_lite_awready : std_logic;                                                    
+    signal timer_bus_1_lite_wvalid : std_logic;                                                      
+    signal timer_bus_1_lite_wready : std_logic;                                                     
+    signal timer_bus_1_lite_wdata : std_logic_vector(axi_data_width-1 downto 0);                     
+    signal timer_bus_1_lite_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);                   
+    signal timer_bus_1_lite_bvalid : std_logic;                                                     
+    signal timer_bus_1_lite_bready : std_logic;                                                      
+    signal timer_bus_1_lite_bresp : std_logic_vector(1 downto 0);                     
+    signal timer_bus_1_lite_araddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal timer_bus_1_lite_arprot : std_logic_vector(2 downto 0);                                   
+    signal timer_bus_1_lite_arvalid : std_logic;                                                     
+    signal timer_bus_1_lite_arready : std_logic;                                                    
+    signal timer_bus_1_lite_rdata : std_logic_vector(axi_data_width-1 downto 0);   
+    signal timer_bus_1_lite_rvalid : std_logic;                                                     
+    signal timer_bus_1_lite_rready : std_logic;                                                      
+    signal timer_bus_1_lite_rresp : std_logic_vector(1 downto 0); 
+    
+    signal timer_bus_2_lite_awaddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal timer_bus_2_lite_awprot : std_logic_vector(2 downto 0);                                   
+    signal timer_bus_2_lite_awvalid : std_logic;                                                     
+    signal timer_bus_2_lite_awready : std_logic;                                                    
+    signal timer_bus_2_lite_wvalid : std_logic;                                                      
+    signal timer_bus_2_lite_wready : std_logic;                                                     
+    signal timer_bus_2_lite_wdata : std_logic_vector(axi_data_width-1 downto 0);                     
+    signal timer_bus_2_lite_wstrb : std_logic_vector(axi_data_width/8-1 downto 0);                   
+    signal timer_bus_2_lite_bvalid : std_logic;                                                     
+    signal timer_bus_2_lite_bready : std_logic;                                                      
+    signal timer_bus_2_lite_bresp : std_logic_vector(1 downto 0);                     
+    signal timer_bus_2_lite_araddr : std_logic_vector(axi_address_width-1 downto 0);                 
+    signal timer_bus_2_lite_arprot : std_logic_vector(2 downto 0);                                   
+    signal timer_bus_2_lite_arvalid : std_logic;                                                     
+    signal timer_bus_2_lite_arready : std_logic;                                                    
+    signal timer_bus_2_lite_rdata : std_logic_vector(axi_data_width-1 downto 0);   
+    signal timer_bus_2_lite_rvalid : std_logic;                                                     
+    signal timer_bus_2_lite_rready : std_logic;                                                      
+    signal timer_bus_2_lite_rresp : std_logic_vector(1 downto 0); 
+    
     ---------------------------------------------
     -- Main Interconnect AXI Full2Lite Signals --
     ---------------------------------------------
@@ -1404,14 +1586,14 @@ architecture Behavioral of koc_wrapper is
     ------------------------
     
     signal cpu_int : std_logic;
-    signal dev_ints : std_logic_vector(axi_data_width-1 downto 0) := (others=>'0');
+    signal dev_ints : std_logic_vector(default_interrupt_total-1 downto 0) := (others=>'0');
     
     signal cpu_0_int : std_logic;
-    signal dev_0_ints : std_logic_vector(axi_data_width-1 downto 0) := (others=>'0');
+    signal dev_0_ints : std_logic_vector(default_interrupt_total-1 downto 0) := (others=>'0');
     signal cpu_1_int : std_logic;
-    signal dev_1_ints : std_logic_vector(axi_data_width-1 downto 0) := (others=>'0');
+    signal dev_1_ints : std_logic_vector(default_interrupt_total-1 downto 0) := (others=>'0');
     signal cpu_2_int : std_logic;
-    signal dev_2_ints : std_logic_vector(axi_data_width-1 downto 0) := (others=>'0');
+    signal dev_2_ints : std_logic_vector(default_interrupt_total-1 downto 0) := (others=>'0');
     
     signal sig_0_1 : std_logic;
     signal sig_1_2 : std_logic;
@@ -2254,6 +2436,44 @@ begin
             signal_m_axi_rresp => signal_bus_0_full_rresp,
             signal_m_axi_rlast => signal_bus_0_full_rlast,
             signal_m_axi_rvalid => signal_bus_0_full_rvalid,
+            timer_m_axi_awid => timer_bus_0_full_awid,
+            timer_m_axi_awaddr => timer_bus_0_full_awaddr,
+            timer_m_axi_awlen => timer_bus_0_full_awlen,
+            timer_m_axi_awsize => timer_bus_0_full_awsize,
+            timer_m_axi_awburst => timer_bus_0_full_awburst,
+            timer_m_axi_awlock => timer_bus_0_full_awlock,
+            timer_m_axi_awcache => timer_bus_0_full_awcache,
+            timer_m_axi_awprot => timer_bus_0_full_awprot,
+            timer_m_axi_awqos => timer_bus_0_full_awqos,
+            timer_m_axi_awregion => timer_bus_0_full_awregion,
+            timer_m_axi_awvalid => timer_bus_0_full_awvalid,
+            timer_m_axi_awready => timer_bus_0_full_awready,
+            timer_m_axi_wdata => timer_bus_0_full_wdata,
+            timer_m_axi_wstrb => timer_bus_0_full_wstrb,
+            timer_m_axi_wlast => timer_bus_0_full_wlast,
+            timer_m_axi_wvalid => timer_bus_0_full_wvalid,
+            timer_m_axi_wready => timer_bus_0_full_wready,
+            timer_m_axi_bid => timer_bus_0_full_bid,
+            timer_m_axi_bresp => timer_bus_0_full_bresp,
+            timer_m_axi_bvalid => timer_bus_0_full_bvalid,
+            timer_m_axi_bready => timer_bus_0_full_bready,
+            timer_m_axi_arid => timer_bus_0_full_arid,
+            timer_m_axi_araddr => timer_bus_0_full_araddr,
+            timer_m_axi_arlen => timer_bus_0_full_arlen,
+            timer_m_axi_arsize => timer_bus_0_full_arsize,
+            timer_m_axi_arburst => timer_bus_0_full_arburst,
+            timer_m_axi_arlock => timer_bus_0_full_arlock,
+            timer_m_axi_arcache => timer_bus_0_full_arcache,
+            timer_m_axi_arprot => timer_bus_0_full_arprot,
+            timer_m_axi_arqos => timer_bus_0_full_arqos,
+            timer_m_axi_arregion => timer_bus_0_full_arregion,
+            timer_m_axi_arvalid => timer_bus_0_full_arvalid,
+            timer_m_axi_arready => timer_bus_0_full_arready,
+            timer_m_axi_rid => timer_bus_0_full_rid,
+            timer_m_axi_rdata => timer_bus_0_full_rdata,
+            timer_m_axi_rresp => timer_bus_0_full_rresp,
+            timer_m_axi_rlast => timer_bus_0_full_rlast,
+            timer_m_axi_rvalid => timer_bus_0_full_rvalid,
             aclk => aclk, aresetn => peripheral_aresetn(0));
             
     cpu_1_bus_inst : plasoc_cpu_1_crossbar_wrap
@@ -2452,6 +2672,44 @@ begin
             signal_m_axi_rresp => signal_bus_1_full_rresp,
             signal_m_axi_rlast => signal_bus_1_full_rlast,
             signal_m_axi_rvalid => signal_bus_1_full_rvalid,
+            timer_m_axi_awid => timer_bus_1_full_awid,
+            timer_m_axi_awaddr => timer_bus_1_full_awaddr,
+            timer_m_axi_awlen => timer_bus_1_full_awlen,
+            timer_m_axi_awsize => timer_bus_1_full_awsize,
+            timer_m_axi_awburst => timer_bus_1_full_awburst,
+            timer_m_axi_awlock => timer_bus_1_full_awlock,
+            timer_m_axi_awcache => timer_bus_1_full_awcache,
+            timer_m_axi_awprot => timer_bus_1_full_awprot,
+            timer_m_axi_awqos => timer_bus_1_full_awqos,
+            timer_m_axi_awregion => timer_bus_1_full_awregion,
+            timer_m_axi_awvalid => timer_bus_1_full_awvalid,
+            timer_m_axi_awready => timer_bus_1_full_awready,
+            timer_m_axi_wdata => timer_bus_1_full_wdata,
+            timer_m_axi_wstrb => timer_bus_1_full_wstrb,
+            timer_m_axi_wlast => timer_bus_1_full_wlast,
+            timer_m_axi_wvalid => timer_bus_1_full_wvalid,
+            timer_m_axi_wready => timer_bus_1_full_wready,
+            timer_m_axi_bid => timer_bus_1_full_bid,
+            timer_m_axi_bresp => timer_bus_1_full_bresp,
+            timer_m_axi_bvalid => timer_bus_1_full_bvalid,
+            timer_m_axi_bready => timer_bus_1_full_bready,
+            timer_m_axi_arid => timer_bus_1_full_arid,
+            timer_m_axi_araddr => timer_bus_1_full_araddr,
+            timer_m_axi_arlen => timer_bus_1_full_arlen,
+            timer_m_axi_arsize => timer_bus_1_full_arsize,
+            timer_m_axi_arburst => timer_bus_1_full_arburst,
+            timer_m_axi_arlock => timer_bus_1_full_arlock,
+            timer_m_axi_arcache => timer_bus_1_full_arcache,
+            timer_m_axi_arprot => timer_bus_1_full_arprot,
+            timer_m_axi_arqos => timer_bus_1_full_arqos,
+            timer_m_axi_arregion => timer_bus_1_full_arregion,
+            timer_m_axi_arvalid => timer_bus_1_full_arvalid,
+            timer_m_axi_arready => timer_bus_1_full_arready,
+            timer_m_axi_rid => timer_bus_1_full_rid,
+            timer_m_axi_rdata => timer_bus_1_full_rdata,
+            timer_m_axi_rresp => timer_bus_1_full_rresp,
+            timer_m_axi_rlast => timer_bus_1_full_rlast,
+            timer_m_axi_rvalid => timer_bus_1_full_rvalid,
             aclk => aclk, aresetn => peripheral_aresetn(0));
             
     cpu_2_bus_inst : plasoc_cpu_2_crossbar_wrap
@@ -2650,6 +2908,44 @@ begin
             signal_m_axi_rresp => signal_bus_2_full_rresp,
             signal_m_axi_rlast => signal_bus_2_full_rlast,
             signal_m_axi_rvalid => signal_bus_2_full_rvalid,
+            timer_m_axi_awid => timer_bus_2_full_awid,
+            timer_m_axi_awaddr => timer_bus_2_full_awaddr,
+            timer_m_axi_awlen => timer_bus_2_full_awlen,
+            timer_m_axi_awsize => timer_bus_2_full_awsize,
+            timer_m_axi_awburst => timer_bus_2_full_awburst,
+            timer_m_axi_awlock => timer_bus_2_full_awlock,
+            timer_m_axi_awcache => timer_bus_2_full_awcache,
+            timer_m_axi_awprot => timer_bus_2_full_awprot,
+            timer_m_axi_awqos => timer_bus_2_full_awqos,
+            timer_m_axi_awregion => timer_bus_2_full_awregion,
+            timer_m_axi_awvalid => timer_bus_2_full_awvalid,
+            timer_m_axi_awready => timer_bus_2_full_awready,
+            timer_m_axi_wdata => timer_bus_2_full_wdata,
+            timer_m_axi_wstrb => timer_bus_2_full_wstrb,
+            timer_m_axi_wlast => timer_bus_2_full_wlast,
+            timer_m_axi_wvalid => timer_bus_2_full_wvalid,
+            timer_m_axi_wready => timer_bus_2_full_wready,
+            timer_m_axi_bid => timer_bus_2_full_bid,
+            timer_m_axi_bresp => timer_bus_2_full_bresp,
+            timer_m_axi_bvalid => timer_bus_2_full_bvalid,
+            timer_m_axi_bready => timer_bus_2_full_bready,
+            timer_m_axi_arid => timer_bus_2_full_arid,
+            timer_m_axi_araddr => timer_bus_2_full_araddr,
+            timer_m_axi_arlen => timer_bus_2_full_arlen,
+            timer_m_axi_arsize => timer_bus_2_full_arsize,
+            timer_m_axi_arburst => timer_bus_2_full_arburst,
+            timer_m_axi_arlock => timer_bus_2_full_arlock,
+            timer_m_axi_arcache => timer_bus_2_full_arcache,
+            timer_m_axi_arprot => timer_bus_2_full_arprot,
+            timer_m_axi_arqos => timer_bus_2_full_arqos,
+            timer_m_axi_arregion => timer_bus_2_full_arregion,
+            timer_m_axi_arvalid => timer_bus_2_full_arvalid,
+            timer_m_axi_arready => timer_bus_2_full_arready,
+            timer_m_axi_rid => timer_bus_2_full_rid,
+            timer_m_axi_rdata => timer_bus_2_full_rdata,
+            timer_m_axi_rresp => timer_bus_2_full_rresp,
+            timer_m_axi_rlast => timer_bus_2_full_rlast,
+            timer_m_axi_rvalid => timer_bus_2_full_rvalid,
             aclk => aclk, aresetn => peripheral_aresetn(0));
             
     ------------------------
@@ -3424,6 +3720,211 @@ begin
             m_axi_rready => signal_bus_2_lite_rready,
             m_axi_rresp => signal_bus_2_lite_rresp);
             
+    ------------------------------------------
+    -- CPU Timer AXI Full2Lite Instantiations --
+    ------------------------------------------
+    
+    timer_0_full2lite : plasoc_axi4_full2lite 
+        generic map (
+            axi_slave_id_width => axi_cpu_bus_master_id_width,
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,                                   
+            aresetn => peripheral_aresetn(0),
+            s_axi_awid => timer_bus_0_full_awid,
+            s_axi_awaddr => timer_bus_0_full_awaddr,
+            s_axi_awlen => timer_bus_0_full_awlen,
+            s_axi_awsize => timer_bus_0_full_awsize,
+            s_axi_awburst => timer_bus_0_full_awburst,
+            s_axi_awlock => timer_bus_0_full_awlock,
+            s_axi_awcache => timer_bus_0_full_awcache,
+            s_axi_awprot => timer_bus_0_full_awprot,
+            s_axi_awqos => timer_bus_0_full_awqos,
+            s_axi_awregion => timer_bus_0_full_awregion,
+            s_axi_awvalid => timer_bus_0_full_awvalid,
+            s_axi_awready => timer_bus_0_full_awready,
+            s_axi_wdata => timer_bus_0_full_wdata,
+            s_axi_wstrb => timer_bus_0_full_wstrb,
+            s_axi_wlast => timer_bus_0_full_wlast,
+            s_axi_wvalid => timer_bus_0_full_wvalid,
+            s_axi_wready => timer_bus_0_full_wready,
+            s_axi_bid => timer_bus_0_full_bid,
+            s_axi_bresp => timer_bus_0_full_bresp,
+            s_axi_bvalid => timer_bus_0_full_bvalid,
+            s_axi_bready => timer_bus_0_full_bready,
+            s_axi_arid => timer_bus_0_full_arid,
+            s_axi_araddr => timer_bus_0_full_araddr,
+            s_axi_arlen => timer_bus_0_full_arlen,
+            s_axi_arsize => timer_bus_0_full_arsize,
+            s_axi_arburst => timer_bus_0_full_arburst,
+            s_axi_arlock => timer_bus_0_full_arlock,
+            s_axi_arcache => timer_bus_0_full_arcache,
+            s_axi_arprot => timer_bus_0_full_arprot,
+            s_axi_arqos => timer_bus_0_full_arqos,
+            s_axi_arregion => timer_bus_0_full_arregion,
+            s_axi_arvalid => timer_bus_0_full_arvalid,
+            s_axi_arready => timer_bus_0_full_arready,
+            s_axi_rid => timer_bus_0_full_rid,
+            s_axi_rdata => timer_bus_0_full_rdata,
+            s_axi_rresp => timer_bus_0_full_rresp,
+            s_axi_rlast => timer_bus_0_full_rlast,
+            s_axi_rvalid => timer_bus_0_full_rvalid,
+            s_axi_rready => timer_bus_0_full_rready,
+            m_axi_awaddr => timer_bus_0_lite_awaddr,
+            m_axi_awprot => timer_bus_0_lite_awprot,
+            m_axi_awvalid => timer_bus_0_lite_awvalid,
+            m_axi_awready => timer_bus_0_lite_awready,
+            m_axi_wvalid => timer_bus_0_lite_wvalid,
+            m_axi_wready => timer_bus_0_lite_wready,
+            m_axi_wdata => timer_bus_0_lite_wdata,
+            m_axi_wstrb => timer_bus_0_lite_wstrb,
+            m_axi_bvalid => timer_bus_0_lite_bvalid,
+            m_axi_bready => timer_bus_0_lite_bready,
+            m_axi_bresp => timer_bus_0_lite_bresp,
+            m_axi_araddr => timer_bus_0_lite_araddr,
+            m_axi_arprot => timer_bus_0_lite_arprot,
+            m_axi_arvalid => timer_bus_0_lite_arvalid,
+            m_axi_arready => timer_bus_0_lite_arready,
+            m_axi_rdata => timer_bus_0_lite_rdata,
+            m_axi_rvalid => timer_bus_0_lite_rvalid,
+            m_axi_rready => timer_bus_0_lite_rready,
+            m_axi_rresp => timer_bus_0_lite_rresp);
+            
+    timer_1_full2lite : plasoc_axi4_full2lite 
+        generic map (
+            axi_slave_id_width => axi_cpu_bus_master_id_width,
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,                                   
+            aresetn => peripheral_aresetn(0),
+            s_axi_awid => timer_bus_1_full_awid,
+            s_axi_awaddr => timer_bus_1_full_awaddr,
+            s_axi_awlen => timer_bus_1_full_awlen,
+            s_axi_awsize => timer_bus_1_full_awsize,
+            s_axi_awburst => timer_bus_1_full_awburst,
+            s_axi_awlock => timer_bus_1_full_awlock,
+            s_axi_awcache => timer_bus_1_full_awcache,
+            s_axi_awprot => timer_bus_1_full_awprot,
+            s_axi_awqos => timer_bus_1_full_awqos,
+            s_axi_awregion => timer_bus_1_full_awregion,
+            s_axi_awvalid => timer_bus_1_full_awvalid,
+            s_axi_awready => timer_bus_1_full_awready,
+            s_axi_wdata => timer_bus_1_full_wdata,
+            s_axi_wstrb => timer_bus_1_full_wstrb,
+            s_axi_wlast => timer_bus_1_full_wlast,
+            s_axi_wvalid => timer_bus_1_full_wvalid,
+            s_axi_wready => timer_bus_1_full_wready,
+            s_axi_bid => timer_bus_1_full_bid,
+            s_axi_bresp => timer_bus_1_full_bresp,
+            s_axi_bvalid => timer_bus_1_full_bvalid,
+            s_axi_bready => timer_bus_1_full_bready,
+            s_axi_arid => timer_bus_1_full_arid,
+            s_axi_araddr => timer_bus_1_full_araddr,
+            s_axi_arlen => timer_bus_1_full_arlen,
+            s_axi_arsize => timer_bus_1_full_arsize,
+            s_axi_arburst => timer_bus_1_full_arburst,
+            s_axi_arlock => timer_bus_1_full_arlock,
+            s_axi_arcache => timer_bus_1_full_arcache,
+            s_axi_arprot => timer_bus_1_full_arprot,
+            s_axi_arqos => timer_bus_1_full_arqos,
+            s_axi_arregion => timer_bus_1_full_arregion,
+            s_axi_arvalid => timer_bus_1_full_arvalid,
+            s_axi_arready => timer_bus_1_full_arready,
+            s_axi_rid => timer_bus_1_full_rid,
+            s_axi_rdata => timer_bus_1_full_rdata,
+            s_axi_rresp => timer_bus_1_full_rresp,
+            s_axi_rlast => timer_bus_1_full_rlast,
+            s_axi_rvalid => timer_bus_1_full_rvalid,
+            s_axi_rready => timer_bus_1_full_rready,
+            m_axi_awaddr => timer_bus_1_lite_awaddr,
+            m_axi_awprot => timer_bus_1_lite_awprot,
+            m_axi_awvalid => timer_bus_1_lite_awvalid,
+            m_axi_awready => timer_bus_1_lite_awready,
+            m_axi_wvalid => timer_bus_1_lite_wvalid,
+            m_axi_wready => timer_bus_1_lite_wready,
+            m_axi_wdata => timer_bus_1_lite_wdata,
+            m_axi_wstrb => timer_bus_1_lite_wstrb,
+            m_axi_bvalid => timer_bus_1_lite_bvalid,
+            m_axi_bready => timer_bus_1_lite_bready,
+            m_axi_bresp => timer_bus_1_lite_bresp,
+            m_axi_araddr => timer_bus_1_lite_araddr,
+            m_axi_arprot => timer_bus_1_lite_arprot,
+            m_axi_arvalid => timer_bus_1_lite_arvalid,
+            m_axi_arready => timer_bus_1_lite_arready,
+            m_axi_rdata => timer_bus_1_lite_rdata,
+            m_axi_rvalid => timer_bus_1_lite_rvalid,
+            m_axi_rready => timer_bus_1_lite_rready,
+            m_axi_rresp => timer_bus_1_lite_rresp);
+            
+    timer_2_full2lite : plasoc_axi4_full2lite 
+        generic map (
+            axi_slave_id_width => axi_cpu_bus_master_id_width,
+            axi_address_width => axi_address_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,                                   
+            aresetn => peripheral_aresetn(0),
+            s_axi_awid => timer_bus_2_full_awid,
+            s_axi_awaddr => timer_bus_2_full_awaddr,
+            s_axi_awlen => timer_bus_2_full_awlen,
+            s_axi_awsize => timer_bus_2_full_awsize,
+            s_axi_awburst => timer_bus_2_full_awburst,
+            s_axi_awlock => timer_bus_2_full_awlock,
+            s_axi_awcache => timer_bus_2_full_awcache,
+            s_axi_awprot => timer_bus_2_full_awprot,
+            s_axi_awqos => timer_bus_2_full_awqos,
+            s_axi_awregion => timer_bus_2_full_awregion,
+            s_axi_awvalid => timer_bus_2_full_awvalid,
+            s_axi_awready => timer_bus_2_full_awready,
+            s_axi_wdata => timer_bus_2_full_wdata,
+            s_axi_wstrb => timer_bus_2_full_wstrb,
+            s_axi_wlast => timer_bus_2_full_wlast,
+            s_axi_wvalid => timer_bus_2_full_wvalid,
+            s_axi_wready => timer_bus_2_full_wready,
+            s_axi_bid => timer_bus_2_full_bid,
+            s_axi_bresp => timer_bus_2_full_bresp,
+            s_axi_bvalid => timer_bus_2_full_bvalid,
+            s_axi_bready => timer_bus_2_full_bready,
+            s_axi_arid => timer_bus_2_full_arid,
+            s_axi_araddr => timer_bus_2_full_araddr,
+            s_axi_arlen => timer_bus_2_full_arlen,
+            s_axi_arsize => timer_bus_2_full_arsize,
+            s_axi_arburst => timer_bus_2_full_arburst,
+            s_axi_arlock => timer_bus_2_full_arlock,
+            s_axi_arcache => timer_bus_2_full_arcache,
+            s_axi_arprot => timer_bus_2_full_arprot,
+            s_axi_arqos => timer_bus_2_full_arqos,
+            s_axi_arregion => timer_bus_2_full_arregion,
+            s_axi_arvalid => timer_bus_2_full_arvalid,
+            s_axi_arready => timer_bus_2_full_arready,
+            s_axi_rid => timer_bus_2_full_rid,
+            s_axi_rdata => timer_bus_2_full_rdata,
+            s_axi_rresp => timer_bus_2_full_rresp,
+            s_axi_rlast => timer_bus_2_full_rlast,
+            s_axi_rvalid => timer_bus_2_full_rvalid,
+            s_axi_rready => timer_bus_2_full_rready,
+            m_axi_awaddr => timer_bus_2_lite_awaddr,
+            m_axi_awprot => timer_bus_2_lite_awprot,
+            m_axi_awvalid => timer_bus_2_lite_awvalid,
+            m_axi_awready => timer_bus_2_lite_awready,
+            m_axi_wvalid => timer_bus_2_lite_wvalid,
+            m_axi_wready => timer_bus_2_lite_wready,
+            m_axi_wdata => timer_bus_2_lite_wdata,
+            m_axi_wstrb => timer_bus_2_lite_wstrb,
+            m_axi_bvalid => timer_bus_2_lite_bvalid,
+            m_axi_bready => timer_bus_2_lite_bready,
+            m_axi_bresp => timer_bus_2_lite_bresp,
+            m_axi_araddr => timer_bus_2_lite_araddr,
+            m_axi_arprot => timer_bus_2_lite_arprot,
+            m_axi_arvalid => timer_bus_2_lite_arvalid,
+            m_axi_arready => timer_bus_2_lite_arready,
+            m_axi_rdata => timer_bus_2_lite_rdata,
+            m_axi_rvalid => timer_bus_2_lite_rvalid,
+            m_axi_rready => timer_bus_2_lite_rready,
+            m_axi_rresp => timer_bus_2_lite_rresp);
+            
     ----------------------------------------------------
     -- Main Interconnect AXI Full2Lite Instantiations --
     ----------------------------------------------------
@@ -3870,8 +4371,7 @@ begin
     int_0_inst : plasoc_int
         generic map (
             axi_address_width => axi_address_periph_width,
-            axi_data_width => axi_data_width,
-            interrupt_total => axi_data_width)
+            axi_data_width => axi_data_width)
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
@@ -3900,8 +4400,7 @@ begin
     int_1_inst : plasoc_int
         generic map (
             axi_address_width => axi_address_periph_width,
-            axi_data_width => axi_data_width,
-            interrupt_total => axi_data_width)
+            axi_data_width => axi_data_width)
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
@@ -3930,8 +4429,7 @@ begin
     int_2_inst : plasoc_int
         generic map (
             axi_address_width => axi_address_periph_width,
-            axi_data_width => axi_data_width,
-            interrupt_total => axi_data_width)
+            axi_data_width => axi_data_width)
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
@@ -4051,6 +4549,97 @@ begin
             sig_in => sig_1_2,
             int => dev_2_ints(0));
             
+    ---------------------
+    -- CPU Timer Cores --
+    ---------------------
+    
+    time_0_inst : plasoc_timer 
+        generic map (
+            timer_width => axi_data_width,
+            axi_address_width => axi_address_periph_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,
+            aresetn => peripheral_aresetn(0),
+            axi_awaddr => timer_bus_0_lite_awaddr(axi_address_periph_width-1 downto 0),
+            axi_awprot => timer_bus_0_lite_awprot,
+            axi_awvalid => timer_bus_0_lite_awvalid,
+            axi_awready => timer_bus_0_lite_awready,
+            axi_wvalid => timer_bus_0_lite_wvalid,
+            axi_wready => timer_bus_0_lite_wready,
+            axi_wdata => timer_bus_0_lite_wdata,
+            axi_wstrb => timer_bus_0_lite_wstrb,
+            axi_bvalid => timer_bus_0_lite_bvalid,
+            axi_bready => timer_bus_0_lite_bready,
+            axi_bresp => timer_bus_0_lite_bresp,
+            axi_araddr => timer_bus_0_lite_araddr(axi_address_periph_width-1 downto 0),
+            axi_arprot => timer_bus_0_lite_arprot,
+            axi_arvalid => timer_bus_0_lite_arvalid,
+            axi_arready => timer_bus_0_lite_arready,
+            axi_rdata => timer_bus_0_lite_rdata,
+            axi_rvalid => timer_bus_0_lite_rvalid,
+            axi_rready => timer_bus_0_lite_rready,
+            axi_rresp => timer_bus_0_lite_rresp,
+            done => dev_0_ints(1));
+            
+    time_1_inst : plasoc_timer 
+        generic map (
+            timer_width => axi_data_width,
+            axi_address_width => axi_address_periph_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,
+            aresetn => peripheral_aresetn(0),
+            axi_awaddr => timer_bus_1_lite_awaddr(axi_address_periph_width-1 downto 0),
+            axi_awprot => timer_bus_1_lite_awprot,
+            axi_awvalid => timer_bus_1_lite_awvalid,
+            axi_awready => timer_bus_1_lite_awready,
+            axi_wvalid => timer_bus_1_lite_wvalid,
+            axi_wready => timer_bus_1_lite_wready,
+            axi_wdata => timer_bus_1_lite_wdata,
+            axi_wstrb => timer_bus_1_lite_wstrb,
+            axi_bvalid => timer_bus_1_lite_bvalid,
+            axi_bready => timer_bus_1_lite_bready,
+            axi_bresp => timer_bus_1_lite_bresp,
+            axi_araddr => timer_bus_1_lite_araddr(axi_address_periph_width-1 downto 0),
+            axi_arprot => timer_bus_1_lite_arprot,
+            axi_arvalid => timer_bus_1_lite_arvalid,
+            axi_arready => timer_bus_1_lite_arready,
+            axi_rdata => timer_bus_1_lite_rdata,
+            axi_rvalid => timer_bus_1_lite_rvalid,
+            axi_rready => timer_bus_1_lite_rready,
+            axi_rresp => timer_bus_1_lite_rresp,
+            done => dev_1_ints(1));
+            
+    time_2_inst : plasoc_timer 
+        generic map (
+            timer_width => axi_data_width,
+            axi_address_width => axi_address_periph_width,
+            axi_data_width => axi_data_width)
+        port map (
+            aclk => aclk,
+            aresetn => peripheral_aresetn(0),
+            axi_awaddr => timer_bus_2_lite_awaddr(axi_address_periph_width-1 downto 0),
+            axi_awprot => timer_bus_2_lite_awprot,
+            axi_awvalid => timer_bus_2_lite_awvalid,
+            axi_awready => timer_bus_2_lite_awready,
+            axi_wvalid => timer_bus_2_lite_wvalid,
+            axi_wready => timer_bus_2_lite_wready,
+            axi_wdata => timer_bus_2_lite_wdata,
+            axi_wstrb => timer_bus_2_lite_wstrb,
+            axi_bvalid => timer_bus_2_lite_bvalid,
+            axi_bready => timer_bus_2_lite_bready,
+            axi_bresp => timer_bus_2_lite_bresp,
+            axi_araddr => timer_bus_2_lite_araddr(axi_address_periph_width-1 downto 0),
+            axi_arprot => timer_bus_2_lite_arprot,
+            axi_arvalid => timer_bus_2_lite_arvalid,
+            axi_arready => timer_bus_2_lite_arready,
+            axi_rdata => timer_bus_2_lite_rdata,
+            axi_rvalid => timer_bus_2_lite_rvalid,
+            axi_rready => timer_bus_2_lite_rready,
+            axi_rresp => timer_bus_2_lite_rresp,
+            done => dev_2_ints(1));
+            
     -----------------------------
     -- Main Interconnect Cores --
     -----------------------------
@@ -4058,8 +4647,7 @@ begin
     int_main_inst : plasoc_int
         generic map (
             axi_address_width => axi_address_periph_width,
-            axi_data_width => axi_data_width,
-            interrupt_total => axi_data_width)
+            axi_data_width => axi_data_width)
         port map (
             aclk => aclk,
             aresetn => peripheral_aresetn(0),
@@ -4082,7 +4670,7 @@ begin
             axi_rvalid => int_axi_lite_rvalid,
             axi_rready => int_axi_lite_rready,
             axi_rresp => int_axi_lite_rresp,
-            cpu_int => dev_0_ints(1),
+            cpu_int => dev_0_ints(default_interrupt_total-1),
             dev_ints => dev_ints);
             
     timer_main_inst : plasoc_timer 

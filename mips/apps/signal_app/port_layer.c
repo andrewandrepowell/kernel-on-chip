@@ -15,7 +15,7 @@
 #define INT_UART_ID				(2)
 #define INT_MASK			((1<<INT_TIMER_ID)|(1<<INT_UART_ID)|(1<<INT_GPIO_ID))
 #define CPUINT_SIGNAL_ID	(KOC_CPU_SIGNAL_INT_ID)
-#define CPUINT_INT_ID		(1)
+#define CPUINT_INT_ID		(7)
 #define CPUINT_MASK			((1<<CPUINT_SIGNAL_ID)|(1<<CPUINT_INT_ID))
 #define TIMER_1MS_TICKS		(50000)
 #define UART_FIFO_DEPTH			(512)
@@ -81,6 +81,11 @@ void gpio_isr(void* param)
 	plasoc_gpio_enable_int(&gpio_obj,1);
 	if (gpio_handler!=0)
 		gpio_handler();
+	{
+		unsigned register retaddr;
+		__asm__ __volatile__ ("move %0, $31\n":"=r"(retaddr)::"memory");
+		setout(retaddr);
+	}
 }
 
 void putc_port(void* p, char c)

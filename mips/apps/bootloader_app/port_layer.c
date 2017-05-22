@@ -7,7 +7,7 @@
 #define HW_GPIO_BASE_ADDRESS		(0x20030000)
 #define HW_UART_BASE_ADDRESS	(0x20040000)
 #define INT_UART_ID				(2)
-#define CPUINT_INT_ID		(1)
+#define CPUINT_INT_ID		(7)
 #define UART_FIFO_DEPTH			(512)
 
 plasoc_int int_obj;

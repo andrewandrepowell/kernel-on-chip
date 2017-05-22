@@ -2,11 +2,11 @@ MISC_DIR = ../../../../axiplasma/misc
 CROSSGEN = python2 $(MISC_DIR)/gencross.py
 
 CPU_BUS_FLAGS = \
-	--slave_count 1 --master_count 4 \
+	--slave_count 1 --master_count 5 \
 	--address_width 32 --data_width 32 --slave_id_width 0 \
-	--slave_names cpu --master_names  ip cpuid_gpio int signal \
-	--master_base_addresses 00000000 f0000000 f0010000 f0020000 \
-	--master_high_addresses efffffff f000ffff f001ffff f002ffff
+	--slave_names cpu --master_names  ip cpuid_gpio int signal timer \
+	--master_base_addresses 00000000 f0000000 f0010000 f0020000 f0030000 \
+	--master_high_addresses efffffff f000ffff f001ffff f002ffff f003ffff
 
 INTERCONNECT_FLAGS = \
 	--slave_count 3 --master_count 7 \

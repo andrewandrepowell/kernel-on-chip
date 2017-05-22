@@ -311,8 +311,8 @@ package body boot_pack is
 		ram_buffer(292) := X"24420004";
 		ram_buffer(293) := X"00821021";
 		ram_buffer(294) := X"24A50368";
-		ram_buffer(295) := X"AC450008";
-		ram_buffer(296) := X"AC40000C";
+		ram_buffer(295) := X"AC450038";
+		ram_buffer(296) := X"AC40003C";
 		ram_buffer(297) := X"8C630CB0";
 		ram_buffer(298) := X"00000000";
 		ram_buffer(299) := X"8C620000";
@@ -329,7 +329,7 @@ package body boot_pack is
 		ram_buffer(310) := X"24040001";
 		ram_buffer(311) := X"8C620000";
 		ram_buffer(312) := X"00000000";
-		ram_buffer(313) := X"34420002";
+		ram_buffer(313) := X"34420080";
 		ram_buffer(314) := X"08000046";
 		ram_buffer(315) := X"AC620000";
 		ram_buffer(316) := X"27BDFFE8";
