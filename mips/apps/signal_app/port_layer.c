@@ -26,12 +26,13 @@ plasoc_timer timer_obj;
 plasoc_gpio gpio_obj;
 plasoc_uart uart_obj;
 
+static void empty_call() {}
 volatile unsigned char uart_fifo[UART_FIFO_DEPTH];
 volatile unsigned uart_in_ptr = 0;
 volatile unsigned uart_out_ptr = 0;
 volatile unsigned timer_1ms_cntr = 0;
-volatile Handler* signal_handler = 0;
-volatile Handler* gpio_handler = 0;
+Handler* volatile signal_handler = empty_call;
+Handler* volatile gpio_handler = empty_call;
 
 /* Define the CPU's service routine such that it calls the
  interrupt controller's service method. */
@@ -70,22 +71,21 @@ void koc_cpu_signal_isr(void* param)
 {
 	(void) param;
 	koc_signal_ack(cpusignal());
-	if (signal_handler!=0)
-		signal_handler();
+	signal_handler();
 }
 
 /* Service the GPIO events. */
 void gpio_isr(void* param)
 {
 	(void) param;
-	plasoc_gpio_enable_int(&gpio_obj,1);
-	if (gpio_handler!=0)
-		gpio_handler();
-	{
+	plasoc_gpio_enable_int(&gpio_obj,1);	
+	gpio_handler();
+	return;
+	/*{
 		unsigned register retaddr;
 		__asm__ __volatile__ ("move %0, $31\n":"=r"(retaddr)::"memory");
 		setout(retaddr);
-	}
+	}*/
 }
 
 void putc_port(void* p, char c)
