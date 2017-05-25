@@ -11,6 +11,7 @@
 #include "plasoc_cpu.h"
 #include "plasoc_int.h"
 #include "plasoc_gpio.h"
+#include "plasoc_timer.h"
 #include "koc_signal.h"
 
 #ifdef __cplusplus
@@ -44,6 +45,17 @@ extern "C"
 	{
 		extern plasoc_int koc_cpu_int_objs[KOC_CPU_TOTAL];
 		return &koc_cpu_int_objs[cpuid()];
+	}
+
+	/**
+	 * @brief Gets the object representing the timer of the current CPU.
+	 * @return Returns the pointer to the object.
+	 */
+	static inline __attribute__ ((always_inline))
+	plasoc_timer* cputimer()
+	{
+		extern plasoc_timer koc_cpu_timer_objs[KOC_CPU_TOTAL];
+		return &koc_cpu_timer_objs[cpuid()];
 	}
 
 	/**

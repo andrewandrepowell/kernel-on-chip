@@ -25,7 +25,6 @@
 
 koc_lock lock_obj;
 plasoc_int int_obj;
-plasoc_timer timer_objs[KOC_CPU_TOTAL];
 plasoc_gpio gpio_obj;
 plasoc_uart uart_obj;
 
@@ -59,17 +58,11 @@ void uart_isr(void* ptr)
 }
 
 /* Service the respective timer. */
-void timer_isr(void* ptr)
+void koc_cpu_timer_isr(void* ptr)
 {
 	(void)ptr;
-	unsigned cpuid_val;
-	volatile unsigned* timer_1ms_cntr;
-
-	cpuid_val = cpuid();
-	timer_1ms_cntr = (volatile unsigned*)(timer_1ms_cntrs+cpuid_val);
-	
-	plasoc_timer_reload_start(timer_objs+cpuid_val,1);
-	(*timer_1ms_cntr)++;
+	plasoc_timer_reload_start(cputimer(),1);
+	timer_1ms_cntrs[cpuid()]++;
 }
 
 void putc_port(void* p, char c)
@@ -94,7 +87,7 @@ void initialize()
 	}
 	
 	{
-		plasoc_int_set_enables(cpuint(),CPUINT_MASK_MASTER);
+		plasoc_int_enable(cpuint(),CPUINT_INT_ID);
 		plasoc_int_set_enables(&int_obj,INT_MASK);
 		OS_AsmInterruptInit();
 	}
@@ -102,19 +95,8 @@ void initialize()
 
 void cpuinit()
 {
-	unsigned cpuid_val;
-	plasoc_timer* timer_obj;
-
-	cpuid_val = cpuid();
-	timer_obj = timer_objs+cpuid_val;
-
-	plasoc_timer_setup(timer_obj,CPUTIMER_BASE_ADDRESS);
-	plasoc_timer_set_trig_value(timer_obj,TIMER_1MS_TICKS);
-	plasoc_int_attach_isr(cpuint(),CPUINT_TIMER_ID,timer_isr,0);
-
-	if (cpuid_val!=KOC_CPU_MASTER_CPUID)
-		plasoc_int_set_enables(cpuint(),CPUINT_MASK_SLAVE);
-	plasoc_timer_reload_start(timer_obj,0);
+	plasoc_timer_set_trig_value(cputimer(),TIMER_1MS_TICKS);
+	plasoc_timer_reload_start(cputimer(),0);
 	OS_AsmInterruptEnable(1);
 }
 

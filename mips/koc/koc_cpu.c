@@ -5,6 +5,7 @@ unsigned char koc_cpu_stacks[KOC_CPU_TOTAL][KOC_CPU_STACK_SIZE];
 
 /* The following arrays are initialized to -1 to ensure they're not placed in BSS. */
 plasoc_int koc_cpu_int_objs[KOC_CPU_TOTAL] = {[0 ... KOC_CPU_TOTAL-1] = {-1}};
+plasoc_timer koc_cpu_timer_objs[KOC_CPU_TOTAL] = {[0 ... KOC_CPU_TOTAL-1] = {-1}};
 koc_signal koc_cpu_signal_objs[KOC_CPU_TOTAL] = {[0 ... KOC_CPU_TOTAL-1] = {-1}};
 cpucode* koc_cpu_codes[KOC_CPU_TOTAL] = {[0 ... KOC_CPU_TOTAL-1] = (cpucode*)-1};
 
@@ -12,6 +13,12 @@ __attribute__((weak))
 void OS_InterruptServiceRoutine()
 {
 	plasoc_int_service_interrupts(cpuint());
+}
+
+__attribute__((weak))
+void koc_cpu_timer_isr(void* param)
+{
+	/* Empty stub. */
 }
 
 __attribute__((weak))
@@ -28,19 +35,23 @@ static void start()
 	/* Configure low-level drivers. */
 	{
 		plasoc_int* cpu_int_ptr;
+		plasoc_timer* cpu_timer_ptr;
 		koc_signal* cpu_signal_ptr;
 
 		/* Grab the pointers respective to the slave CPU. */
 		cpu_int_ptr = cpuint(); 
+		cpu_timer_ptr = cputimer();
 		cpu_signal_ptr = cpusignal();
 
-		/* Configure signal object. */
+		/* Configure objects. */
+		plasoc_timer_setup(cpu_timer_ptr,KOC_CPU_TIMER_BASE_ADDRESS);
 		koc_signal_setup(cpu_signal_ptr,KOC_CPU_SIGNAL_BASE_ADDRESS);
 
 		/* Configure interrupt controller of CPU. */
 		plasoc_int_setup(cpu_int_ptr,KOC_CPU_INT_BASE_ADDRESS);
 		plasoc_int_attach_isr(cpu_int_ptr,KOC_CPU_SIGNAL_INT_ID,koc_cpu_signal_isr,0);
-		plasoc_int_set_enables(cpu_int_ptr,(1<<KOC_CPU_SIGNAL_INT_ID));
+		plasoc_int_attach_isr(cpu_int_ptr,KOC_CPU_TIMER_INT_ID,koc_cpu_timer_isr,0);
+		plasoc_int_set_enables(cpu_int_ptr,((1<<KOC_CPU_SIGNAL_INT_ID)|(1<<KOC_CPU_TIMER_INT_ID)));
 	}
 	
 	/* Clear BSS and run main if master. */
