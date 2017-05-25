@@ -35,7 +35,7 @@ extern "C"
 		plasoc_gpio_setup(&gpio_obj,KOC_CPUID_BASE_ADDRESS);
 		return plasoc_gpio_get_data_in(&gpio_obj); 
 	}
-
+	
 	/**
 	 * @brief Gets the object representing the interrupt controller of the current CPU.
 	 * @return Returns the pointer to the object.

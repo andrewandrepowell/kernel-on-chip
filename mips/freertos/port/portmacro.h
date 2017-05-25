@@ -18,7 +18,7 @@ extern "C"
 {
 #endif
 
-#include "plasoc_cpu.h"
+#include "koc_cpu.h"
 
 #define portCHAR		char
 #define portFLOAT		float
@@ -42,11 +42,11 @@ typedef unsigned TickType_t;
 #define portBYTE_ALIGNMENT		(4)
 #define portNOP()			{__asm__ __volatile__ ("nop":::"memory");}
 
-#define portCRITICAL_NESTING_IN_TCB	(1)
-#define portENTER_CRITICAL()		{vTaskEnterCritical();}
-#define portEXIT_CRITICAL()		{vTaskExitCritical();}
+#define portCRITICAL_NESTING_IN_TCB	(0) /* Nesting is handled within port. */
+#define portENTER_CRITICAL()		{vPortEnterCritical();}
+#define portEXIT_CRITICAL()		{vPortExitCritical();}
 #define portYIELD()			{vPortYield();}
-#define portYIELD_FROM_ISR(x)		{if ((x)!=pdFALSE) FreeRTOS_Yield=1;}
+#define portYIELD_FROM_ISR(x)		{if ((x)!=pdFALSE) (*prvPortCPUYield())=1;}
 
 #define portDISABLE_INTERRUPTS()	{FreeRTOS_DisableInterrupts();}
 #define portENABLE_INTERRUPTS()		{FreeRTOS_EnableInterrupts();}	
@@ -56,11 +56,12 @@ typedef unsigned TickType_t;
 
 extern volatile unsigned FreeRTOS_Yield;
 void vPortYield();
-void vTaskEnterCritical( void );
-void vTaskExitCritical( void );
+void vPortEnterCritical( void );
+void vPortExitCritical( void );
 void vAssertCalled(const char*, int);
-void FreeRTOS_EnableInterrupts();
-void FreeRTOS_DisableInterrupts();
+
+__attribute__ ((optimize("O3")))
+portUBASE_TYPE* prvPortCPUYield();
 
 #ifdef __cplusplus
 }

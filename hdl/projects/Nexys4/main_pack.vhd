@@ -58,7 +58,7 @@ package body main_pack is
 		ram_buffer(39) := X"0000D812";
 		ram_buffer(40) := X"AFBB0060";
 		ram_buffer(41) := X"0C000102";
-		ram_buffer(42) := X"23A50000";
+		ram_buffer(42) := X"00000000";
 		ram_buffer(43) := X"8FA10010";
 		ram_buffer(44) := X"8FA20014";
 		ram_buffer(45) := X"8FA30018";

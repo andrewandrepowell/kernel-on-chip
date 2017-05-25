@@ -94,7 +94,7 @@ interrupt_service_routine:
 	sw		$27, 96($29)    #lo
 
 	jal		OS_InterruptServiceRoutine
-	addi	$5, $29, 0
+	nop
 
    	#Restore all temporary registers
 	lw		$1, 16($29)	#at
@@ -149,7 +149,7 @@ OS_AsmInterruptEnable:
 ##
 # @brief Write instructions at 0x3c to force the CPU to jump
 # to the correct address of interrupt_service_routine.
-# @warning This function is necessary to for applications not located 
+# @warning This function is only necessary for applications not located 
 # at address 0x0.
 ##
 	.global  	OS_AsmInterruptInit
