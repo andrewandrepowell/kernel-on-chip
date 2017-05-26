@@ -72,21 +72,22 @@
 
 #include "koc_cpu.h"
 
+#include "string.h"
+
+/* This structure is associated with each task
+by storing it at the bottom of each task's stack. */
 typedef struct
 {
-	portUBASE_TYPE affinity;
+	portUBASE_TYPE affinity;	/* Describes which CPU the task is assigned to. */
+	portUBASE_TYPE running;		/* Describes whether or not the task is running on its assigned CPU. */
 }
 tskSMPCB;
 
-extern unsigned vPortUserAcquireCPULock(void);
-extern void vPortUserReleaseCPULock(void);
-extern void vPortUserServiceInterrupts(void);
-
-static void prvTickISR();
-
 volatile portUBASE_TYPE uxCPUStackAddrs[KOC_CPU_TOTAL];
-volatile portUBASE_TYPE uxCPUCurrentTCBs[KOC_CPU_TOTAL];
+volatile TaskHandle_t xCPUCurrentTCBs[KOC_CPU_TOTAL];
 volatile portUBASE_TYPE uxCPUYields[KOC_CPU_TOTAL];
+volatile portUBASE_TYPE uxCPUSysCalls[KOC_CPU_TOTAL];
+volatile tskSMPCB xCurrentSMPCB;
 portUBASE_TYPE uxCriticalNestCntr = 0;
 portUBASE_TYPE uxIntMask = 0;
 
@@ -97,9 +98,33 @@ volatile portUBASE_TYPE* prvPortCPUStackAddr()
 }
 
 __attribute__ ((optimize("O3")))
+volatile TaskHandle_t* prvPortCPUCurrentTCB()
+{
+	return &xCPUCurrentTCBs[cpuid()];
+}
+
+__attribute__ ((optimize("O3")))
 volatile portUBASE_TYPE* prvPortCPUYield()
 {
 	return &uxCPUYields[cpuid()];
+}
+
+__attribute__ ((optimize("O3")))
+volatile portUBASE_TYPE* prvPortCPUSysCall()
+{
+	return &uxCPUSysCalls[cpuid()];
+}
+
+__attribute__ ((optimize("O3")))
+volatile tskSMPCB* prvTskSMPCB(TaskHandle_t xTask)
+{
+	unsigned char* pucTopOfStack;
+	volatile tskSMPCB* pxTaskSMPCB
+
+	pucTopOfStack = *(unsigned char**)xTask
+	pxTaskSMPCB = (volatile tskSMPCB*)(pucTopOfStack+portCPU_REG_CONTEXT_SIZE);
+
+	return pxTaskSMPCB;
 }
 
 static void prvTaskExitError( void )
@@ -117,12 +142,21 @@ BaseType_t xPortStartScheduler( void )
 {
 	extern void prvAsmInterruptInit();
 	extern void vPortStartFirstTask();
+	extern void vPortUserInitializeHardware(void);
 
 	/* Patch the vector so that the FreeRTOS ISR is called. */
-	FreeRTOS_AsmInterruptInit();
+	prvAsmInterruptInit();
+
+	/* Make sure hardware drivers are configured by the user. */
+	vPortUserInitializeHardware();
 	
-	/* Start the first task. */
-	vPortStartFirstTask();
+	/* Start the first task for each cpu. */
+	{
+		unsigned each;
+		for (each=1;each<KOC_CPU_TOTAL;each++)
+			cpurun(each,vPortStartFirstTask);
+		vPortStartFirstTask();
+	}	
 
 	/* This function should never be called. */
 	prvTaskExitError();
@@ -138,6 +172,7 @@ void vPortEndScheduler(void)
 
 void vPortEnterCritical()
 {
+	extern unsigned uxPortUserAcquireCPULock(void);
 	register unsigned int_mask;
 
 	/* Keep trying to enter os critical section while
@@ -145,7 +180,7 @@ void vPortEnterCritical()
 	leave cpu critical section so that interrupt can be 
 	serviced. */
 	int_mask = enter_critical();
-	while (vPortUserAcquireCPULock()!=0)
+	while (uxPortUserAcquireCPULock()!=0)
 	{
 		leave_critical(int_mask);
 		int_mask = enter_critical();
@@ -172,6 +207,8 @@ void vPortEnterCritical()
 
 void vPortExitCritical()
 {
+	extern void vPortUserReleaseCPULock(void);
+
 	/* Each time the current CPU leaves its os critical 
 	section, this counter is decremented to keep track. */
 	if (uxCriticalNestCntr!=0)
@@ -191,48 +228,132 @@ void vPortExitCritical()
 	}
 }
 
-/* User needs to call this function in their ISR for the tick. */
-void vServiceTick()
+/* User needs to call this function in their ISR for the tick. The user needs
+to make sure they signal all other slave CPUs after this function is called in 
+the ISR. */
+void vPortServiceTick()
 {
+	unsigned each;
 	BaseType_t xSwitchRequired = pdFALSE;
 
-	/* As a general principle, the OS is only allowed 
-	to run on a single CPU at a time. */
 	vPortEnterCritical();
 	{
-		xSwitchRequired = vTaskSwitchContext();
+		xSwitchRequired = xTaskIncrementTick();
 	}
 	vPortExitCritical();
 
-	portYIELD_FROM_ISR(xSwitchRequired);
+	for (each=0;each<KOC_CPU_TOTAL;each++)
+		uxCPUYields[each] = 1;
+	l1_cache_flush_range(uxCPUYields,sizeof(uxCPUYields));
 }
 
-void prvFreeRTOSPerformServices() 
-{ 
+void prvPortFreeRTOSPerformServices() 
+{
+	extern void vPortUserServiceInterrupts(void);
+ 
 	/* Interrupts should be serviced before the kernel performs its services. */
 	vPortUserServiceInterrupts();
 
-	/* The FreeRTOS_Yield flag is defined in portmacro. This flag is needed
-	 to force context switches from system and interrupt calls. */
+	/* If necessary perform a context switch. */
 	{
-		volatile portUBASE_TYPE* uxCPUYieldPtr;
+		volatile portUBASE_TYPE* puxCPUYield;
+		extern TaskHandle_t pxCurrentTCB;
+		tskSMPCB* pxCurrentSMPCB;
+		unsigned cpuid_val;
+		
+		/* Get the flag for the current CPU that signals
+		the task shield yield. A memory barrier is needed since the
+		master CPU will need to signal each CPU */
+		puxCPUYield = prvPortCPUYield();
+		l1_cache_memory_barrier();
 
-		uxCPUYieldPtr = prvPortCPUYield();
-		if (*uxCPUYieldPtr)
+		/* Check and see if the context of the current CPU needs to be
+		switched. */
+		if (*puxCPUYield)
 		{
-			*uxCPUYieldPtr = 0;
+			/* Flag needs to be reset to indicate the yield has occurred. */
+			*puxCPUYield = 0;
 
-			/* As a general principle, the OS is only allowed 
-			to run on a single CPU at a time. */
+			/* The following operations must be performed in an os critical section to ensure
+			the OS only operates on a single CPU, specifically the vTaskSwitchContext. */
 			vPortEnterCritical();
 			{
-				vTaskSwitchContext();
+				cpuid_val = cpuid();
+				pxCurrentSMPCB = prvTskSMPCB(pxCurrentTCB);
+
+				/* Indicate the current task is not running on its assigned CPU. */
+				pxCurrentSMPCB->running = 0;
+
+				/* Continue to perform context switches until a task that is not running already
+				and whose affinity is the current CPU is found. */
+				while (1)
+				{
+					vTaskSwitchContext();
+					pxCurrentSMPCB = prvTskSMPCB(pxCurrentTCB);
+					if ((pxCurrentSMPCB->running==0)&&(pxCurrentSMPCB->affinity==cpuid_val))
+					{
+						pxCurrentSMPCB->running = 1;
+						*prvPortCPUCurrentTCB() = pxCurrentTCB;
+						break;
+					}
+				}
 			}
-			vPortExitCritical();
+			vPortExitCritical(); 
 		}
+		
 	}
 }
 
+StackType_t* prvPortInitializeTskSMPCB(StackType_t* pxTopOfStack)
+{
+	unsigned char* pucNewTopOfStack = ((unsigned char*)pxTopOfStack)-sizeof(tskSMPCB);
+	tskSMPCB* pxNewSMPCB = (tskSMPCB*)pucNewTopOfStack;
+	
+	/* In order to ensure associate tasks to a CPU, a SMPCB 
+	is regarded as a part of the task's context. */
+	memset(pxNewSMPCB,0,sizeof(tskSMPCB));
 
+	return (StackType_t*)pucNewTopOfStack;
+}
+
+BaseType_t xTaskCreateSMP(TaskFunction_t pvTaskCode,const char * const pcName,unsigned short usStackDepth,
+	void *pvParameters,UBaseType_t uxPriority,TaskHandle_t *pxCreatedTask,portUBASE_TYPE affinity)
+{
+	extern void vPortEnterCritical();
+	extern void vPortExitCritical(); 
+	BaseType_t xReturned;
+	
+	/* Since the SMPCB is associated with the task, this operation must be
+	atomic. */
+	vPortEnterCritical();
+	{
+		/* The task is created as normal. */
+		xReturned = xTaskCreate(pvTaskCode,pcName,usStackDepth,pvParameters,uxPriority,pxCreatedTask);
+
+		/* The SMPCB is configured if the task itself is successfully configured. */
+		if (xReturned==pdPASS)
+		{
+			volatile tskSMPCB* pxTaskSMPCB;
+
+			pxTaskSMPCB = prvTskSMPCB(*pxCreatedTask);
+			pxTaskSMPCB->affinity = affinity;
+		}
+		
+	}
+	vPortExitCritical();
+
+	return xReturned;
+}
+
+void vPortYield()
+{
+	register unsigned int_mask;
+
+	int_mask = enter_critical();
+	*prvPortCPUSysCall() = 1;
+	*prvPortCPUYield() = 1;
+	__asm__ __volatile__ ("syscall");
+	leave_critical(int_mask);
+}
 
 

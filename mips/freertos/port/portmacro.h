@@ -48,13 +48,16 @@ typedef unsigned TickType_t;
 #define portYIELD()			{vPortYield();}
 #define portYIELD_FROM_ISR(x)		{if ((x)!=pdFALSE) (*prvPortCPUYield())=1;}
 
-#define portDISABLE_INTERRUPTS()	{FreeRTOS_DisableInterrupts();}
-#define portENABLE_INTERRUPTS()		{FreeRTOS_EnableInterrupts();}	
+#define portDISABLE_INTERRUPTS()	{/* Needs implementation. */}
+#define portENABLE_INTERRUPTS()		{/* Needs implementation. */}	
 
 #define portTASK_FUNCTION_PROTO( vFunction, pvParameters ) 	void vFunction( void *pvParameters )
 #define portTASK_FUNCTION( vFunction, pvParameters ) 		void vFunction( void *pvParameters )
 
-extern volatile unsigned FreeRTOS_Yield;
+#define portCPU_REG_CONTEXT_SIZE	(140) /* This macro excludes the SMPCB, which is regarded a part of the context. */
+#define portREMOVE_STATIC_QUALIFIER 	/* This macro can potentially be very dangerous since all of FreeRTOS variables will be global.
+					However, this is necessary to have full control over the low-level functionality of the OS. */
+
 void vPortYield();
 void vPortEnterCritical( void );
 void vPortExitCritical( void );

@@ -1,7 +1,8 @@
 
-	.extern		prvFreeRTOSPerformServices
-	.extern		pxCurrentTCB
+	.extern		prvPortFreeRTOSPerformServices
+	.extern		prvPortInitializeTskSMPCB
 	.extern		prvPortCPUStackAddr
+	.extern		pxCurrentTCB
 
 	.data
 
@@ -22,7 +23,7 @@
 	sw	$0,	0($26)
 
 	# Store the state of the CPU.
-	addi	$29,	$29,	-136			#adjust sp	
+	addi	$29,	$29,	-140			#adjust sp	
 	sw	$1,	16($29)				#at	
 	sw	$2,	20($29)				#v0
 	sw	$3,	24($29)				#v1	
@@ -136,7 +137,7 @@ portSAVE_CONTEXT_1:
 	mthi		$27
 	lw		$27, 128($29)	#lo	
 	mtlo		$27
-	addi		$29, $29, 136	#adjust sp
+	addi		$29, $29, 140	#adjust sp
 	
 	# FreeRTOS: Enable the CPU interrupt.
    	ori		$27, $0, 0x1	#re-enable interrupts
@@ -148,14 +149,20 @@ portSAVE_CONTEXT_1:
 	.endm
 
 ##
-# @brief Restores the context of the current task onto the current CPU.
+# @brief Initializes the stack of each task. Called by the OS.
 #
 	.global		pxPortInitialiseStack
 	.ent		pxPortInitialiseStack
 pxPortInitialiseStack:
 	.set		noreorder
 
-	addi		$2, $4, -136  	# Determine next stack pointer.
+	# Initialize the task's SMPCB. The pointer to the stop of the stack should be in reg 4.
+	jalr		prvPortInitializeTskSMPCB
+	nop
+	
+	# Push program counter (i.e. task code) and arguments (i.e. task parameters)
+	# onto the stack and then return the top of the stack.
+	addi		$2, $2, -140  	# Determine next stack pointer.
 	sw		$5, 120($2)	# Store the program counter of the task.
 	jr		$31
 	sw		$6, 28($2)	# Store the parameter pointer.
@@ -174,7 +181,7 @@ prvISR:
 	
 	# Perform interrupt-related operations.
 	portSAVE_CONTEXT				# Save the context of the current task.
-	jal		prvFreeRTOSPerformServices	# Jump to user-defined ISR.
+	jal		prvPortFreeRTOSPerformServices	# Jump to user-defined ISR.
 	nop
 	portRESTORE_CONTEXT				# Restore context. The PC should be on register 26.
 	nop
@@ -224,35 +231,6 @@ vPortStartFirstTask:
 
 	.set		reorder
 	.end		vPortStartFirstTask
-
-	.global	vPortYield
-	.ent	vPortYield
-vPortYield:
-	.set 	noreorder
-	
-	# Disable CPU interrupt.
-	mtc0	$0,	$12	
-	addi	$9,	$0,	1
-
-	# Load source of interrupt and set it.
-	lui	$8,	%hi(FreeRTOS_SysCall)
-	ori	$8,	%lo(FreeRTOS_SysCall)	
-	sw	$9,	0($8)
-
-	# Load yield flag and set it.
-	lui	$8,	%hi(FreeRTOS_Yield)
-	ori	$8,	%lo(FreeRTOS_Yield)	
-	sw	$9,	0($8)
-
-	# Perform the system call
-	syscall
-	
-	# Return to the calling function
-	jr	$31
-	nop
-	
-	.set 	reorder
-	.end 	vPortYield
 
 
    
